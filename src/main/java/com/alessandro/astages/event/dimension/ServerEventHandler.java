@@ -16,7 +16,6 @@ public class ServerEventHandler {
     @SubscribeEvent
     public static void onEntityTravel(@NotNull EntityTravelToDimensionEvent event) {
         if (event.getEntity() instanceof Player player) {
-//            ResourceLocation currentDimension = event.getEntity().level().dimension().location();
             ResourceLocation dimension = event.getDimension().location();
 
             ADimensionRestriction restriction = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(player, dimension);

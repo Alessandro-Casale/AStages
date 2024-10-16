@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AStagesUtil {
+    // Util class
+
     public static boolean isRealPlayer(Player player) {
         return player instanceof ServerPlayer;
     }

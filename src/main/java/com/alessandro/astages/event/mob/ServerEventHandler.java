@@ -46,11 +46,5 @@ public class ServerEventHandler {
 
             event.setResult(Event.Result.DENY);
         }
-
-//        AStages.LOGGER.debug("BBBBBB {}", event.getEntity().getType().getDescriptionId());
-//        AStages.LOGGER.debug("BBBBBB {}", event.getEntity().getCustomName());
-//        AStages.LOGGER.debug("BBBBBB {}", event.getEntity().getType().toShortString());
-//        AStages.LOGGER.debug("BBBBBB {}", event.getEntity().getDisplayName());
-//        AStages.LOGGER.debug("BBBBBB {}", ForgeRegistries.ENTITY_TYPES.getKey(event.getEntity().getType()));
     }
 }

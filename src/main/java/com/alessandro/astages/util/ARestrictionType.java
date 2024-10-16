@@ -7,7 +7,8 @@ import java.util.Locale;
 public enum ARestrictionType {
     ITEM,
     MOB,
-    DIMENSION;
+    DIMENSION,
+    TIME;
 
     public @NotNull String getId() {
         return toString().toLowerCase(Locale.ROOT);

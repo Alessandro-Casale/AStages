@@ -214,9 +214,5 @@ public class ServerEventHandler {
                 }
             }
         }
-
-//    public static void onArmorChanged(InventoryInteractE) {
-//        // event.
-//    }
     }
 }

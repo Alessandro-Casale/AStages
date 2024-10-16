@@ -2,7 +2,9 @@ package com.alessandro.astages.core;
 
 import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.util.AManager;
+import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
@@ -36,6 +38,18 @@ public class AMobManager implements AManager<AMobRestriction, EntityType<?>> {
         for (String stage : restrictions.keySet()) {
             for (AMobRestriction restriction : restrictions.get(stage)) {
                 if (restriction.isRestricted(mob) && !ClientPlayerStage.getPlayerStages().contains(stage)) {
+                    return restriction;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public AMobRestriction getRestriction(Player player, EntityType<?> mob) {
+        for (String stage : restrictions.keySet()) {
+            for (AMobRestriction restriction : restrictions.get(stage)) {
+                if (restriction.isRestricted(mob) && !AStagesUtil.hasStage(player, stage)) {
                     return restriction;
                 }
             }

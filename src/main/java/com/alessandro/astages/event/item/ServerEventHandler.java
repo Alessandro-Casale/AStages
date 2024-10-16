@@ -21,7 +21,7 @@ public class ServerEventHandler {
     @SubscribeEvent
     public static void onItemPickup(@NotNull EntityItemPickupEvent event) {
         if (event.getEntity() != null) {
-            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getItem().getItem());
+            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getEntity(), event.getItem().getItem());
 
             // This change the name, but "create" a new stack!
             // event.getItem().getItem().setHoverName(Component.literal("UNFAMILIAR!").withStyle(ChatFormatting.RESET));
@@ -108,7 +108,7 @@ public class ServerEventHandler {
             return;
         }
 
-        var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getItemStack());
+        var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getEntity(), event.getItemStack());
 
         if (restriction != null && !restriction.canItemBeUsed) {
             event.setCanceled(true);
@@ -122,7 +122,7 @@ public class ServerEventHandler {
         // event.setUseBlock(Event.Result.DENY);
         // event.getEntity().sendSystemMessage(event.getItemStack().getDisplayName());
 
-        var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(new ItemStack(event.getLevel().getBlockState(event.getPos()).getBlock()));
+        var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getEntity(), new ItemStack(event.getLevel().getBlockState(event.getPos()).getBlock()));
 
         if (restriction != null && !restriction.canBlockBeUsed) {
             event.setCanceled(true);
@@ -136,8 +136,8 @@ public class ServerEventHandler {
         // event.setUseBlock(Event.Result.DENY);
         // event.getEntity().sendSystemMessage(event.getItemStack().getDisplayName());
 
-        var restrictionBlock = ARestrictionManager.ITEM_INSTANCE.getRestriction(new ItemStack(event.getLevel().getBlockState(event.getPos()).getBlock()));
-        var restrictionItem = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getItemStack());
+        var restrictionBlock = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getEntity(), new ItemStack(event.getLevel().getBlockState(event.getPos()).getBlock()));
+        var restrictionItem = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.getEntity(), event.getItemStack());
 
         if (restrictionItem != null && !restrictionItem.canItemBeUsed) {
             event.setUseItem(Event.Result.DENY);
@@ -150,10 +150,12 @@ public class ServerEventHandler {
 
     @SubscribeEvent
     public static void onBlockPlaced(BlockEvent.@NotNull EntityPlaceEvent event) {
-        var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(new ItemStack(event.getPlacedBlock().getBlock()));
+        if (event.getEntity() instanceof Player player) {
+            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(player, new ItemStack(event.getPlacedBlock().getBlock()));
 
-        if (restriction != null && !restriction.canBePlaced) {
-            event.setCanceled(true);
+            if (restriction != null && !restriction.canBePlaced) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -161,7 +163,7 @@ public class ServerEventHandler {
     public static void onEntityHurt(@NotNull LivingHurtEvent event) {
         if (event.getEntity() instanceof Player player) {
             ItemStack stack = player.getMainHandItem();
-            AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(stack);
+            AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(player, stack);
 
             if (restriction != null && !restriction.canAttack) {
                 event.setCanceled(true);
@@ -195,14 +197,14 @@ public class ServerEventHandler {
 
             if (!slotContent.isEmpty()) {
                 if (i >= armorStart && i <= armorEnd) {
-                    AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(slotContent);
+                    AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.player, slotContent);
 
                     if (restriction != null && !restriction.canBeEquipped) {
                         inventory.setItem(i, ItemStack.EMPTY);
                         player.drop(slotContent, false);
                     }
                 } else {
-                    AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(slotContent);
+                    AItemRestriction restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(event.player, slotContent);
 
                     if (restriction != null && !restriction.canBeStoredInInventory) {
                         inventory.setItem(i, ItemStack.EMPTY);

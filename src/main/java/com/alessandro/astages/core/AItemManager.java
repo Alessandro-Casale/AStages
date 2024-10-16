@@ -4,6 +4,8 @@ import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.util.AManager;
 import com.alessandro.astages.util.ARestriction;
 import com.alessandro.astages.util.ARestrictionType;
+import com.alessandro.astages.util.AStagesUtil;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +58,18 @@ public class AItemManager implements AManager<AItemRestriction, ItemStack> {
         for (String stage : restrictions.keySet()) {
             for (AItemRestriction restriction : restrictions.get(stage)) {
                 if (restriction.isRestricted(stack) && !ClientPlayerStage.getPlayerStages().contains(stage)) {
+                    return restriction;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public AItemRestriction getRestriction(Player player, ItemStack stack) {
+        for (String stage : restrictions.keySet()) {
+            for (AItemRestriction restriction : restrictions.get(stage)) {
+                if (restriction.isRestricted(stack) && !AStagesUtil.hasStage(player, stage)) {
                     return restriction;
                 }
             }

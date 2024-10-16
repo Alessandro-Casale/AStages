@@ -19,7 +19,7 @@ public class ServerEventHandler {
 //            ResourceLocation currentDimension = event.getEntity().level().dimension().location();
             ResourceLocation dimension = event.getDimension().location();
 
-            ADimensionRestriction restriction = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(dimension);
+            ADimensionRestriction restriction = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(player, dimension);
 //            ADimensionRestriction restrictionForCurrentDimension = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(currentDimension);
 
 //            if (restriction != null) {

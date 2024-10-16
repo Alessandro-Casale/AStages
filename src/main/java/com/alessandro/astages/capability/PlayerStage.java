@@ -61,30 +61,10 @@ public class PlayerStage {
     }
 
     public void copyFrom(@NotNull PlayerStage source) {
-//        stages = new ArrayList<>();
-//
-//        for (String stage : source.stages) {
-//            stages.add(stage);
-//        }
-
         stages = source.stages;
     }
 
     public void saveNBTData(@NotNull CompoundTag nbt) {
-//        if (stages == null) {
-//            nbt.put("stages", new ListTag());
-//            return;
-//        }
-//
-//        ListTag stageList = new ListTag();
-//
-//        for (String stage : stages) {
-//            CompoundTag tag = new CompoundTag();
-//            tag.putString("id", stage);
-//            stageList.add(tag);
-//        }
-//
-//        nbt.put("stages", stageList);
         if (stages == null) { return; }
         if (stages.isEmpty()) { return; }
 
@@ -105,14 +85,5 @@ public class PlayerStage {
                 stages.add(nbt.getString("stage_" + i));
             }
         }
-
-//        ListTag stageTagList = nbt.getList("stages", Tag.TAG_COMPOUND);
-//
-//        var newStageList = new ArrayList<String>();
-//        for (int i = 0; i < stageTagList.size(); i++) {
-//            newStageList.add(stageTagList.getString(i));
-//        }
-//
-//        stages = newStageList;
     }
 }

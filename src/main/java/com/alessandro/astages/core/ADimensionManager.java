@@ -2,7 +2,9 @@ package com.alessandro.astages.core;
 
 import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.util.AManager;
+import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
@@ -36,6 +38,18 @@ public class ADimensionManager implements AManager<ADimensionRestriction, Resour
         for (String stage : restrictions.keySet()) {
             for (ADimensionRestriction restriction : restrictions.get(stage)) {
                 if (restriction.isRestricted(dimension) && !ClientPlayerStage.getPlayerStages().contains(stage)) {
+                    return restriction;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public ADimensionRestriction getRestriction(Player player, ResourceLocation dimension) {
+        for (String stage : restrictions.keySet()) {
+            for (ADimensionRestriction restriction : restrictions.get(stage)) {
+                if (restriction.isRestricted(dimension) && !AStagesUtil.hasStage(player, stage)) {
                     return restriction;
                 }
             }

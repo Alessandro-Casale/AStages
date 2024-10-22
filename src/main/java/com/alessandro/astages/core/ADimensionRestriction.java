@@ -17,13 +17,12 @@ public class ADimensionRestriction implements ARestriction {
         this.id = id;
     }
 
+    // @SuppressWarnings("hiding")
     public ADimensionRestriction restrict(ResourceLocation dimension) {
         dimensions.add(dimension);
 
         return this;
     }
-
-
 
     public boolean isRestricted(ResourceLocation dimension) {
         for (ResourceLocation dim : dimensions) {

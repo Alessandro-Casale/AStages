@@ -1,4 +1,4 @@
-package com.alessandro.astages.mixin;
+package com.alessandro.astages.mixin.item;
 
 import com.alessandro.astages.core.AItemRestriction;
 import com.alessandro.astages.core.ARestrictionManager;

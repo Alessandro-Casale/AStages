@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JeiPlugin
-public class AStagesJEIPlugin implements IModPlugin {
+public class AItemStagesJEIPlugin implements IModPlugin {
     private IJeiRuntime runtime;
-    private static final ResourceLocation PLUGIN_ID = new ResourceLocation(AStages.MODID, "jei");
+    private static final ResourceLocation PLUGIN_ID = new ResourceLocation(AStages.MODID, "item_jei");
     private final List<ItemStack> itemsToHide = new ArrayList<>();
 
-    public AStagesJEIPlugin() {
+    public AItemStagesJEIPlugin() {
         if (!Mods.JEI.isLoaded()) return;
 
         if (EffectiveSide.get().isClient()) {

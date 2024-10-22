@@ -15,29 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber(modid = AStages.MODID)
 public class PlayerEventHandler {
-//    public static void onServerLoaded(ServerEvent.Lo)
-
-    @SubscribeEvent
-    public static void playerTick(TickEvent.@NotNull PlayerTickEvent event) {
-//        if (event.side == LogicalSide.SERVER) {
-//
-//            event.player.getCapability(PlayerStageProvider.PLAYER_STAGE).ifPresent(playerStage -> {
-//                AStages.LOGGER.debug("Server: {}", playerStage.getStages());
-//            });
-//        }
-//
-//        if (event.side == LogicalSide.CLIENT) {
-//            AStages.LOGGER.debug("Client: {}", ClientPlayerStage.getPlayerStages());
-//        }
-
-//        AStages.LOGGER.debug(String.valueOf(ARestrictionManager.ITEM_INSTANCE.restrictions.size()));
-//        AStages.LOGGER.debug(ARestrictionManager.ITEM_INSTANCE.restrictions.toString());
-
-//        Predicate<Integer> p1 = (i) -> i == 2;
-//        Predicate<Integer> p2 = (i) -> i == 2;
-        // AStages.LOGGER.debug(String.valueOf(Predicate.isEqual(p1).equals(p2)));
-    }
-
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.@NotNull PlayerLoggedInEvent event) {
         if (!event.getEntity().level().isClientSide) {

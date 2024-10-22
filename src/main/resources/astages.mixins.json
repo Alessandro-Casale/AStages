@@ -2,13 +2,17 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.alessandro.astages.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "astages.refmap.json",
   "mixins": [
-    "APlayerEventJS"
+    "AIntArrayTag",
+    "APlayerEventJS",
+    "recipe.mekanism.ARecipeCacheLookupMonitor",
+    "recipe.minecraft.AAbstractFurnaceBlockEntity",
+    "screen.AServerPlayer"
   ],
   "client": [
-    "AGui"
+    "item.AGui"
   ],
   "injectors": {
     "defaultRequire": 1

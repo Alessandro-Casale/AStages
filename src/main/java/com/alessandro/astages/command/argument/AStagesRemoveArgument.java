@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class AStagesRemoveArgument implements ArgumentType<String> {
     private static final Collection<String> EXAMPLES = Arrays.asList("test_stage_1", "test_stage_2");
-    private static final DynamicCommandExceptionType ERROR_INVALID_COLOR = new DynamicCommandExceptionType(s -> Component.literal("Invalid stage argument: " + s));
+    private static final DynamicCommandExceptionType ERROR_INVALID_STAGE = new DynamicCommandExceptionType(s -> Component.literal("Invalid stage argument: " + s));
 
     @Contract(value = " -> new", pure = true)
     public static @NotNull AStagesRemoveArgument stages() {
@@ -36,7 +36,7 @@ public class AStagesRemoveArgument implements ArgumentType<String> {
     public String parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
         var stageString = stringReader.readUnquotedString();
 
-        if (stageString == null) { throw ERROR_INVALID_COLOR.create(null); }
+        if (stageString == null) { throw ERROR_INVALID_STAGE.create(null); }
 
         return stageString;
     }

@@ -1,6 +1,7 @@
 package com.alessandro.astages.networking.packet;
 
 import com.alessandro.astages.capability.ClientPlayerStage;
+import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.event.custom.StageSyncedPlayerEvent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,7 +45,7 @@ public class StageDataSyncS2CPacket {
         ctx.get().enqueueWork(() -> {
             // HERE WE ARE ON CLIENT!
             ClientPlayerStage.set(stages);
-            MinecraftForge.EVENT_BUS.post(new StageSyncedPlayerEvent());
+            MinecraftForge.EVENT_BUS.post(new ClientSynchronizeStagesEvent());
         });
         ctx.get().setPacketHandled(true);
     }

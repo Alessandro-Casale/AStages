@@ -2,17 +2,20 @@ package com.alessandro.astages.core;
 
 import com.alessandro.astages.util.ARestriction;
 //import com.alessandro.astages.util.RestrictionType;
+import com.alessandro.astages.util.Info;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class AItemRestriction implements ARestriction {
-    // public static String NON_RUNTIME_ID = "NON_RUNTIME_RESTRICTION_ID";
 
     public final String id;
-//    public final RestrictionType type;
 
     public boolean renderItemName = false;
     public boolean hideTooltip = true;
@@ -22,52 +25,27 @@ public class AItemRestriction implements ARestriction {
     public boolean canAttack = false;
     public boolean hideInJEI = true;
     public boolean canBePlaced = false;
-    public boolean canBlockBeUsed = false;
-    public boolean canItemBeUsed = false;
+    @Info("To be reviewed!") public boolean canBlockBeUsed = false;
+    @Info("To be reviewed!") public boolean canItemBeUsed = false;
+    public boolean canBeDig = false;
+
+    public Function<ItemStack, Component> hiddenName = stack -> Component.translatable("tooltip.astages.hidden_name", stack.getHoverName()).withStyle(ChatFormatting.RED);
+    public Function<ItemStack, Component> dropMessage = stack -> Component.translatable("message.astages.drop", stack.getHoverName()).withStyle(ChatFormatting.RED);
+    public Function<ItemStack, Component> attackMessage = stack -> Component.translatable("message.astages.attach", stack.getHoverName()).withStyle(ChatFormatting.RED);
+    public Function<ItemStack, Component> pickupMessage = stack -> Component.translatable("message.astages.pickup", stack.getHoverName()).withStyle(ChatFormatting.RED);
+    public Function<ItemStack, Component> usageMessage = stack -> Component.translatable("message.astages.use", stack.getHoverName()).withStyle(ChatFormatting.RED);
+
 
     public int pickUpDelay = 60;
 
-//    public List<Item> items = new ArrayList<>();
     public List<Predicate<ItemStack>> predicates = new ArrayList<>();
 
     public AItemRestriction(String id) {
         this.id = id;
-//        this.type = RestrictionType.DEFAULT;
     }
-
-//    public AItemRestriction(String id, RestrictionType type) {
-//        this.type = type;
-//
-////        if (type == RestrictionType.DEFAULT) {
-////            this.id = NON_RUNTIME_ID;
-////        } else {
-//        this.id = id;
-////        }
-//    }
 
     public AItemRestriction restrict(Predicate<ItemStack> predicate) {
         predicates.add(predicate);
-
-//        ArrowFunction predicate1 = (ArrowFunction) predicate;
-//        // predicate1.ge
-//
-//        AStages.LOGGER.debug("AAAAAAA" + predicate.test(predicates.get(1).));
-
-        // final IForgeRegistry<Predicate<?>> PREDICATES = RegistryManager.ACTIVE.
-
-//        var ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, AStages.MODID);
-//        var a = ITEMS.register("aa", () -> new Item(new Item.Properties()));
-//        a.get();
-//
-//        var PREDICATES = DeferredRegister.create(new ResourceLocation(AStages.MODID, "predicates"), AStages.MODID);
-//        var p = PREDICATES.register("predicate1", () -> predicate);
-//        p.get();
-
-        // ForgeRegistries.ITEMS
-
-        // 327159982
-        // 1803202795
-        // 1823190995
 
         return this;
     }
@@ -80,6 +58,24 @@ public class AItemRestriction implements ARestriction {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "AItemRestriction{" +
+            "id='" + id + '\'' +
+            ", hideInJEI=" + hideInJEI +
+            ", canAttack=" + canAttack +
+            ", canBeStoredInInventory=" + canBeStoredInInventory +
+            ", canBeEquipped=" + canBeEquipped +
+            ", canPickedUp=" + canPickedUp +
+            ", hideTooltip=" + hideTooltip +
+            ", renderItemName=" + renderItemName +
+            ", canBePlaced=" + canBePlaced +
+            ", canBlockBeUsed=" + canBlockBeUsed +
+            ", canItemBeUsed=" + canItemBeUsed +
+            ", pickUpDelay=" + pickUpDelay +
+            '}';
     }
 
     // GETTER AND SETTERS
@@ -189,6 +185,16 @@ public class AItemRestriction implements ARestriction {
 
     public AItemRestriction setCanItemBeUsed(boolean canItemBeUsed) {
         this.canItemBeUsed = canItemBeUsed;
+
+        return this;
+    }
+
+    public boolean isCanBeDig() {
+        return canBeDig;
+    }
+
+    public AItemRestriction setCanBeDig(boolean canBeDig) {
+        this.canBeDig = canBeDig;
 
         return this;
     }

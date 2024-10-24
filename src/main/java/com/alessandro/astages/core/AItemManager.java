@@ -66,7 +66,9 @@ public class AItemManager implements AManager<AItemRestriction, ItemStack> {
         return null;
     }
 
-    public AItemRestriction getRestriction(Player player, ItemStack stack) {
+    public AItemRestriction getRestriction(Player player, @NotNull ItemStack stack) {
+        if (stack.isEmpty()) { return null; }
+
         for (String stage : restrictions.keySet()) {
             for (AItemRestriction restriction : restrictions.get(stage)) {
                 if (restriction.isRestricted(stack) && !AStagesUtil.hasStage(player, stage)) {

@@ -25,6 +25,7 @@ public class ARestrictionManager {
     public static final AOreManager ORE_INSTANCE = new AOreManager();
 
     public static final Set<String> ALL_STAGES = new HashSet<>();
+    public static final Set<String> ORE_STAGES = new HashSet<>();
 
 //    static {
 //        var rest = new ARecipeRestriction("id_auto");
@@ -38,6 +39,20 @@ public class ARestrictionManager {
 //        RECIPE_INSTANCE.addRestriction("test_auto", rest);
 //        RECIPE_INSTANCE.addRestriction("test_auto_mod", rest1);
 //    }
+
+    public static boolean isOreStage(String stage) {
+        return ORE_STAGES.contains(stage);
+    }
+
+    public static boolean areOreStages(List<String> stages) {
+        for (String stage : ORE_STAGES) {
+            if (stages.contains(stage)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     public static <T extends ARestriction> T getRestrictionById(@NotNull ARestrictionType type, String id) {

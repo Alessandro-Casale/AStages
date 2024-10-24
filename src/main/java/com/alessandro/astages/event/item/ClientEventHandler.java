@@ -5,8 +5,11 @@ import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.event.custom.PlayerInventoryChangedEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +28,18 @@ public class ClientEventHandler {
             }
         }
     }
+
+//    @SubscribeEvent
+//    public static void onBlockPlaced(BlockEvent.@NotNull EntityPlaceEvent event) {
+//
+//        if (event.getEntity() instanceof ServerPlayer player) {
+//            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(player, new ItemStack(event.getPlacedBlock().getBlock()));
+//
+//            if (restriction != null && !restriction.canBePlaced) {
+//                event.setCanceled(true);
+//            }
+//        }
+//    }
 
 //    @SubscribeEvent
 //    public static void onInventoryChanged(@NotNull PlayerInventoryChangedEvent event) {

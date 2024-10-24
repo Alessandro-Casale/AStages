@@ -23,6 +23,7 @@ public class AOreManager implements AManager<AOreRestriction, BlockState> {
         newList.add(restriction);
 
         ARestrictionManager.ALL_STAGES.add(stage);
+        ARestrictionManager.ORE_STAGES.add(stage);
 
         restrictions.put(stage, newList);
     }

@@ -16,6 +16,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,9 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = AStages.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
     @SubscribeEvent
-    public static void stageSync(StageSyncedPlayerEvent event) {
+    public static void stageSync(@NotNull StageSyncedPlayerEvent event) {
+        if (!ARestrictionManager.areOreStages(event.getStagesSynced())) { return; }
+
         for (Map.Entry<String, List<AOreRestriction>> entry : ARestrictionManager.ORE_INSTANCE.getRestrictions().entrySet()) {
             for (AOreRestriction restriction : entry.getValue()) {
                 AStagesUtil.setBakedModelForState(restriction.original, new AOreBakedModel(entry.getKey(), restriction.original, restriction.replacement));

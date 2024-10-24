@@ -1,5 +1,6 @@
 package com.alessandro.astages.integration.kubejs;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.capability.PlayerStage;
 import com.alessandro.astages.capability.PlayerStageProvider;
 import com.alessandro.astages.core.*;
@@ -76,7 +77,9 @@ public class AStagesKubeJSUtil {
     public static @NotNull AItemRestriction addRestrictionForMod(String id, String stage, String modId) {
         // var restriction = new AItemRestriction(id, RestrictionType.RUNTIME);
         var restriction = new AItemRestriction(id);
+        // AStages.LOGGER.debug(modId);
         restriction.restrict(itemStack -> modId.equalsIgnoreCase(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).getNamespace()));
+        // AStages.LOGGER.debug(restriction.predicates.toString());
 
         ARestrictionManager.ITEM_INSTANCE.addRestriction(stage, restriction);
 

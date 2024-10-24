@@ -4,6 +4,7 @@ import com.alessandro.astages.AStages;
 import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.core.ARecipeRestriction;
 import com.alessandro.astages.core.ARestrictionManager;
+import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.event.custom.StageSyncedPlayerEvent;
 import com.alessandro.astages.integration.Mods;
 // import com.blamejared.crafttweaker.api.recipe.manager.RecipeManagerWrapper;
@@ -34,7 +35,7 @@ public class ARecipeStagesJEIPlugin implements IModPlugin {
         if (!Mods.JEI.isLoaded()) return;
 
         if (EffectiveSide.get().isClient()) {
-            MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, StageSyncedPlayerEvent.class, e -> updateRecipeGui());
+            MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> updateRecipeGui());
             MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, RecipesUpdatedEvent.class, e -> updateRecipeGui());
         }
     }

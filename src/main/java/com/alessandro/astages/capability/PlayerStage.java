@@ -3,13 +3,16 @@ package com.alessandro.astages.capability;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.event.custom.StageAddedPlayerEvent;
 import com.alessandro.astages.event.custom.StageRemovedPlayerEvent;
+import com.alessandro.astages.event.custom.StageSyncedPlayerEvent;
 import com.alessandro.astages.networking.ModNetworking;
 import com.alessandro.astages.networking.packet.StageDataSyncS2CPacket;
+import com.alessandro.astages.util.Info;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,13 +31,29 @@ public class PlayerStage {
 
     private List<String> stages = new ArrayList<>();
 
+    @Info("TO BE TESTED!")
     public void setChangedFor(Player player, @NotNull Operation operation, String stage) {
-        ModNetworking.sendToPlayer(new StageDataSyncS2CPacket(stages), (ServerPlayer) player);
+//    }
+//
+//    public void setChangedFor(Player player, @NotNull Operation operation, List<String> stage) {
 
-        switch (operation) {
-            case ADD -> MinecraftForge.EVENT_BUS.post(new StageAddedPlayerEvent(player, stage));
-            case REMOVE -> MinecraftForge.EVENT_BUS.post(new StageRemovedPlayerEvent(player, stage));
-            case REMOVE_ALL, GET -> AStages.LOGGER.debug("NOT YET IMPLEMENTED!");
+        StageSyncedPlayerEvent event = new StageSyncedPlayerEvent(player, operation, stage);
+        MinecraftForge.EVENT_BUS.post(event);
+
+        if (!event.isCanceled()) {
+            ModNetworking.sendToPlayer(new StageDataSyncS2CPacket(stages), (ServerPlayer) player);
+
+            switch (operation) {
+                case ADD -> MinecraftForge.EVENT_BUS.post(new StageAddedPlayerEvent(player, stage));
+                case REMOVE -> MinecraftForge.EVENT_BUS.post(new StageRemovedPlayerEvent(player, stage));
+                case REMOVE_ALL, GET -> AStages.LOGGER.debug("NOT YET IMPLEMENTED!");
+            }
+        } else {
+            switch (event.getOperation()) {
+                case ADD -> stages.remove(stage);
+                case REMOVE -> stages.add(stage);
+                case REMOVE_ALL, GET -> AStages.LOGGER.debug("CANCELLING NOT YET IMPLEMENTED!");
+            }
         }
     }
 

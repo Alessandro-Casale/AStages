@@ -7,8 +7,8 @@ import com.alessandro.astages.core.client.manager.AClientRecipeManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientRecipeUpdateEvent;
 import com.alessandro.astages.store.client.AClientMinimalManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.api.develop.Info;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.*;
@@ -22,7 +22,6 @@ public class AClientRestrictionManager {
     public static final AClientMobManager MOB_INSTANCE = new AClientMobManager();
 
     public static final Set<String> ORE_STAGES = new HashSet<>();
-    public static final Set<String> SERVER_STAGES = new HashSet<>();
 
     @Info("For automatic command completion")
     public static final Set<String> ALL_STAGES = new HashSet<>();
@@ -51,7 +50,6 @@ public class AClientRestrictionManager {
         MOB_INSTANCE.reloadBeforeScripts();
 
         ORE_STAGES.clear();
-        SERVER_STAGES.clear();
         DIMENSION_IDS.clear();
         SIMPLE_IDS.clear();
     }
@@ -64,7 +62,7 @@ public class AClientRestrictionManager {
         return ORE_STAGES.contains(stage);
     }
 
-    public static boolean areOreStages(List<String> stages) {
+    public static boolean areOreStages(Set<String> stages) {
         for (String stage : ORE_STAGES) {
             if (stages.contains(stage)) {
                 return true;

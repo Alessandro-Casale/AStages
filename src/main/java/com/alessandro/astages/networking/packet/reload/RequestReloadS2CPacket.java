@@ -1,12 +1,12 @@
 package com.alessandro.astages.networking.packet.reload;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientOreUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientRecipeUpdateEvent;
 import com.alessandro.astages.networking.AStagesPacket;
-import com.alessandro.astages.util.AStagesUtil;
 import com.alessandro.astages.util.ReloadType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,7 +18,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @MethodsReturnNonnullByDefault
 public record RequestReloadS2CPacket(ReloadType reloadType) implements AStagesPacket {
-    public static final CustomPacketPayload.Type<RequestReloadS2CPacket> TYPE = new CustomPacketPayload.Type<>(AStagesUtil.fromNamespaceAndPath("request_reload_s2c_packet"));
+    public static final Type<RequestReloadS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("request_reload_s2c_packet"));
 
     public static final StreamCodec<FriendlyByteBuf, RequestReloadS2CPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.idMapper(ReloadType.BY_ID, ReloadType::getId),

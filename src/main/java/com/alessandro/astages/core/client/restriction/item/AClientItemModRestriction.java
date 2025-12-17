@@ -1,15 +1,15 @@
 package com.alessandro.astages.core.client.restriction.item;
 
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientItemModRestriction extends AClientBaseItemRestriction<AClientItemModRestriction, String> {
     private String modId;
     private final List<Item> ignoredItems = new ArrayList<>();

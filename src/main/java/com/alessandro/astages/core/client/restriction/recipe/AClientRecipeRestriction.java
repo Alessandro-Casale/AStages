@@ -1,14 +1,14 @@
 package com.alessandro.astages.core.client.restriction.recipe;
 
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientRecipeRestriction extends AClientBaseRecipeRestriction<AClientRecipeRestriction, RecipeWrapper, RecipeWrapper> {
     private RecipeType<?> type = null;
     private final List<ResourceLocation> recipes = new ArrayList<>();

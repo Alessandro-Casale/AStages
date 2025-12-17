@@ -1,34 +1,30 @@
 package com.alessandro.astages.integration.jei;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.capability.ClientPlayerStage;
-import com.alessandro.astages.capability.PlayerStage;
 import com.alessandro.astages.core.AClientRestrictionManager;
+import com.alessandro.astages.event.custom.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.integration.Mods;
-import com.alessandro.astages.util.AStagesUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 @JeiPlugin
 public class AItemStagesJEIPlugin implements IModPlugin {
     private static final HashMap<String, List<ItemStack>> ITEM_CACHE = new HashMap<>();
@@ -36,19 +32,25 @@ public class AItemStagesJEIPlugin implements IModPlugin {
 
 
     private IJeiRuntime runtime;
-    private static final ResourceLocation PLUGIN_ID = AStagesUtil.fromNamespaceAndPath("item_jei");
+    private static final ResourceLocation PLUGIN_ID = AResourceLocation.fromNamespaceAndPath("item_jei");
 
     public AItemStagesJEIPlugin() {
         if (!Mods.JEI.isLoaded()) return;
 
         if (EffectiveSide.get().isClient() && !EffectiveSide.get().isServer()) {
+            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class, e -> updateGui(null, null));
+
             NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
-                if (e.getOperation() != PlayerStage.Operation.LOGIN && e.getOperation() != PlayerStage.Operation.GET) {
+                if (e.getOperation() != AOperation.LOGIN) {
                     updateGui(e.getOperation(), e.getStagesSynced());
                 }
             });
 
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class, e -> updateGui(null, null));
+            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeServerStagesEvent.class, e -> {
+                if (e.getOperation() != AOperation.LOGIN) {
+                    updateGui(e.getOperation(), e.getStagesSynced());
+                }
+            });
         }
     }
 
@@ -63,7 +65,7 @@ public class AItemStagesJEIPlugin implements IModPlugin {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void updateGui(@Nullable PlayerStage.Operation operation, @Nullable List<String> stages) {
+    public <T> void updateGui(@Nullable AOperation operation, @Nullable Set<String> stages) {
         if (runtime != null && AClientRestrictionManager.ableToUpdateJeiUI()) {
             // TODO: HYBRID
             var manager = runtime.getIngredientManager();
@@ -128,7 +130,6 @@ public class AItemStagesJEIPlugin implements IModPlugin {
                         }
                     }
                 }
-
                 return;
             }
 
@@ -198,7 +199,7 @@ public class AItemStagesJEIPlugin implements IModPlugin {
                 }
             }
 
-//            AClientRestrictionManager.waitingForItemUpdate = false;
+//            AClientRestrictionManager.setWaitingForItemUpdate(false);
 
 //            if (operation == PlayerStage.Operation.REMOVE) {
 //                for (var stage : stages) {

@@ -5,13 +5,10 @@ import com.alessandro.astages.core.wrapper.CropWrapper;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.server.ARestriction;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.level.block.Block;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class ACropRestriction extends ARestriction<ACropRestriction, Block, CropWrapper> {
     private Block crop;
 

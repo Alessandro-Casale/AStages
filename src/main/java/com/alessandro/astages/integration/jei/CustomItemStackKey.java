@@ -1,14 +1,12 @@
 package com.alessandro.astages.integration.jei;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class CustomItemStackKey {
     private final ItemStack stack;
 

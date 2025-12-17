@@ -1,13 +1,10 @@
 package com.alessandro.astages.store;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class Attribute<T> {
     private static DeferredRegister<Attribute<?>> deferredRegister;
 
@@ -52,7 +49,7 @@ public class Attribute<T> {
     public String toString() {
         return "Attribute{" +
             "id='" + id + '\'' +
-            ", recipeType=" + type +
+            ", type=" + type +
             ", defaultValue=" + defaultValue +
             '}';
     }

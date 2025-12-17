@@ -1,33 +1,36 @@
 package com.alessandro.astages.core.server.manager;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.holder.ARestrictionHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.server.restriction.item.*;
-import com.alessandro.astages.networking.ModNetworking;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.item.ItemModSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.item.ItemPredicateSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.item.ItemSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.item.ItemTagSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestRestrictionDeleteS2CPacket;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.store.ClientSynchronizable;
+import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.store.server.AMinimalManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>, ClientSynchronizable {
     private final Map<Class<?>, List<Integer>> containersWhitelist = new HashMap<>();
 
@@ -38,6 +41,11 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
     private final List<AItemModRestriction> mods = new ArrayList<>();
     private final List<AItemTagRestriction> tags = new ArrayList<>();
     private final List<AItemPredicateRestriction> predicates = new ArrayList<>();
+
+    // Every time, apply in THIS order!
+//    private final OrderedMultiMap<String, AItemModRestriction> MOD_CACHE = OrderedMultiMap.create();
+//    private final Map<ResourceLocation, AItemTagRestriction> TAG_CACHE = new HashMap<>();
+//    private final Map<Item, AItemRestriction> ITEM_CACHE = new HashMap<>();
 
     private final List<ABaseItemRestriction<?, ?>> INVENTORY_CACHE = new ArrayList<>();
     private final List<ABaseItemRestriction<?, ?>> EQUIPMENT_CACHE = new ArrayList<>();
@@ -72,6 +80,10 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
         tags.clear();
         predicates.clear();
 
+//        MOD_CACHE.clear();
+//        TAG_CACHE.clear();
+//        ITEM_CACHE.clear();
+
         INVENTORY_CACHE.clear();
         EQUIPMENT_CACHE.clear();
         CONTAINERS_CACHE.clear();
@@ -97,23 +109,105 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
         return IDS.getOrDefault(id, null);
     }
 
-    public ABaseItemRestriction<?, ?> getRestriction(Player player, ItemStack stack) {
-        return restrictions.stream().filter(r -> r.isRestricted(stack) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getHolder(String id) {
+        return ARestrictionHolder.hold(getRestriction(id));
+    }
+
+    public ABaseItemRestriction<?, ?> getRestriction(AHolder holder, ItemStack stack) {
+        if (holder.isServerActive()) {
+            var serverRestriction = restrictions.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                r.isRestricted(stack)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return restrictions.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                r.isRestricted(stack)
+            ).findFirst().orElse(null);
+        }
+
+        return null;
+    }
+
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getHolder(AHolder holder, ItemStack stack) {
+        return ARestrictionHolder.hold(getRestriction(holder, stack));
     }
 
     public List<ABaseItemRestriction<?,?>> getAllRestrictions(ItemStack stack) {
         return restrictions.stream().filter(r -> r.isRestricted(stack)).toList();
     }
 
-    public ABaseItemRestriction<?, ?> getInventoryRestriction(Player player, ItemStack stack) {
-        return INVENTORY_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
+    public ABaseItemRestriction<?, ?> getInventoryRestriction(AHolder holder, ItemStack stack) {
+        if (holder.isServerActive()) {
+            var serverRestriction = INVENTORY_CACHE.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                    r.isRestricted(stack)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return INVENTORY_CACHE.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                    r.isRestricted(stack)
+            ).findFirst().orElse(null);
+        }
+
+        return null;
     }
 
-    public ABaseItemRestriction<?, ?> getEquipmentRestriction(Player player, ItemStack stack) {
-        return EQUIPMENT_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getInventoryHolder(AHolder holder, ItemStack stack) {
+        return ARestrictionHolder.hold(getInventoryRestriction(holder, stack));
     }
 
-    public ABaseItemRestriction<?, ?> getContainersRestriction(Player player, ItemStack stack, Slot slot) {
+    public ABaseItemRestriction<?, ?> getEquipmentRestriction(AHolder holder, ItemStack stack) {
+        if (holder.isServerActive()) {
+            var serverRestriction = EQUIPMENT_CACHE.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                    r.isRestricted(stack)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return EQUIPMENT_CACHE.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                    r.isRestricted(stack)
+            ).findFirst().orElse(null);
+        }
+
+        return null;
+    }
+
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getEquipmentHolder(AHolder holder, ItemStack stack) {
+        return ARestrictionHolder.hold(getEquipmentRestriction(holder, stack));
+    }
+
+    public ABaseItemRestriction<?, ?> getContainersRestriction(AHolder holder, ItemStack stack, Slot slot) {
+        if (holder.isServerActive()) {
+            var serverRestriction = getContainersRestriction(holder, AStageType.SERVER, stack, slot);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return getContainersRestriction(holder, AStageType.PLAYER, stack, slot);
+        }
+
+        return null;
+    }
+
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getContainersHolder(AHolder holder, ItemStack stack, Slot slot) {
+        return ARestrictionHolder.hold(getContainersRestriction(holder, stack, slot));
+    }
+
+    public ABaseItemRestriction<?, ?> getContainersRestriction(AHolder holder, AStageType type, ItemStack stack, Slot slot) {
         var container = slot.container;
         var index = slot.index;
 
@@ -121,9 +215,9 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
         if (isPresent) {
             var whitelistedIndexes = containersWhitelist.get(container.getClass());
             if (whitelistedIndexes == null) {
-                return CONTAINERS_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
+                return CONTAINERS_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtils.hasStage(holder, type, r.getStage())).findFirst().orElse(null);
             } else if (whitelistedIndexes.contains(index)) {
-                return CONTAINERS_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
+                return CONTAINERS_CACHE.stream().filter(r -> r.isRestricted(stack) && !AStagesUtils.hasStage(holder, type, r.getStage())).findFirst().orElse(null);
             }
         }
 
@@ -204,18 +298,18 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
         CONTAINERS_CACHE.removeIf(restriction -> restriction.getId().equals(id));
         IDS.remove(id);
 
-        ModNetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
+        ANetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
     }
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        items.forEach(restriction -> ModNetworking.sendTo(player, new ItemSyncerS2CPacket(restriction)));
-        tags.forEach(restriction -> ModNetworking.sendTo(player, new ItemTagSyncerS2CPacket(restriction)));
-        mods.forEach(restriction -> ModNetworking.sendTo(player, new ItemModSyncerS2CPacket(restriction)));
-        predicates.forEach(restriction -> ModNetworking.sendTo(player, new ItemPredicateSyncerS2CPacket(restriction)));
+        items.forEach(restriction -> ANetworking.sendTo(player, new ItemSyncerS2CPacket(restriction)));
+        tags.forEach(restriction -> ANetworking.sendTo(player, new ItemTagSyncerS2CPacket(restriction)));
+        mods.forEach(restriction -> ANetworking.sendTo(player, new ItemModSyncerS2CPacket(restriction)));
+        predicates.forEach(restriction -> ANetworking.sendTo(player, new ItemPredicateSyncerS2CPacket(restriction)));
     }
 
     public ARestrictionType associatedType() {
-        return ARestrictionType.ITEM;
+        return ARestrictionTypes.ITEM;
     }
 }

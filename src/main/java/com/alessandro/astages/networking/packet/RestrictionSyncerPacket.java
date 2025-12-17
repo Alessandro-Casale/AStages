@@ -1,6 +1,6 @@
 package com.alessandro.astages.networking.packet;
 
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.api.develop.Info;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

@@ -1,7 +1,7 @@
 package com.alessandro.astages.mixin;
 
-import com.alessandro.astages.capability.AProvider;
-import com.alessandro.astages.capability.PlayerStage;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.holder.AHolder;
 import mcjty.incontrol.compat.ModRuleCompatibilityLayer;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,8 +26,7 @@ public class AModRuleCompatibilityLayer {
     public boolean hasGameStage(Player player, String stage) {
         if (player == null) { return false; }
 
-        var playerStage = player.getData(AProvider.PLAYER_STAGE);
-        return playerStage.getStages().contains(stage);
+        return AStagesUtils.hasStage(AHolder.player(player), stage);
     }
 
     /**
@@ -38,9 +37,7 @@ public class AModRuleCompatibilityLayer {
     public void addGameStage(Player player, String stage) {
         if (player == null) { return; }
 
-        var playerStage = player.getData(AProvider.PLAYER_STAGE);
-        playerStage.addStage(stage);
-        playerStage.setChangedFor(player, PlayerStage.Operation.ADD, stage);
+        AStagesUtils.addStage(AHolder.player(player), stage, false);
     }
 
     /**
@@ -51,8 +48,6 @@ public class AModRuleCompatibilityLayer {
     public void removeGameStage(Player player, String stage) {
         if (player == null) { return; }
 
-        var playerStage = player.getData(AProvider.PLAYER_STAGE);
-        playerStage.removeStage(stage);
-        playerStage.setChangedFor(player, PlayerStage.Operation.REMOVE, stage);
+        AStagesUtils.removeStage(AHolder.player(player), stage, false);
     }
 }

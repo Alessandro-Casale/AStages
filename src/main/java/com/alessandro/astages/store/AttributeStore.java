@@ -1,17 +1,16 @@
 package com.alessandro.astages.store;
 
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.develop.Info;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Set;
 
-@ParametersAreNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AttributeStore extends HashMap<Attribute<?>, Object> {
     @Contract(value = " -> new", pure = true)
-    public static @NotNull AttributeStore builder() {
+    public static AttributeStore builder() {
         return new AttributeStore();
     }
 
@@ -32,6 +31,7 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
         return this;
     }
 
+    @SuppressWarnings("unused")
     @Info("Check if optional attribute has value or is null!")
     public <T> boolean isPresent(Attribute<T> attribute) {
         return get(attribute) == null;
@@ -45,7 +45,6 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
     @SuppressWarnings("UnusedReturnValue")
     public <T> AttributeStore setAttribute(Attribute<T> attribute, T value) {
         put(attribute, value);
-
         return this;
     }
 
@@ -54,6 +53,7 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public AttributeStore overwrite(AttributeStore other) {
         Set<Attribute<?>> attributesToOverwrite;
 

@@ -1,4 +1,5 @@
 package com.alessandro.astages.mixin.loot;
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.Attributes;
 import net.minecraft.core.BlockPos;
@@ -26,7 +27,7 @@ public class ABlock {
 
             while (iterator.hasNext()) {
                 var stackToCheck = iterator.next();
-                var restriction = ARestrictionManager.LOOT_INSTANCE.getRestriction(player, stackToCheck, null, lootTable);
+                var restriction = ARestrictionManager.LOOT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), stackToCheck, null, lootTable);
 
                 if (restriction != null) {
                     iterator.remove();

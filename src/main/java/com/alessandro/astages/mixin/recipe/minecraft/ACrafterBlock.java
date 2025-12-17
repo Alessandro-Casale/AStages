@@ -1,9 +1,10 @@
 package com.alessandro.astages.mixin.recipe.minecraft;
 
+import com.alessandro.astages.api.APlayerUtils;
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.capability.AProvider;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
-import com.alessandro.astages.util.AStagesUtil;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -23,10 +24,10 @@ public class ACrafterBlock {
     @Inject(method = "dispenseFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeHolder;value()Lnet/minecraft/world/item/crafting/Recipe;", ordinal = 0), cancellable = true)
     public void astages$dispenseFrom(BlockState state, @NotNull ServerLevel level, BlockPos pos, CallbackInfo ci, @Local @NotNull CrafterBlockEntity crafter, @Local RecipeHolder<CraftingRecipe> recipe) {
         var uuid = crafter.getData(AProvider.BLOCK_STAGE).getOwner();
-        var player = AStagesUtil.getPlayerFromUUID(level.getServer(), uuid);
+        var player = APlayerUtils.getPlayerFromUUID(level.getServer(), uuid);
 
         if (player != null) {
-            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(player, new RecipeWrapper(recipe.value().getType(), recipe.id()));
+            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new RecipeWrapper(recipe.value().getType(), recipe.id()));
 
             if (restriction != null) {
                 level.levelEvent(1050, pos, 0);

@@ -1,6 +1,5 @@
 package com.alessandro.astages.event.custom;
 
-import jdk.jfr.Event;
+import net.neoforged.bus.api.Event;
 
-public class UnpackLootTableEvent extends Event {
-}
+public class UnpackLootTableEvent extends Event { }

@@ -1,15 +1,15 @@
 package com.alessandro.astages.event;
 
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class CommonEventSettings {
     private static boolean isInventoryChanged = false;
     private static Integer slotChanged = null;
@@ -36,6 +36,7 @@ public class CommonEventSettings {
         return slotChanged;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean requireSlotCheck() {
         return isInventoryChanged;
     }

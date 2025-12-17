@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.item;
 
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.store.Attributes;
 import net.minecraft.ChatFormatting;
@@ -21,8 +22,8 @@ public class AGui {
 
     @Redirect(method = "renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;withStyle(Ljava/util/function/UnaryOperator;)Lnet/minecraft/network/chat/MutableComponent;"))
     public MutableComponent renderSelectedItemName(MutableComponent instance, UnaryOperator<Style> styleFunc) {
-        var restriction = AClientRestrictionManager.ITEM_INSTANCE.getRestriction(this.lastToolHighlight);
-        var properties = AClientRestrictionManager.ITEM_INSTANCE.getProperties(this.lastToolHighlight);
+        var restriction = AClientRestrictionManager.ITEM_INSTANCE.getRestriction(AClientHolder.serverAndPlayer(), this.lastToolHighlight);
+        var properties = AClientRestrictionManager.ITEM_INSTANCE.getProperties(AClientHolder.serverAndPlayer(), this.lastToolHighlight);
 
         if (restriction != null && properties != null && restriction.isDisabled(Attributes.RENDERING_NAME)) {
             return Component.empty().append(properties.hiddenName()).withStyle(ChatFormatting.RED);

@@ -1,9 +1,9 @@
 package com.alessandro.astages.networking.packet.simple;
 
+import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.constant.ASyncOperation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.networking.AStagesPacket;
-import com.alessandro.astages.util.AStagesUtil;
-import com.alessandro.astages.util.SyncOperation;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -11,15 +11,16 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 @MethodsReturnNonnullByDefault
-public record SimpleIdsSyncerS2CPacket(List<String> ids, SyncOperation operation) implements AStagesPacket {
-    public static final CustomPacketPayload.Type<SimpleIdsSyncerS2CPacket> TYPE = new CustomPacketPayload.Type<>(AStagesUtil.fromNamespaceAndPath("simple_stages_syncer_s2c_packet"));
+public record SimpleIdsSyncerS2CPacket(Collection<String> ids, ASyncOperation operation) implements AStagesPacket {
+    public static final Type<SimpleIdsSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("simple_stages_syncer_s2c_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SimpleIdsSyncerS2CPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), SimpleIdsSyncerS2CPacket::ids,
-            ByteBufCodecs.idMapper(SyncOperation.BY_ID, SyncOperation::getId), SimpleIdsSyncerS2CPacket::operation,
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SimpleIdsSyncerS2CPacket::ids,
+            ByteBufCodecs.idMapper(ASyncOperation.BY_ID, ASyncOperation::getId), SimpleIdsSyncerS2CPacket::operation,
             SimpleIdsSyncerS2CPacket::new
     );
 

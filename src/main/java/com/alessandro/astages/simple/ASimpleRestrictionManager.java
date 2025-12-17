@@ -1,18 +1,17 @@
 package com.alessandro.astages.simple;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.ARestrictionManager;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.reload.RequestReloadS2CPacket;
 import com.alessandro.astages.util.ReloadType;
-import com.alessandro.astages.util.SyncOperation;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,8 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class ASimpleRestrictionManager {
     public static Map<ASimpleRestrictionType, List<ASimpleRestriction>> RESTRICTIONS = null;
     private static int canBeReloadable = 0;
@@ -129,14 +127,14 @@ public class ASimpleRestrictionManager {
         ARestrictionManager.removeRestriction(id, type.convert());
         RESTRICTIONS.get(type).removeIf(restriction -> restriction.id.equals(id));
         ARestrictionManager.SIMPLE_IDS.remove(id);
-        ARestrictionManager.reflectSimpleIdsChangesToClients(null, List.of(id.substring(7)), SyncOperation.REMOVE);
+        ARestrictionManager.reflectSimpleIdsChangesToClients(null, List.of(id.substring(7)), ASyncOperation.REMOVE);
 
         if (RESTRICTIONS.get(type).isEmpty()) {
             RESTRICTIONS.remove(type);
         }
 
         if (type == ASimpleRestrictionType.ORE) {
-            PacketDistributor.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE));
+            ANetworking.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE));
         }
     }
 

@@ -1,11 +1,11 @@
 package com.alessandro.astages.networking.packet.mob;
 
+import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.AClientMobRestriction;
 import com.alessandro.astages.core.server.restriction.AMobRestriction;
 import com.alessandro.astages.networking.AStagesPacket;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +23,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public record MobSyncerS2CPacket(String id, String stage, List<EntityType<?>> types, Component jadeMobMessage) implements AStagesPacket {
-    public static final CustomPacketPayload.Type<MobSyncerS2CPacket> TYPE = new CustomPacketPayload.Type<>(AStagesUtil.fromNamespaceAndPath("mob_syncer_s2c_packet"));
+    public static final Type<MobSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("mob_syncer_s2c_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MobSyncerS2CPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8, MobSyncerS2CPacket::id,

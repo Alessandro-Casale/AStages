@@ -1,27 +1,28 @@
 package com.alessandro.astages.core.server.manager;
 
+import com.alessandro.astages.api.ARestrictionUtils;
+import com.alessandro.astages.api.base.OrderedMultiMap;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.server.restriction.AOreRestriction;
 import com.alessandro.astages.core.wrapper.OreWrapper;
-import com.alessandro.astages.networking.ModNetworking;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.ore.OreSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestReloadS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestRestrictionDeleteS2CPacket;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.store.ClientSynchronizable;
+import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.store.server.AManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.OrderedMultiMap;
 import com.alessandro.astages.util.ReloadType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockState> implements ClientSynchronizable {
     private final OrderedMultiMap<BlockState, AOreRestriction> CACHE = OrderedMultiMap.create();
     private final OrderedMultiMap<Block, AOreRestriction> BLOCK_CACHE = OrderedMultiMap.create();
@@ -48,21 +49,21 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
     }
 
     @Override
-    public AOreRestriction getRestriction(Player player, BlockState state) {
-        var cacheRestriction = getRestrictionFromCache(CACHE, state, player);
+    public AOreRestriction getRestriction(AHolder holder, BlockState state) {
+        var cacheRestriction = ARestrictionUtils.getRestrictionFromCache(holder, CACHE, state);
         if (cacheRestriction != null) { return cacheRestriction; }
 
-        return getRestrictionFromCache(BLOCK_CACHE, state.getBlock(), player);
+        return ARestrictionUtils.getRestrictionFromCache(holder, BLOCK_CACHE, state.getBlock());
     }
 
-    public BlockState getReplacement(Player player, BlockState original) {
-        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(player, original);
+    public BlockState getReplacement(AHolder holder, BlockState original) {
+        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(holder, original);
 
         return restriction != null ? restriction.getReplacement() : original;
     }
 
-    public BlockState getReplacementForPlayerActions(Player player, BlockState original) {
-        var restriction = getRestrictionFromCache(AFFECTS_PLAYER_CACHE, original, player);
+    public BlockState getReplacementForPlayerActions(AHolder holder, BlockState original) {
+        var restriction = ARestrictionUtils.getRestrictionFromCache(holder, AFFECTS_PLAYER_CACHE, original);
 
         return restriction != null ? restriction.getReplacement() : original;
     }
@@ -87,17 +88,17 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
         BLOCK_CACHE.removeValues(restriction -> restriction.getId().equals(id));
         AFFECTS_PLAYER_CACHE.removeValues(restriction -> restriction.getId().equals(id));
 
-        ModNetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
+        ANetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
     }
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        getRestrictions().forEach(restriction -> ModNetworking.sendTo(player, new OreSyncerS2CPacket(restriction)));
-        ModNetworking.sendTo(player, new RequestReloadS2CPacket(ReloadType.ORE));
+        getRestrictions().forEach(restriction -> ANetworking.sendTo(player, new OreSyncerS2CPacket(restriction)));
+        ANetworking.sendTo(player, new RequestReloadS2CPacket(ReloadType.ORE));
     }
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.ORE;
+        return ARestrictionTypes.ORE;
     }
 }

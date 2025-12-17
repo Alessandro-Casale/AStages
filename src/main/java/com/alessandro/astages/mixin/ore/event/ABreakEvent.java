@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.ore.event;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.player.Player;
@@ -11,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(BlockEvent.BreakEvent.class)
 public class ABreakEvent {
-    @ModifyVariable(method = "<init>", at = @At(value = "HEAD"), argsOnly = true)
-    private static BlockState astages$init(BlockState original, @Local(argsOnly = true) Player player) {
-        return ARestrictionManager.ORE_INSTANCE.getReplacementForPlayerActions(player, original);
+    @ModifyVariable(method = "<init>", at = @At(value = "HEAD"), argsOnly = true, name = "arg3")
+    private static BlockState astages$init(BlockState original, @Local(argsOnly = true, name = "arg4") Player player) {
+        return ARestrictionManager.ORE_INSTANCE.getReplacementForPlayerActions(AHolder.serverAndPlayer(player), original);
     }
 }

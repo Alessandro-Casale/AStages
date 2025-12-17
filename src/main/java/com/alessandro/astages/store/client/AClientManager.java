@@ -1,16 +1,17 @@
 package com.alessandro.astages.store.client;
 
-import com.alessandro.astages.capability.ClientPlayerStage;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.OrderedMultiMap;
+import com.alessandro.astages.api.AStagesClientUtils;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.holder.AClientHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.store.ARestrictionType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V> implements AClientMinimalManager<R> {
     private final List<R> restrictions = new ArrayList<>();
     private final Map<String, R> IDS = new HashMap<>();
@@ -24,29 +25,33 @@ public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V
         IDS.clear();
     }
 
-    @Override
-    public R getRestriction(String id) {
-        return IDS.getOrDefault(id, null);
-    }
-
-    public R getRestriction(V object) {
-        return restrictions.stream().filter(r -> r.isRestricted(object) && !ClientPlayerStage.hasStage(r.getStage())).findFirst().orElse(null);
-    }
+    public void reloadAfterScripts() { }
 
     public void addRestriction(R restriction) {
         IDS.put(restriction.getId(), restriction);
         restrictions.add(restriction);
     }
 
-    public <W> R getRestrictionFromCache(OrderedMultiMap<W, R> cache, W value) {
-        var restrictions = cache.get(value);
+    @Override
+    public R getRestriction(String id) {
+        return IDS.getOrDefault(id, null);
+    }
 
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!ClientPlayerStage.hasStage(restriction.getStage())) {
-                    return restriction;
-                }
-            }
+    public R getRestriction(AClientHolder holder, V object) {
+        if (holder.isServerActive()) {
+            var serverRestriction = restrictions.stream().filter(r ->
+                AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                r.isRestricted(object)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return restrictions.stream().filter(r ->
+                AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                r.isRestricted(object)
+            ).findFirst().orElse(null);
         }
 
         return null;

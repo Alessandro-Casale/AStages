@@ -5,13 +5,10 @@ import com.alessandro.astages.core.wrapper.EnchantWrapper;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.server.ARestriction;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Enchantment, EnchantWrapper> {
     private Enchantment enchantment;
 

@@ -1,72 +1,99 @@
 package com.alessandro.astages.capability;
 
-import com.alessandro.astages.core.stage.AStageManager;
-import com.alessandro.astages.networking.ModNetworking;
-import com.alessandro.astages.networking.packet.server.ServerStagesSyncerS2CPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.AFileIOUtils;
+import com.alessandro.astages.api.ASetUtils;
+import com.alessandro.astages.api.AStagesFolderSystem;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.constant.AStatus;
+import com.alessandro.astages.api.event.server.*;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.networking.ANetworking;
+import com.alessandro.astages.networking.packet.stages.ServerStagesSyncerS2CPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true)
+@NotNullParamsAndMethodsReturn
 public class ServerStageData extends SavedData {
     private static final String STAGE_ID = "astages_server_stages";
-    private List<String> serverStages = new ArrayList<>();
+    private final List<String> serverStages = new ArrayList<>();
 
-    public void add(String... stages) {
-        var list = List.of(stages);
-        list.forEach(ServerStageData::checkStage);
-
-        serverStages.addAll(list);
-        setDirty();
-        synchronizeChanges();
-    }
-
-    public void set(List<String> stages) {
-        serverStages = stages;
-        setDirty();
-        synchronizeChanges();
-    }
-
-    public void remove(String... stages) {
-        serverStages.removeAll(List.of(stages));
-        setDirty();
-        synchronizeChanges();
-    }
-
-    public void removeAll() {
-        serverStages.clear();
-        setDirty();
-        synchronizeChanges();
-    }
-
-    private void synchronizeChanges() {
-        ModNetworking.sendTo(null, new ServerStagesSyncerS2CPacket(serverStages));
-    }
-
-    public static void checkStage(String stage) {
-        if (AStageManager.isPlayerOnly(stage)) {
-            throw new IllegalArgumentException("Trying to add stage " + stage + " that is marked as available in player only!");
-        }
-    }
-
-    public List<String> get() {
+    public List<String> getServerStages() {
         return serverStages;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean has(String stage) {
+    public boolean hasServerStage(String stage) {
         return serverStages.contains(stage);
+    }
+
+    public void addServerStage(String stage) {
+        serverStages.add(stage);
+        setDirty();
+    }
+
+    public void addServerStages(Set<String> stages) {
+        serverStages.addAll(stages);
+        setDirty();
+    }
+
+    public AStatus removeServerStage(String stage) {
+        var toReturn = serverStages.remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        setDirty();
+        return toReturn;
+    }
+
+    public AStatus removeServerStages(Set<String> stages) {
+        var toReturn = serverStages.removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        setDirty();
+        return toReturn;
+    }
+
+    public void synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, String stage) {
+        synchronizeWithClient(player, operation, ASetUtils.singleton(stage));
+    }
+
+    public void synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, Set<String> stages) {
+        AStagesUtils.checkServerStages(operation, stages);
+
+        var server = ServerLifecycleHooks.getCurrentServer();
+        var event = new StageSyncedServerEvent(ServerLifecycleHooks.getCurrentServer(), operation, stages);
+        NeoForge.EVENT_BUS.post(event);
+
+        if (!event.isCanceled()) {
+            ANetworking.sendTo(player, new ServerStagesSyncerS2CPacket(stages, operation));
+
+            switch (operation) {
+                case ADD -> NeoForge.EVENT_BUS.post(new StageAddedServerEvent(server, ASetUtils.getOnlyElement(stages)));
+                case ADD_ALL -> NeoForge.EVENT_BUS.post(new AllStagesAddedServerEvent(server, stages));
+                case REMOVE -> NeoForge.EVENT_BUS.post(new StageRemovedServerEvent(server, ASetUtils.getOnlyElement(stages)));
+                case REMOVE_ALL -> NeoForge.EVENT_BUS.post(new AllStagesRemovedServerEvent(server, stages));
+                case LOGIN -> NeoForge.EVENT_BUS.post(new StageLoginServerEvent(server, stages));
+            }
+        } else {
+            switch (event.getOperation()) {
+                case ADD -> removeServerStage(ASetUtils.getOnlyElement(stages));
+                case ADD_ALL, LOGIN -> removeServerStages(stages);
+                case REMOVE -> addServerStage(ASetUtils.getOnlyElement(stages));
+                case REMOVE_ALL -> addServerStages(stages);
+            }
+        }
     }
 
     @Contract(" -> new")
@@ -98,6 +125,11 @@ public class ServerStageData extends SavedData {
         nbt.put("server_stages", listTag);
 
         return nbt;
+    }
+
+    public static Path getTemporaryStagesFile() {
+        var file = AStagesFolderSystem.getServerTemporaryFolder().resolve("server.json");
+        return AFileIOUtils.getOrCreateFile(file);
     }
 
     public static ServerStageData getData(ServerLevel level) {

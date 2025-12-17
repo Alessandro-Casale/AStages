@@ -1,15 +1,12 @@
 package com.alessandro.astages.core.server.restriction.recipe;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.wrapper.RecipeModWrapper;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.recipe.RecipeModSyncerS2CPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class ARecipeModRestriction extends ABaseRecipeRestriction<ARecipeModRestriction, RecipeModWrapper, RecipeWrapper> {
     private String modId = null;
 
@@ -40,7 +37,7 @@ public class ARecipeModRestriction extends ABaseRecipeRestriction<ARecipeModRest
     @Override
     public void markAsDirty() {
         if (modId != null) {
-            PacketDistributor.sendToAllPlayers(new RecipeModSyncerS2CPacket(this));
+            ANetworking.sendToAllPlayers(new RecipeModSyncerS2CPacket(this));
         }
 
         super.markAsDirty();

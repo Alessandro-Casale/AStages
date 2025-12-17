@@ -1,17 +1,18 @@
 package com.alessandro.astages.event;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AStagesFolderSystem;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
+@NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
-@ParametersAreNonnullByDefault
 public class ServerEventHandler {
     @SubscribeEvent
-    public static void onServerStarting(ServerStartedEvent event) {
-        // ServerStageData.getData(event.getServer()).add("test_stage_1", "test_mob");
+    public static void onServerStarting(ServerAboutToStartEvent event) {
+        var server = event.getServer();
+        AStagesFolderSystem.buildPaths(server);
     }
 }

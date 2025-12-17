@@ -1,6 +1,6 @@
 package com.alessandro.astages.integration.jei;
 
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.api.develop.Info;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

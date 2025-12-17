@@ -1,26 +1,14 @@
 package com.alessandro.astages.event.custom;
 
-import com.alessandro.astages.capability.PlayerStage;
-import com.alessandro.astages.util.develop.Info;
-import net.neoforged.bus.api.Event;
+import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.event.custom.types.ClientStageEvent;
 
-import java.util.List;
+import java.util.Set;
 
 @Info("Sync event for client!")
-public class ClientSynchronizeStagesEvent extends Event {
-    private final List<String> stagesSynced;
-    private final PlayerStage.Operation operation;
-
-    public ClientSynchronizeStagesEvent(List<String> stagesSynced, PlayerStage.Operation operation) {
-        this.stagesSynced = stagesSynced;
-        this.operation = operation;
-    }
-
-    public List<String> getStagesSynced() {
-        return stagesSynced;
-    }
-
-    public PlayerStage.Operation getOperation() {
-        return operation;
+public class ClientSynchronizeStagesEvent extends ClientStageEvent {
+    public ClientSynchronizeStagesEvent(Set<String> stagesSynced, AOperation operation) {
+        super(stagesSynced, operation);
     }
 }

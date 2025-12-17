@@ -1,25 +1,30 @@
 package com.alessandro.astages.core.client.manager;
 
-import com.alessandro.astages.capability.ClientPlayerStage;
-import com.alessandro.astages.capability.PlayerStage;
+import com.alessandro.astages.api.AStagesClientUtils;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.holder.AClientHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.item.*;
+import com.alessandro.astages.event.custom.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.integration.jei.CustomItemStackKey;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.item.RequestItemPropertyC2SPacket;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.client.AClientMinimalManager;
-import com.alessandro.astages.util.ARestrictionType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientItemManager implements AClientMinimalManager<AClientBaseItemRestriction<?, ?>> {
     private final List<AClientBaseItemRestriction<?, ?>> restrictions = new ArrayList<>();
     private final HashMap<String, AClientBaseItemRestriction<?, ?>> IDS = new HashMap<>();
@@ -32,11 +37,13 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
     private final HashMap<CustomItemStackKey, AClientItemPropertyRestriction> properties = new HashMap<>();
 
     static {
-        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
-            if (e.getOperation() != PlayerStage.Operation.GET) {
-                AClientRestrictionManager.ITEM_INSTANCE.clearProperties();
-            }
-        });
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class,
+            e -> AClientRestrictionManager.ITEM_INSTANCE.clearProperties()
+        );
+
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeServerStagesEvent.class,
+            e -> AClientRestrictionManager.ITEM_INSTANCE.clearProperties()
+        );
     }
 
     public List<AClientItemRestriction> getItemRestrictions() {
@@ -106,8 +113,24 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         return IDS.getOrDefault(id, null);
     }
 
-    public AClientBaseItemRestriction<?, ?> getRestriction(ItemStack stack) {
-        return restrictions.stream().filter(r -> r.isRestricted(stack) && !ClientPlayerStage.hasStage(r.getStage())).findFirst().orElse(null);
+    public AClientBaseItemRestriction<?, ?> getRestriction(AClientHolder holder, ItemStack stack) {
+        if (holder.isServerActive()) {
+            var serverRestriction = restrictions.stream().filter(r ->
+                AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                r.isRestricted(stack)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return restrictions.stream().filter(r ->
+                AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                r.isRestricted(stack)
+            ).findFirst().orElse(null);
+        }
+
+        return null;
     }
 
     public String getRestrictionIdForStack(ItemStack stack) {
@@ -122,13 +145,16 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         return null;
     }
 
-    public AClientItemPropertyRestriction getProperties(ItemStack stack) {
+    @UnderDevelopment
+    @Info("Create strong association between requested restriction and properties")
+    public AClientItemPropertyRestriction getProperties(AClientHolder holder, ItemStack stack) {
         if (stack.isEmpty()) { return null; }
 
         if (properties.containsKey(CustomItemStackKey.build(stack))) {
             var restriction = properties.get(CustomItemStackKey.build(stack));
             if (restriction != null) {
-                return ClientPlayerStage.hasStage(restriction.stage()) ? null : restriction;
+                return AStagesClientUtils.hasStage(holder, AStageType.SERVER, restriction.stage()) ||
+                    AStagesClientUtils.hasStage(holder, AStageType.PLAYER, restriction.stage()) ? null : restriction;
             } else {
                 return null;
             }
@@ -137,7 +163,7 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         var id = getRestrictionIdForStack(stack);
         if (id != null) {
 //            AStages.LOGGER.debug("Requested for stack: {}, id: {}", stack, id);
-            PacketDistributor.sendToServer(new RequestItemPropertyC2SPacket(id, IDS.get(id).getStage(), stack));
+            ANetworking.sendToServer(new RequestItemPropertyC2SPacket(id, IDS.get(id).getStage(), stack));
         } else {
             properties.put(CustomItemStackKey.build(stack), null);
         }
@@ -180,6 +206,6 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.ITEM;
+        return ARestrictionTypes.ITEM;
     }
 }

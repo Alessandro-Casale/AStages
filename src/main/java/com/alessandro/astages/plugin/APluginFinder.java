@@ -1,14 +1,14 @@
 package com.alessandro.astages.plugin;
 
 import com.alessandro.astages.AStages;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Modifier;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public class APluginFinder {
     public static void getAllPlugins() {
         AStages.LOGGER.info("AStages Plugin search started!");

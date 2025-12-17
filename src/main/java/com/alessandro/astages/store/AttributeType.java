@@ -1,13 +1,10 @@
 package com.alessandro.astages.store;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.google.common.reflect.TypeToken;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.Contract;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AttributeType<T> {
     private final Class<T> type;
 

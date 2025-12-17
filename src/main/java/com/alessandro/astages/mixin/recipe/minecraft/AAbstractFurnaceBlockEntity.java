@@ -1,9 +1,10 @@
 package com.alessandro.astages.mixin.recipe.minecraft;
 
+import com.alessandro.astages.api.APlayerUtils;
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.capability.AProvider;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
-import com.alessandro.astages.util.AStagesUtil;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -30,10 +31,10 @@ public class AAbstractFurnaceBlockEntity {
         var blockStage = blockEntity.getData(AProvider.BLOCK_STAGE);
 
         UUID blockOwner = blockStage.getOwner();
-        Player player = AStagesUtil.getPlayerFromUUID(level.getServer(), blockOwner);
+        Player player = APlayerUtils.getPlayerFromUUID(level.getServer(), blockOwner);
         if (player == null || recipe == null) { return; }
 
-        var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(player, new RecipeWrapper(recipe.value().getType(), recipe.id()));
+        var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new RecipeWrapper(recipe.value().getType(), recipe.id()));
 
         if (restriction != null) {
             ci.cancel();

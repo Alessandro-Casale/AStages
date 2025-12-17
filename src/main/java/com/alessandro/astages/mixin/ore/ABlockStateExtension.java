@@ -1,7 +1,7 @@
 package com.alessandro.astages.mixin.ore;
 
-import com.alessandro.astages.util.develop.Info;
-import com.alessandro.astages.util.develop.UnderDevelopment;
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.develop.UnderDevelopment;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 

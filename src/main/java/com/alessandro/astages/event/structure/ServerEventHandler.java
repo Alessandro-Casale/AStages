@@ -1,11 +1,15 @@
 package com.alessandro.astages.event.structure;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AInventoryUtils;
+import com.alessandro.astages.api.APlayerUtils;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.capability.StructureData;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -22,13 +26,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
+@NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
-@ParametersAreNonnullByDefault
 public class ServerEventHandler {
     public static final Map<UUID, List<ResourceLocation>> playerIsInStructure = new HashMap<>();
     public static int tick = 0;
@@ -115,7 +117,7 @@ public class ServerEventHandler {
 
             if (playerIsInStructure.containsKey(playerUUID)) {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
                     var blockPlacedByPlayer = StructureData.getData(player.getServer(), structure.toString()).isBlockPlacedByPlayer(event.getPos());
                     if (blockPlacedByPlayer) {
@@ -143,15 +145,14 @@ public class ServerEventHandler {
 
             if (playerIsInStructure.containsKey(playerUUID)) {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
                     if (restriction != null && restriction.isDisabled(Attributes.GENERIC_INTERACTIONS)) {
                         var clickedBlock = event.getLevel().getBlockState(event.getPos());
                         if (!restriction.isBlockInteractable(clickedBlock)) {
                             event.setCanceled(true);
                             restriction.displayMessage(Attributes.Structure.INTERACT_MESSAGE, structure, player);
-
-                            AStagesUtil.updateSelectedSlot(player);
+                            AInventoryUtils.updateSelectedSlot(player);
                             break;
                         }
                     }
@@ -168,7 +169,7 @@ public class ServerEventHandler {
 
             if (playerIsInStructure.containsKey(playerUUID)) {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
                     if (restriction != null && restriction.isDisabled(Attributes.ATTACKING)) {
                         if (!restriction.isEntityTargetable(event.getTarget().getType())) {
@@ -191,7 +192,7 @@ public class ServerEventHandler {
 
             if (playerIsInStructure.containsKey(playerUUID)) {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
                     StructureData.getData(player.getServer(), structure.toString()).add(event.getPos());
 
@@ -199,8 +200,7 @@ public class ServerEventHandler {
                         if (!restriction.isBlockPlaceable(event.getPlacedBlock())) {
                             event.setCanceled(true);
                             restriction.displayMessage(Attributes.Structure.PLACING_MESSAGE, structure, player);
-
-                            AStagesUtil.updateSelectedSlot(player);
+                            AInventoryUtils.updateSelectedSlot(player);
                             break;
                         }
                     }
@@ -211,13 +211,13 @@ public class ServerEventHandler {
 
     @SubscribeEvent
     public static void onExplosionDetonation(ExplosionEvent.Detonate event) {
-        var player = AStagesUtil.getNearestPlayer(event.getLevel(), event.getExplosion().center());
+        var player = APlayerUtils.getNearestPlayer(event.getLevel(), event.getExplosion().center());
         if (canBeRunForPlayer(player)) {
             UUID playerUUID = player.getUUID();
 
             if (playerIsInStructure.containsKey(playerUUID)) {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
                     if (restriction != null) {
                         if (restriction.isDisabled(Attributes.EXPLOSIONS_AFFECT_BLOCKS)) {

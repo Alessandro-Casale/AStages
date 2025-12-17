@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.ore;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,16 +17,16 @@ public class AServerPlayerGameMode {
 
     @ModifyExpressionValue(method = "handleBlockBreakAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
     public BlockState astages$handleBlockBreakAction(BlockState original) {
-        return ARestrictionManager.ORE_INSTANCE.getReplacement(player, original);
+        return ARestrictionManager.ORE_INSTANCE.getReplacement(AHolder.serverAndPlayer(player), original);
     }
 
     @ModifyExpressionValue(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
     public BlockState astages$destroyBlock(BlockState original) {
-        return ARestrictionManager.ORE_INSTANCE.getReplacement(player, original);
+        return ARestrictionManager.ORE_INSTANCE.getReplacement(AHolder.serverAndPlayer(player), original);
     }
 
     @ModifyExpressionValue(method = "useItemOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
     public BlockState astages$useItemOn(BlockState original) {
-        return ARestrictionManager.ORE_INSTANCE.getReplacement(player, original);
+        return ARestrictionManager.ORE_INSTANCE.getReplacement(AHolder.serverAndPlayer(player), original);
     }
 }

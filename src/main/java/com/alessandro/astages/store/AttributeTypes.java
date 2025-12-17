@@ -1,6 +1,6 @@
 package com.alessandro.astages.store;
 
-import com.alessandro.astages.util.ACompareCondition;
+import com.alessandro.astages.api.constant.ACompareCondition;
 import com.google.common.reflect.TypeToken;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -1,6 +1,6 @@
 package com.alessandro.astages.integration.emi;
 
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.api.develop.Info;
 // import dev.emi.emi.api.*;
 
 // @EmiEntrypoint

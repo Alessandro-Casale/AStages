@@ -1,10 +1,10 @@
 package com.alessandro.astages.store.client;
 
+import com.alessandro.astages.api.exception.SetAttributeNotSupported;
+import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
-import com.alessandro.astages.store.SetAttributeNotSupported;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -72,7 +72,7 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         if (!(obj instanceof AClientRestriction<?, ?, ?>)) { return false; }
 
         return Objects.equals(((AClientRestriction<?, ?, ?>) obj).id, this.id) &&
-                Objects.equals(((AClientRestriction<?, ?, ?>) obj).stage, this.stage);
+            Objects.equals(((AClientRestriction<?, ?, ?>) obj).stage, this.stage);
     }
 
     @Override

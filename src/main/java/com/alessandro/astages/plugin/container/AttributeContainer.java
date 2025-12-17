@@ -2,13 +2,11 @@ package com.alessandro.astages.plugin.container;
 
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AttributeContainer {
     private final HashMap<Class<?>, AttributeStore> STORE = new HashMap<>();
 

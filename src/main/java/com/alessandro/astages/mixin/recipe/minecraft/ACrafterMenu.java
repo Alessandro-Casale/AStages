@@ -1,7 +1,9 @@
 package com.alessandro.astages.mixin.recipe.minecraft;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.CrafterMenu;
 import net.minecraft.world.inventory.ResultContainer;
@@ -16,17 +18,16 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(CrafterMenu.class)
 public class ACrafterMenu {
     @Shadow @Final private ResultContainer resultContainer;
 
-    @Inject(method = "refreshRecipeResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/CrafterBlock;getPotentialResults(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/crafting/CraftingInput;)Ljava/util/Optional;"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void astages$refreshRecipeResult(@NotNull CallbackInfo ci, ServerPlayer serverPlayer, Level level, CraftingInput craftingInput) {
+    @Inject(method = "refreshRecipeResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/CrafterBlock;getPotentialResults(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/crafting/CraftingInput;)Ljava/util/Optional;"), cancellable = true)
+    private void astages$refreshRecipeResult(@NotNull CallbackInfo ci, @Local ServerPlayer serverPlayer, @Local Level level, @Local CraftingInput craftingInput) {
         ItemStack itemstack = CrafterBlock.getPotentialResults(level, craftingInput).map((recipeHolder) -> {
             var recipe = recipeHolder.value();
-            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(serverPlayer, new RecipeWrapper(recipe.getType(), recipeHolder.id()));
+            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(serverPlayer), new RecipeWrapper(recipe.getType(), recipeHolder.id()));
 
             if (restriction != null) { return ItemStack.EMPTY; }
 

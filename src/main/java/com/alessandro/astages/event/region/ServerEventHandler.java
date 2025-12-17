@@ -1,9 +1,12 @@
 package com.alessandro.astages.event.region;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.APlayerUtils;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -16,11 +19,8 @@ import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
 public class ServerEventHandler {
     @SubscribeEvent
@@ -28,10 +28,10 @@ public class ServerEventHandler {
         var pos = new BlockPos((int) event.getX(), (int) event.getY(), (int) event.getZ());
         var vec = new Vec3((int) event.getX(), (int) event.getY(), (int) event.getZ());
 
-        var player = AStagesUtil.getNearestPlayer(event.getLevel().getLevel(), vec);
+        var player = APlayerUtils.getNearestPlayer(event.getLevel().getLevel(), vec);
 
         if (canBeRunForPlayer(player)) {
-            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(pos, player, event.getLevel().getServer());
+            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pos);
 
             if (restriction != null && restriction.isDisabled(Attributes.MOB_SPAWNING)) {
                 var restrictedDimension = restriction.get(Attributes.DIMENSION);
@@ -70,7 +70,7 @@ public class ServerEventHandler {
 
     private static <T extends PlayerInteractEvent & ICancellableEvent> void commonInteractOperations(T event) {
         if (!event.getLevel().isClientSide && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(event.getPos(), serverPlayer, serverPlayer.getServer());
+            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(AHolder.serverAndPlayer(serverPlayer), event.getPos());
 
             if (restriction != null && restriction.isDisabled(Attributes.GENERIC_INTERACTIONS)) {
                 var restrictedDimension = restriction.get(Attributes.DIMENSION);
@@ -85,12 +85,12 @@ public class ServerEventHandler {
 
     @SubscribeEvent
     public static void onExplosionDetonation(ExplosionEvent.Detonate event) {
-        var player = AStagesUtil.getNearestPlayer(event.getLevel(), event.getExplosion().center());
+        var player = APlayerUtils.getNearestPlayer(event.getLevel(), event.getExplosion().center());
 
         if (canBeRunForPlayer(player)) {
             var rawPos = event.getExplosion().center();
             var pos = new BlockPos((int) rawPos.x, (int) rawPos.y, (int) rawPos.z);
-            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(pos, player, player.getServer());
+            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pos);
 
             if (restriction != null) {
                 var restrictedDimension = restriction.get(Attributes.DIMENSION);
@@ -114,7 +114,7 @@ public class ServerEventHandler {
         var stringCommand = event.getParseResults().getReader().getString();
 
         if (canBeRunForPlayer(serverPlayer)) {
-            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(serverPlayer.getOnPos(), serverPlayer, serverPlayer.getServer());
+            var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(AHolder.serverAndPlayer(serverPlayer), serverPlayer.getOnPos());
 
             if (restriction != null && restriction.isDisabled(Attributes.PERFORM_COMMANDS)) {
                 var foundedCommands = restriction.getDisabledCommands().stream().filter(stringCommand::contains).count();

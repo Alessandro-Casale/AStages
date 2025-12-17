@@ -1,16 +1,15 @@
 package com.alessandro.astages.store.server;
 
 import com.alessandro.astages.AStages;
-import com.alessandro.astages.capability.ServerStageData;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.holder.ARestrictionHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.AStagesUtil;
-import com.alessandro.astages.util.OrderedMultiMap;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
+import com.alessandro.astages.store.ARestrictionType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +22,8 @@ import java.util.Map;
  * @param <U> For restrict method object type
  * @param <V> For isRestricted method object type
  */
-@ParametersAreNonnullByDefault
-public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements AMinimalManager<R> {
+@NotNullParams
+public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements AMinimalManager<R>/*, ServerStageReadable<R, V>*/ {
     private final List<R> restrictions = new ArrayList<>();
     private final Map<String, R> IDS = new HashMap<>();
 
@@ -40,14 +39,6 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
 
     @Override
     public void reloadAfterScripts() { }
-
-    public R getRestriction(String id) {
-        return IDS.getOrDefault(id, null);
-    }
-
-    public R getRestriction(Player player, V object) {
-        return restrictions.stream().filter(r -> !AStagesUtil.hasStage(player, r.getStage()) && r.isRestricted(object)).findFirst().orElse(null);
-    }
 
     public List<String> getIds() {
         return IDS.keySet().stream().toList();
@@ -68,33 +59,37 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
         if (considerGlobalStages()) { ARestrictionManager.ALL_STAGES.add(restriction.getStage()); }
     }
 
-    public <W> R getRestrictionFromCache(OrderedMultiMap<W, R> cache, W value, Player player) {
-        var restrictions = cache.get(value);
+    @Override
+    public R getRestriction(String id) {
+        return IDS.getOrDefault(id, null);
+    }
 
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!AStagesUtil.hasStage(player, restriction.getStage())) {
-                    return restriction;
-                }
-            }
+    public ARestrictionHolder<R> getHolder(String id) {
+        return ARestrictionHolder.hold(getRestriction(id));
+    }
+
+    public R getRestriction(AHolder holder, V object) {
+        if (holder.isServerActive()) {
+            var serverRestriction = restrictions.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                r.isRestricted(object)
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return restrictions.stream().filter(r ->
+                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                r.isRestricted(object)
+            ).findFirst().orElse(null);
         }
 
         return null;
     }
 
-    public <W> R getRestrictionFromCache(OrderedMultiMap<W, R> cache, W value, MinecraftServer server) {
-        var restrictions = cache.get(value);
-        var data = ServerStageData.getData(server);
-
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!data.has(restriction.getStage())) {
-                    return restriction;
-                }
-            }
-        }
-
-        return null;
+    public ARestrictionHolder<R> getHolder(AHolder holder, V object) {
+        return ARestrictionHolder.hold(getRestriction(holder, object));
     }
 
     @Override

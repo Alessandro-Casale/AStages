@@ -1,20 +1,21 @@
 package com.alessandro.astages.core.server.restriction;
 
+import com.alessandro.astages.api.feature.AChangeable;
+import com.alessandro.astages.api.feature.AMarkable;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.OreWrapper;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.ore.OreSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestReloadS2CPacket;
-import com.alessandro.astages.store.*;
+import com.alessandro.astages.store.Attribute;
+import com.alessandro.astages.store.AttributeStore;
+import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.server.ARestriction;
 import com.alessandro.astages.util.ReloadType;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, BlockState> implements AChangeable, AMarkable {
     private BlockState original;
     private BlockState replacement;
@@ -87,8 +88,8 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
 
     @Override
     public void markAsDirty() {
-        PacketDistributor.sendToAllPlayers(new OreSyncerS2CPacket(this));
-        PacketDistributor.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE));
+        ANetworking.sendToAllPlayers(new OreSyncerS2CPacket(this));
+        ANetworking.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE));
     }
 
     @SuppressWarnings("unused")

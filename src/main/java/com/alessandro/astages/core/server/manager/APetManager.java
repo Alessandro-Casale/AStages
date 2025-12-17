@@ -1,15 +1,17 @@
 package com.alessandro.astages.core.server.manager;
 
+import com.alessandro.astages.api.ARestrictionUtils;
+import com.alessandro.astages.api.base.OrderedMultiMap;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.server.restriction.APetRestriction;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.server.AManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.OrderedMultiMap;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class APetManager extends AManager<APetRestriction, EntityType<?>, EntityType<?>> {
     public final OrderedMultiMap<EntityType<?>, APetRestriction> CACHE = OrderedMultiMap.create();
 
@@ -29,8 +31,17 @@ public class APetManager extends AManager<APetRestriction, EntityType<?>, Entity
     }
 
     @Override
-    public APetRestriction getRestriction(Player player, EntityType<?> type) {
-        return getRestrictionFromCache(CACHE, type, player);
+    public APetRestriction getRestriction(AHolder holder, EntityType<?> type) {
+        if (holder.isServerActive()) {
+            var serverRestriction = ARestrictionUtils.getRestrictionFromCache(holder, AStageType.SERVER, CACHE, type);
+            if (serverRestriction == null) { return null; }
+        }
+
+        if (holder.isPlayerActive()) {
+            return ARestrictionUtils.getRestrictionFromCache(holder, AStageType.PLAYER, CACHE, type);
+        }
+
+        return null;
     }
 
     @Override
@@ -41,6 +52,6 @@ public class APetManager extends AManager<APetRestriction, EntityType<?>, Entity
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.PET;
+        return ARestrictionTypes.PET;
     }
 }

@@ -1,13 +1,13 @@
 package com.alessandro.astages.core.client.restriction.item;
 
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientItemRestriction extends AClientBaseItemRestriction<AClientItemRestriction, Item> {
     private final List<Item> items = new ArrayList<>();
 

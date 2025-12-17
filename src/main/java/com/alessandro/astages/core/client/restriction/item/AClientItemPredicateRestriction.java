@@ -2,13 +2,13 @@ package com.alessandro.astages.core.client.restriction.item;
 
 import com.alessandro.astages.core.AModelManager;
 import com.alessandro.astages.store.AModel;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Predicate;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientItemPredicateRestriction extends AClientBaseItemRestriction<AClientItemPredicateRestriction, ResourceLocation> {
     private ResourceLocation modelId;
 

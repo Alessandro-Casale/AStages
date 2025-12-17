@@ -1,19 +1,18 @@
 package com.alessandro.astages.core.server.manager;
 
+import com.alessandro.astages.api.ARestrictionUtils;
+import com.alessandro.astages.api.base.OrderedMultiMap;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.server.restriction.ADimensionRestriction;
-import com.alessandro.astages.store.ServerStageReadable;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.server.AManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.OrderedMultiMap;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-public class ADimensionManager extends AManager<ADimensionRestriction, ResourceLocation, ResourceLocation> implements ServerStageReadable<ADimensionRestriction, ResourceLocation> {
+@NotNullParams
+public class ADimensionManager extends AManager<ADimensionRestriction, ResourceLocation, ResourceLocation> {
     public final OrderedMultiMap<ResourceLocation, ADimensionRestriction> CACHE = OrderedMultiMap.create();
 
     @Override
@@ -32,28 +31,17 @@ public class ADimensionManager extends AManager<ADimensionRestriction, ResourceL
     }
 
     @Override
-    public ADimensionRestriction getRestriction(Player player, ResourceLocation dimension) {
-        return getRestrictionFromCache(CACHE, dimension, player);
-    }
-
-    @Override
-    public ADimensionRestriction getRestriction(MinecraftServer server, ResourceLocation dimension) {
-        return getRestrictionFromCache(CACHE, dimension, server);
-    }
-
-    @Override
-    public ADimensionRestriction getRestriction(ResourceLocation dimension, @Nullable Player player, @Nullable MinecraftServer server) {
-        ADimensionRestriction serverRestriction = null;
-        ADimensionRestriction playerRestriction = null;
-
-        if (server != null) { serverRestriction = getRestriction(server, dimension); }
-        if (player != null) { playerRestriction = getRestriction(player, dimension); }
-
-        if (serverRestriction == null) { // If the stage is unlocked in the server, pass!
-            return null;
+    public ADimensionRestriction getRestriction(AHolder holder, ResourceLocation dimension) {
+        if (holder.isServerActive()) {
+            var serverRestriction = ARestrictionUtils.getRestrictionFromCache(holder, AStageType.SERVER, CACHE, dimension);
+            if (serverRestriction == null) { return null; }
         }
 
-        return playerRestriction;
+        if (holder.isPlayerActive()) {
+            return ARestrictionUtils.getRestrictionFromCache(holder, AStageType.PLAYER, CACHE, dimension);
+        }
+
+        return null;
     }
 
     @Override
@@ -64,6 +52,6 @@ public class ADimensionManager extends AManager<ADimensionRestriction, ResourceL
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.DIMENSION;
+        return ARestrictionTypes.DIMENSION;
     }
 }

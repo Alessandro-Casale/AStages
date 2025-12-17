@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.ore;
 
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.config.AStagesClient;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -18,7 +19,7 @@ public class ALevelChunk {
     @ModifyReturnValue(method = "getBlockState", at = @At("RETURN"))
     public BlockState astages$getBlockState(BlockState original) {
         if (level.isClientSide && AStagesClient.LEVEL_CHUNK_EXPERIMENTAL_SETTINGS.get()) {
-            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(original);
+            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), original);
         }
 
         return original;

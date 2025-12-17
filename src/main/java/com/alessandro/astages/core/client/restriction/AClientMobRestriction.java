@@ -3,12 +3,13 @@ package com.alessandro.astages.core.client.restriction;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.client.AClientRestriction;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NotNullParamsAndMethodsReturn
 public class AClientMobRestriction extends AClientRestriction<AClientMobRestriction, EntityType<?>, EntityType<?>> {
     private final List<EntityType<?>> mobs = new ArrayList<>();
 
@@ -17,7 +18,7 @@ public class AClientMobRestriction extends AClientRestriction<AClientMobRestrict
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         return AttributeStore.builder()
                 .addAttribute(Attributes.Mob.JADE_MOB_MESSAGE);
     }

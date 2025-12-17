@@ -1,8 +1,9 @@
 package com.alessandro.astages.mixin.recipe.minecraft;
 
+import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
-import com.alessandro.astages.util.develop.UnderDevelopment;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -24,7 +25,7 @@ public class AStonecutterScreen {
 
         while (iterator.hasNext()) {
             var recipe = iterator.next();
-            var restriction = AClientRestrictionManager.RECIPE_INSTANCE.getRestriction(new RecipeWrapper(recipe.value().getType(), recipe.id()));
+            var restriction = AClientRestrictionManager.RECIPE_INSTANCE.getRestriction(AClientHolder.serverAndPlayer(), new RecipeWrapper(recipe.value().getType(), recipe.id()));
 
             if (restriction != null) {
                 iterator.remove();

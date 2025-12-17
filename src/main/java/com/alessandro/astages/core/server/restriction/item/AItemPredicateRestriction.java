@@ -1,18 +1,16 @@
 package com.alessandro.astages.core.server.restriction.item;
 
 import com.alessandro.astages.core.AModelManager;
-import com.alessandro.astages.networking.ModNetworking;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.item.ItemPredicateSyncerS2CPacket;
 import com.alessandro.astages.store.AModel;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Predicate;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AItemPredicateRestriction extends ABaseItemRestriction<AItemPredicateRestriction, ResourceLocation> {
     private ResourceLocation modelId;
 
@@ -45,7 +43,7 @@ public class AItemPredicateRestriction extends ABaseItemRestriction<AItemPredica
 
     @Override
     public void markAsDirty() {
-        ModNetworking.sendTo(null, new ItemPredicateSyncerS2CPacket(this));
+        ANetworking.sendTo(null, new ItemPredicateSyncerS2CPacket(this));
         super.markAsDirty();
     }
 }

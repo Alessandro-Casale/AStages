@@ -1,5 +1,6 @@
 package com.alessandro.astages.store.client;
-import com.alessandro.astages.util.ARestrictionType;
+
+import com.alessandro.astages.store.ARestrictionType;
 
 public interface AClientMinimalManager<R> {
     ARestrictionType associatedType();

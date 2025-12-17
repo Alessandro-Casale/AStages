@@ -1,14 +1,16 @@
 package com.alessandro.astages.core.client.manager;
 
+import com.alessandro.astages.api.ARestrictionClientUtils;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.core.client.restriction.AClientMobRestriction;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.client.AClientManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.OrderedMultiMap;
+import com.alessandro.astages.api.base.OrderedMultiMap;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.world.entity.EntityType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AClientMobManager extends AClientManager<AClientMobRestriction, EntityType<?>, EntityType<?>> {
     private final OrderedMultiMap<EntityType<?>, AClientMobRestriction> CACHE = OrderedMultiMap.create();
 
@@ -28,8 +30,8 @@ public class AClientMobManager extends AClientManager<AClientMobRestriction, Ent
     }
 
     @Override
-    public AClientMobRestriction getRestriction(EntityType<?> type) {
-        return getRestrictionFromCache(CACHE, type);
+    public AClientMobRestriction getRestriction(AClientHolder holder, EntityType<?> type) {
+        return ARestrictionClientUtils.getRestrictionFromCache(holder, CACHE, type);
     }
 
     @Override
@@ -40,6 +42,6 @@ public class AClientMobManager extends AClientManager<AClientMobRestriction, Ent
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.MOB;
+        return ARestrictionTypes.MOB;
     }
 }

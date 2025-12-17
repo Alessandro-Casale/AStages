@@ -1,9 +1,9 @@
 package com.alessandro.astages.networking.packet.item;
 
+import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.item.AClientItemPropertyRestriction;
 import com.alessandro.astages.networking.AStagesPacket;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @MethodsReturnNonnullByDefault
 public record ItemPropertySyncerS2CPacket(String id, String stage, ItemStack stack, Component hiddenName, Component jadeItemMessage, Component jadeBlockMessage) implements AStagesPacket {
-    public static final CustomPacketPayload.Type<ItemPropertySyncerS2CPacket> TYPE = new CustomPacketPayload.Type<>(AStagesUtil.fromNamespaceAndPath("item_property_syncer_s2c_packet"));
+    public static final Type<ItemPropertySyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("item_property_syncer_s2c_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemPropertySyncerS2CPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8, ItemPropertySyncerS2CPacket::id,

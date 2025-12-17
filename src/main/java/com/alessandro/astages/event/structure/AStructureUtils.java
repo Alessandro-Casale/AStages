@@ -42,14 +42,14 @@ public class AStructureUtils {
             manager.getAllStructuresAt(newPos).forEach((s, longs) -> {
                 var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(s);
                 if (structure != null) {
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
+//                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structure, player, player.getServer());
 
 //                    if (restriction != null) {
-                    var finalS = manager.getStructureWithPieceAt(newPos, s);
-                    if (finalS.isValid()) {
-                        var shape = Shapes.create(AABB.of(finalS.getBoundingBox()));
-                        toReturn.add(shape);
-                    }
+                        var finalS = manager.getStructureWithPieceAt(newPos, s);
+                        if (finalS.isValid()) {
+                            var shape = Shapes.create(AABB.of(finalS.getBoundingBox()));
+                            toReturn.add(shape);
+                        }
 //                    }
                 }
             });

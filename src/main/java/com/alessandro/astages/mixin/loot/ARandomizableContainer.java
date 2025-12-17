@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.loot;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.Attributes;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -26,7 +27,7 @@ public interface ARandomizableContainer {
             for (int slot = 0; slot < size; slot++) {
                 var stack = blockEntity.getItem(slot);
                 var copiedStack = stack.copy();
-                var restriction = ARestrictionManager.LOOT_INSTANCE.getRestriction(player, stack, null, lootTable.getLootTableId());
+                var restriction = ARestrictionManager.LOOT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), stack, null, lootTable.getLootTableId());
 
                 if (restriction != null) {
                     blockEntity.removeItem(slot, stack.getCount());

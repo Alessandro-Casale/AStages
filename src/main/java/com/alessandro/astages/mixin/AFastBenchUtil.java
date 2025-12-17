@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
 import dev.shadowsoffire.fastbench.util.CraftingInventoryExt;
@@ -32,7 +33,7 @@ public class AFastBenchUtil {
             var oldRecipe = cir.getReturnValue();
             if (oldRecipe == null) { return; }
 
-            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(astages$player, new RecipeWrapper(oldRecipe.value().getType(), oldRecipe.id()));
+            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(astages$player), new RecipeWrapper(oldRecipe.value().getType(), oldRecipe.id()));
 
             if (restriction != null) {
                 cir.setReturnValue(null);

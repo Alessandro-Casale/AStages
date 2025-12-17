@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.ore;
 
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.core.ARestrictionManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +22,7 @@ public abstract class APlayer {
 
     @Inject(method = "hasCorrectToolForDrops*", at = @At("RETURN"), cancellable = true)
     public void hasCorrectToolForDrops(BlockState original, CallbackInfoReturnable<Boolean> cir) {
-        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(self$player(), original);
+        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(AHolder.serverAndPlayer(self$player()), original);
 
         if (restriction != null) {
             cir.setReturnValue(hasCorrectToolForDrops(restriction.getReplacement()));

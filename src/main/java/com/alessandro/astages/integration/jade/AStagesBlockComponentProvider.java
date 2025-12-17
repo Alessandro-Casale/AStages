@@ -1,8 +1,9 @@
 package com.alessandro.astages.integration.jade;
 
+import com.alessandro.astages.api.APlayerUtils;
+import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.capability.AProvider;
-import com.alessandro.astages.util.AStagesUtil;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,10 +15,7 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public enum AStagesBlockComponentProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     INSTANCE;
 
@@ -35,7 +33,7 @@ public enum AStagesBlockComponentProvider implements IBlockComponentProvider, IS
     @Contract(pure = true)
     @Override
     public ResourceLocation getUid() {
-        return AStagesUtil.fromNamespaceAndPath("block_component_provider");
+        return AResourceLocation.fromNamespaceAndPath("block_component_provider");
     }
 
     @Override
@@ -44,7 +42,7 @@ public enum AStagesBlockComponentProvider implements IBlockComponentProvider, IS
 
         var blockStage = blockEntity.getData(AProvider.BLOCK_STAGE);
         if (blockAccessor.getPlayer().getServer() != null) {
-            var player = AStagesUtil.getPlayerFromUUID(blockAccessor.getPlayer().getServer(), blockStage.getOwner());
+            var player = APlayerUtils.getPlayerFromUUID(blockAccessor.getPlayer().getServer(), blockStage.getOwner());
 
             if (player != null) {
                 compoundTag.putString(OWNER_KEY, player.getName().getString());

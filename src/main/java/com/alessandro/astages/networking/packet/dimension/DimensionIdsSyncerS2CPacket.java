@@ -1,8 +1,8 @@
 package com.alessandro.astages.networking.packet.dimension;
 
+import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.networking.AStagesPacket;
-import com.alessandro.astages.util.AStagesUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 public record DimensionIdsSyncerS2CPacket(List<String> ids) implements AStagesPacket {
-    public static final CustomPacketPayload.Type<DimensionIdsSyncerS2CPacket> TYPE = new CustomPacketPayload.Type<>(AStagesUtil.fromNamespaceAndPath("dimension_ids_syncer_s2c_packet"));
+    public static final Type<DimensionIdsSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("dimension_ids_syncer_s2c_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DimensionIdsSyncerS2CPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), DimensionIdsSyncerS2CPacket::ids,

@@ -1,11 +1,10 @@
 package com.alessandro.astages.event.custom;
 
+import com.alessandro.astages.api.nullability.Nullable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.EntityEvent;
-
-import javax.annotation.Nullable;
 
 public class LivingEntityEatEvent extends EntityEvent {
     private final ItemStack food;
@@ -27,4 +26,3 @@ public class LivingEntityEatEvent extends EntityEvent {
         }
     }
 }
-

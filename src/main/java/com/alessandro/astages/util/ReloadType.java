@@ -9,7 +9,8 @@ public enum ReloadType {
     CLIENT_SYNC(1),
     RELOAD_BEFORE(2),
     ORE(3),
-    // For JEI!Add commentMore actions
+
+    // For JEI!
     JEI_ITEM(4),
     JEI_RECIPE(5),
 
@@ -17,6 +18,7 @@ public enum ReloadType {
     ITEM(6),
     RECIPE(7);
 
+    // NeoForge Part
     public static final IntFunction<ReloadType> BY_ID =
         ByIdMap.continuous(
             ReloadType::getId,

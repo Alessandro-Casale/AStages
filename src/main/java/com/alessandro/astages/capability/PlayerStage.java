@@ -1,109 +1,75 @@
 package com.alessandro.astages.capability;
 
-import com.alessandro.astages.AStages;
-import com.alessandro.astages.event.custom.StageSyncedPlayerEvent;
-import com.alessandro.astages.event.custom.actions.AllStageRemovedPlayerEvent;
-import com.alessandro.astages.event.custom.actions.StageAddedPlayerEvent;
-import com.alessandro.astages.event.custom.actions.StageGetPlayerEvent;
-import com.alessandro.astages.event.custom.actions.StageRemovedPlayerEvent;
-import com.alessandro.astages.networking.packet.StageDataSyncS2CPacket;
-import com.alessandro.astages.util.AStagesUtil;
-import com.alessandro.astages.util.develop.Info;
+import com.alessandro.astages.api.ASetUtils;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.ATitleUtils;
+import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.constant.AStatus;
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.event.player.*;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.networking.ANetworking;
+import com.alessandro.astages.networking.packet.stages.ClientStagesSyncerS2CPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntFunction;
+import java.util.Set;
 
+@Deprecated(forRemoval = true)
+@NotNullParamsAndMethodsReturn
 public class PlayerStage implements INBTSerializable<CompoundTag> {
-    public enum Status {
-        SUCCESS, NOT_PRESENT
-    }
-
-    public enum Operation {
-        ADD(0), REMOVE(1), REMOVE_ALL(2), GET(3), LOGIN(4);
-
-        private final int id;
-
-        Operation(int id) {
-            this.id = id;
-        }
-
-        public int id() {
-            return id;
-        }
-
-        @Contract(pure = true)
-        public static int getId(@NotNull Operation operation) {
-            return operation.id();
-        }
-
-        public static final IntFunction<Operation> BY_ID = ByIdMap.continuous(
-            Operation::getId,
-            Operation.values(),
-            ByIdMap.OutOfBoundsStrategy.ZERO
-        );
-    }
-
     private List<String> stages = new ArrayList<>();
 
-    public PlayerStage(IAttachmentHolder iAttachmentHolder) { }
-
-    public PlayerStage(List<String> stages) {
-        this.stages = stages;
-    }
-
     @Info("Not required, for commands only!")
-    public void setChangedFor(Player player, @NotNull Operation operation, String stage) {
+    public void setChangedFor(Player player, AOperation operation, String stage) {
         setChangedFor(player, operation, stage, false);
     }
 
-    @Info("TO BE TESTED!")
-    public void setChangedFor(Player player, @NotNull Operation operation, @Nullable String stage, boolean silentTitle) {
-//    }
-//
-//    public void setChangedFor(Player player, @NotNull Operation operation, List<String> stage) {
+    public void setChangedFor(Player player, AOperation operation, String stage, boolean silentTitle) {
+        setChangedFor(player, operation, ASetUtils.singleton(stage), silentTitle);
+    }
 
-        StageSyncedPlayerEvent event = new StageSyncedPlayerEvent(player, operation, stage);
+    public void setChangedFor(Player player, AOperation operation, Set<String> stages) {
+        setChangedFor(player, operation, stages, false);
+    }
+
+    public void setChangedFor(Player player, AOperation operation, Set<String> stages, boolean silentTitle) {
+        AStagesUtils.checkPlayerStages(player, operation, stages);
+
+        StageSyncedPlayerEvent event = new StageSyncedPlayerEvent(player, operation, stages);
         NeoForge.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new StageDataSyncS2CPacket(stages, operation));
+            ANetworking.sendToPlayer((ServerPlayer) player, new ClientStagesSyncerS2CPacket(stages, operation));
 
-            if (!silentTitle && stage != null) {
+            if (!silentTitle) {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    AStages.LOGGER.debug("TEXT!");
-                    // serverPlayer.connection.send(new ClientboundSetTitleTextPacket(Component.literal("TEXT!")));
-                    // AStagesUtil.showTitles(operation, stage);
-                    AStagesUtil.showTitles(serverPlayer, operation, stage);
+                    stages.forEach(stage -> ATitleUtils.showTitles(serverPlayer, operation, stage));
                 }
             }
 
             switch (operation) {
-                case ADD -> NeoForge.EVENT_BUS.post(new StageAddedPlayerEvent(player, stage));
-                case REMOVE -> NeoForge.EVENT_BUS.post(new StageRemovedPlayerEvent(player, stage));
-                case REMOVE_ALL -> NeoForge.EVENT_BUS.post(new AllStageRemovedPlayerEvent(player, stages));
-                case GET -> NeoForge.EVENT_BUS.post(new StageGetPlayerEvent(player, stages));
-                case LOGIN -> AStages.LOGGER.debug("NOT YET IMPLEMENTED!");
+                case ADD -> NeoForge.EVENT_BUS.post(new StageAddedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
+                case ADD_ALL -> NeoForge.EVENT_BUS.post(new AllStagesAddedPlayerEvent(player, stages));
+                case REMOVE -> NeoForge.EVENT_BUS.post(new StageRemovedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
+                case REMOVE_ALL -> NeoForge.EVENT_BUS.post(new AllStagesRemovedPlayerEvent(player, stages));
+                case LOGIN -> NeoForge.EVENT_BUS.post(new StageLoginPlayerEvent(player, stages));
             }
         } else {
             switch (event.getOperation()) {
-                case ADD -> stages.remove(stage);
-                case REMOVE -> stages.add(stage);
-                case REMOVE_ALL, GET, LOGIN -> AStages.LOGGER.debug("CANCELLING NOT YET IMPLEMENTED!");
+                case ADD -> this.stages.remove(ASetUtils.getOnlyElement(stages));
+                case ADD_ALL, LOGIN -> this.stages.removeAll(stages);
+                case REMOVE -> this.stages.add(ASetUtils.getOnlyElement(stages));
+                case REMOVE_ALL -> this.stages.addAll(stages);
             }
         }
     }
@@ -118,6 +84,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
 
     public void addStage(String stage) {
         if (stages.contains(stage)) { return; }
+        AStagesUtils.checkPlayerStages(null, AOperation.ADD, ASetUtils.singleton(stage));
 
         stages.add(stage);
     }
@@ -126,11 +93,11 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
         stages = new ArrayList<>();
     }
 
-    public Status removeStage(String stage) {
-        return stages.remove(stage) ? Status.SUCCESS : Status.NOT_PRESENT;
+    public AStatus removeStage(String stage) {
+        return stages.remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
     }
 
-    public void copyFrom(@NotNull PlayerStage source) {
+    public void copyFrom(PlayerStage source) {
         stages = source.stages;
     }
 
@@ -140,7 +107,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
         loadNBTData(tag);
     }
 
@@ -158,7 +125,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
         return nbt;
     }
 
-    public void loadNBTData(@NotNull CompoundTag nbt) {
+    public void loadNBTData(CompoundTag nbt) {
         var size = nbt.getInt("stage_size");
 
         if (size > 0) {

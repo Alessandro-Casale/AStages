@@ -1,33 +1,37 @@
 package com.alessandro.astages.core.server.manager;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.ARestrictionUtils;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.base.OrderedMultiMap;
+import com.alessandro.astages.api.constant.AStageType;
+import com.alessandro.astages.api.feature.ClientSynchronizable;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.holder.ARestrictionHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.server.restriction.recipe.ABaseRecipeRestriction;
 import com.alessandro.astages.core.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.core.server.restriction.recipe.ARecipeRestriction;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
-import com.alessandro.astages.networking.ModNetworking;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.recipe.RecipeModSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.recipe.RecipeSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestRestrictionDeleteS2CPacket;
-import com.alessandro.astages.store.ClientSynchronizable;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
 import com.alessandro.astages.store.server.AMinimalManager;
-import com.alessandro.astages.util.ARestrictionType;
-import com.alessandro.astages.util.AStagesUtil;
-import com.alessandro.astages.util.OrderedMultiMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?, ?, ?>>, ClientSynchronizable {
     private final List<ABaseRecipeRestriction<?, ?, ?>> restrictions = new ArrayList<>();
     private final Map<String, ABaseRecipeRestriction<?, ?, ?>> IDS = new HashMap<>();
@@ -48,6 +52,7 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
         return mods;
     }
 
+    @Override
     public void reloadBeforeScripts() {
         restrictions.clear();
         IDS.clear();
@@ -65,25 +70,29 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
         return IDS.getOrDefault(id, null);
     }
 
-    public ABaseRecipeRestriction<?, ?, ?> getRestriction(Player player, RecipeWrapper wrapper) {
-        var modRestriction = mods.stream().filter(r -> r.isRestricted(wrapper) && !AStagesUtil.hasStage(player, r.getStage())).findFirst().orElse(null);
-        if (modRestriction != null) { return modRestriction; }
+    public ABaseRecipeRestriction<?, ?, ?> getRestriction(AHolder holder, RecipeWrapper wrapper) {
+        if (holder.isServerActive()) {
+            var serverRestriction = getRestriction(holder, AStageType.SERVER, wrapper);
 
-        return getRestrictionFromCache(RECIPE_CACHE, wrapper.recipe(), player);
-    }
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
 
-    public ARecipeRestriction getRestrictionFromCache(OrderedMultiMap<ResourceLocation, ARecipeRestriction> cache, ResourceLocation value, Player player) {
-        var restrictions = cache.get(value);
-
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!AStagesUtil.hasStage(player, restriction.getStage())) {
-                    return restriction;
-                }
-            }
+        if (holder.isPlayerActive()) {
+            return getRestriction(holder, AStageType.PLAYER, wrapper);
         }
 
         return null;
+    }
+
+    public ARestrictionHolder<ABaseRecipeRestriction<?, ?, ?>> getHolder(AHolder holder, RecipeWrapper wrapper) {
+        return ARestrictionHolder.hold(getRestriction(holder, wrapper));
+    }
+
+    public ABaseRecipeRestriction<?, ?, ?> getRestriction(AHolder holder, AStageType type, RecipeWrapper wrapper) {
+        var modRestriction = mods.stream().filter(r -> r.isRestricted(wrapper) && !AStagesUtils.hasStage(holder, type, r.getStage())).findFirst().orElse(null);
+        if (modRestriction != null) { return modRestriction; }
+
+        return ARestrictionUtils.<ResourceLocation, ARecipeRestriction>getRestrictionFromCache(holder, RECIPE_CACHE, wrapper.recipe());
     }
 
     public void addRestriction(ARecipeRestriction restriction) {
@@ -127,17 +136,17 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
         RECIPE_CACHE.removeValues(restriction -> restriction.getId().equals(id));
         IDS.remove(id);
 
-        ModNetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
+        ANetworking.sendTo(null, new RequestRestrictionDeleteS2CPacket(id, associatedType()));
     }
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        recipes.forEach(restriction -> ModNetworking.sendTo(player, new RecipeSyncerS2CPacket(restriction)));
-        mods.forEach(restriction -> ModNetworking.sendTo(player, new RecipeModSyncerS2CPacket(restriction)));
+        recipes.forEach(restriction -> ANetworking.sendTo(player, new RecipeSyncerS2CPacket(restriction)));
+        mods.forEach(restriction -> ANetworking.sendTo(player, new RecipeModSyncerS2CPacket(restriction)));
     }
 
     @Override
     public ARestrictionType associatedType() {
-        return ARestrictionType.RECIPE;
+        return ARestrictionTypes.RECIPE;
     }
 }

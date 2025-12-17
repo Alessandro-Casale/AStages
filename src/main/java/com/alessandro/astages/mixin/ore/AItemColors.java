@@ -1,5 +1,6 @@
 package com.alessandro.astages.mixin.ore;
 
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.color.item.ItemColors;
@@ -18,7 +19,7 @@ public class AItemColors {
     @ModifyExpressionValue(method = "getColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"))
     public Item astages$getItem(Item item) {
         if (item instanceof BlockItem blockItem) {
-            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(blockItem.getBlock().defaultBlockState()).getBlock().asItem();
+            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), blockItem.getBlock().defaultBlockState()).getBlock().asItem();
         }
 
         return item;
@@ -27,7 +28,7 @@ public class AItemColors {
     @ModifyArg(method = "getColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/color/item/ItemColor;getColor(Lnet/minecraft/world/item/ItemStack;I)I"))
     public ItemStack astages$getColor(ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem) {
-            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(blockItem.getBlock().defaultBlockState()).getBlock().asItem().getDefaultInstance();
+            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), blockItem.getBlock().defaultBlockState()).getBlock().asItem().getDefaultInstance();
         }
 
         return stack;

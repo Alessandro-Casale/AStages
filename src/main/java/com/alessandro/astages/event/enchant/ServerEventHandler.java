@@ -1,11 +1,12 @@
 package com.alessandro.astages.event.enchant;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.EnchantWrapper;
 import com.alessandro.astages.event.CommonEventSettings;
 import com.alessandro.astages.store.Attributes;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,11 +20,9 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 @EventBusSubscriber(modid = AStages.MODID)
 public class ServerEventHandler {
     @SubscribeEvent
@@ -42,7 +41,7 @@ public class ServerEventHandler {
                         var parsedBook = removeAllRestrictedEnchantmentFromEnchantedBook(player, slotContent);
 
                         if (!parsedBook.isEmpty()) {
-                            inventory.setItem(i, parsedBook);
+                            inventory.setItem(CommonEventSettings.getSlotChanged(), parsedBook);
                         }
                     } else if (slotContent.isEnchanted()) {
                         removeAllRestrictedEnchantmentFromStack(player, slotContent);
@@ -95,7 +94,7 @@ public class ServerEventHandler {
                     var enchantment = holder.getKey().value();
                     var level = holder.getIntValue();
 
-                    var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(player, new EnchantWrapper(enchantment, level));
+                    var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(enchantment, level));
 
                     if (restriction != null && restriction.isDisabled(Attributes.ANVIL)) {
                         return true;
@@ -114,7 +113,7 @@ public class ServerEventHandler {
                     var enchantment = holder.getKey().value();
                     var level = holder.getIntValue();
 
-                    var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(player, new EnchantWrapper(enchantment, level));
+                    var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(enchantment, level));
 
                     if (restriction != null && restriction.isDisabled(Attributes.ANVIL)) {
                         return true;
@@ -135,7 +134,7 @@ public class ServerEventHandler {
 
         var atLeastOneRemoved = new AtomicBoolean(false);
         enchantments.removeIf(holder -> {
-            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(player, new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
+            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
 
             if (restriction != null && restriction.isDisabled(Attributes.STORING_IN_INVENTORY)) {
                 atLeastOneRemoved.set(true);
@@ -161,7 +160,7 @@ public class ServerEventHandler {
 
         var atLeastOneRemoved = new AtomicBoolean(false);
         enchantments.removeIf(holder -> {
-            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(player, new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
+            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
 
             if (restriction != null && restriction.isDisabled(Attributes.STORING_IN_INVENTORY)) {
                 atLeastOneRemoved.set(true);

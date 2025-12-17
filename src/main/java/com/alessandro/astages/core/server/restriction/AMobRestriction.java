@@ -6,7 +6,7 @@ import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.server.ARestriction;
 import com.alessandro.astages.util.AFilter;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -14,13 +14,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>, EntityType<?>> {
     private final List<EntityType<?>> mobs = new ArrayList<>();
 
@@ -43,7 +41,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
             .addAttribute(Attributes.SPAWNER)
             .addAttribute(Attributes.MOB_SPAWNING)
             .addAttribute(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)
-            .addAttribute(Attributes.ATTACKING).setAttribute(Attributes.ATTACKING, true) // Left click interactionsAdd commentMore actions
+            .addAttribute(Attributes.ATTACKING).setAttribute(Attributes.ATTACKING, true) // Left click interactions
             .addAttribute(Attributes.RIGHT_CLICK_INTERACTIONS).setAttribute(Attributes.RIGHT_CLICK_INTERACTIONS, true)
 
             .addAttribute(Attributes.DIMENSION, true)
@@ -80,7 +78,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     public AMobRestriction associateLootRestriction(String id) {
-        var restriction = new ALootRestriction(id, getStage()).applyForEveryLootTableAndDrop(true);
+        var restriction = new ALootRestriction(id, getStage());
         for (var mob : mobs) { restriction.restrictForEntities(mob); }
         restriction.setEntityFilter(AFilter.ALL);
         ARestrictionManager.LOOT_INSTANCE.addRestriction(restriction);

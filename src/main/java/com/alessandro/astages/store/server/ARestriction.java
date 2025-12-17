@@ -4,12 +4,12 @@ import com.alessandro.astages.AStages;
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.ConfigurableAttributeStore;
-import com.alessandro.astages.store.SetAttributeNotSupported;
+import com.alessandro.astages.api.exception.SetAttributeNotSupported;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -17,7 +17,7 @@ import java.util.function.Function;
  * Base class for all Restrictions related to AStages!
  *
  * @param <R> The restriction itself
- * @param <U> For restrict method object typeAdd commentMore actions
+ * @param <U> For restrict method object type
  * @param <V> For isRestricted method object type
  */
 public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements Comparable<R> {
@@ -28,7 +28,7 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
 
     private final AttributeStore attributes;
 
-    public ARestriction(@NotNull String id, String stage) {
+    public ARestriction(@NotNull String id, @NotNull String stage) {
         if (id.equals("null") && stage.equals("null")) {
             this.id = id;
             this.stage = stage;
@@ -41,12 +41,6 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
             this.markForConfig = false;
         }
     }
-
-//    public ARestriction(String id, String stage, boolean markForConfig) {
-//        this.id = id;
-//        this.stage = stage;
-//        this.attributes = markForConfig ? new ConfigurableAttributeStore() : allowedAttributes();
-//    }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isValueNull(Attribute<?> attribute) {
@@ -123,7 +117,7 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
 
     public abstract boolean isRestricted(V object);
 
-    @ParametersAreNonnullByDefault
+    @NotNullParams
     @SuppressWarnings({"unchecked", "unused"})
     public R withAttributes(ARestriction<?, ?, ?>... configs) {
         for (var config : configs) {

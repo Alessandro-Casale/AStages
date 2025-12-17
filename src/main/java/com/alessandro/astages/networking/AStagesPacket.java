@@ -10,7 +10,7 @@ public interface AStagesPacket extends CustomPacketPayload {
 
     default void handle(@NotNull IPayloadContext context) {
         context.enqueueWork(() -> run(context)).exceptionally(e -> {
-            AStages.LOGGER.debug(e.getLocalizedMessage());
+            AStages.LOGGER.info(e.getLocalizedMessage());
             return null;
         });
     }

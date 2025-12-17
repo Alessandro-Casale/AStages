@@ -2,6 +2,8 @@ package com.alessandro.astages.command;
 
 import com.alessandro.astages.command.argument.AStagesDimensionArgument;
 import com.alessandro.astages.core.server.restriction.ADimensionRestriction;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.ChatFormatting;
@@ -11,12 +13,10 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AStagesTimerCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2))

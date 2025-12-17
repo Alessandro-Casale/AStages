@@ -3,15 +3,13 @@ package com.alessandro.astages.core.server.restriction;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.server.ARestriction;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.effect.MobEffect;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class AEffectRestriction extends ARestriction<AEffectRestriction, MobEffect, MobEffect> {
     private final List<MobEffect> effects = new ArrayList<>();
 

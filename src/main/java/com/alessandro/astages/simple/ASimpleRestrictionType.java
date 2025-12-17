@@ -1,15 +1,14 @@
 package com.alessandro.astages.simple;
 
-import com.alessandro.astages.util.ARestrictionType;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public enum ASimpleRestrictionType {
     ITEM,
     MOD,
@@ -43,14 +42,14 @@ public enum ASimpleRestrictionType {
 
     public ARestrictionType convert() {
         return switch (this) {
-            case ITEM, MOD, ARMOR -> ARestrictionType.ITEM;
-            case DIMENSION -> ARestrictionType.DIMENSION;
-            case GUI -> ARestrictionType.SCREEN;
-            case ORE -> ARestrictionType.ORE;
-            case STRUCTURE -> ARestrictionType.STRUCTURE;
+            case ITEM, MOD, ARMOR -> ARestrictionTypes.ITEM;
+            case DIMENSION -> ARestrictionTypes.DIMENSION;
+            case GUI -> ARestrictionTypes.SCREEN;
+            case ORE -> ARestrictionTypes.ORE;
+            case STRUCTURE -> ARestrictionTypes.STRUCTURE;
             case BIOME -> throw new IllegalArgumentException("Biome not yet implemented!");
-            case TAME, MOUNT -> ARestrictionType.PET;
-            case RECIPE -> ARestrictionType.RECIPE;
+            case TAME, MOUNT -> ARestrictionTypes.PET;
+            case RECIPE -> ARestrictionTypes.RECIPE;
         };
     }
 }

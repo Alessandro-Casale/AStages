@@ -1,18 +1,16 @@
 package com.alessandro.astages.core.server.restriction.recipe;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
+import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.recipe.RecipeSyncerS2CPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestriction, RecipeWrapper, RecipeWrapper> {
     private RecipeType<?> type = null;
     private final List<ResourceLocation> recipes = new ArrayList<>();
@@ -57,7 +55,7 @@ public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestrictio
     @Override
     public void markAsDirty() {
         if (type != null && !recipes.isEmpty()) {
-            PacketDistributor.sendToAllPlayers(new RecipeSyncerS2CPacket(this));
+            ANetworking.sendToAllPlayers(new RecipeSyncerS2CPacket(this));
         }
 
         super.markAsDirty();

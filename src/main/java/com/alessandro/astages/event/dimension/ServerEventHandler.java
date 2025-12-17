@@ -1,6 +1,9 @@
 package com.alessandro.astages.event.dimension;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.server.restriction.ADimensionRestriction;
 import com.alessandro.astages.store.Attributes;
@@ -16,11 +19,12 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
+@UnderDevelopment("Replace persistentData system!")
+@NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
-@ParametersAreNonnullByDefault
 public class ServerEventHandler {
     @SubscribeEvent
     public static void onEntityTravel(EntityTravelToDimensionEvent event) {
@@ -28,8 +32,8 @@ public class ServerEventHandler {
             ResourceLocation dimension = event.getDimension().location();
 
             ResourceLocation currentDimension = player.level().dimension().location();
-            ADimensionRestriction fromDim = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(player, currentDimension);
-            ADimensionRestriction toDim = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(player, dimension);
+            ADimensionRestriction fromDim = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), currentDimension);
+            ADimensionRestriction toDim = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), dimension);
 
             if (fromDim != null && fromDim.isEnabled(Attributes.BIDIRECTIONAL)) {
                 event.setCanceled(true);
@@ -58,7 +62,7 @@ public class ServerEventHandler {
             var persistentData = player.getPersistentData();
             ResourceLocation currentDimension = player.level().dimension().location();
 
-            var restriction = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(player, currentDimension);
+            var restriction = ARestrictionManager.DIMENSION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), currentDimension);
 
             if (restriction != null && restriction.getMaxStayTimer() != null) {
                 var nbtId = restriction.getNbtId();
@@ -84,6 +88,7 @@ public class ServerEventHandler {
                         player.displayClientMessage(Component.empty(), true); // Reset action bar before teleporting!
 
                         var server = player.server;
+                        var dim = Objects.requireNonNull(server.getLevel(player.getRespawnDimension()));
                         var pos = player.getRespawnPosition();
                         var overworld = player.server.overworld();
 

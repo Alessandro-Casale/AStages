@@ -1,6 +1,6 @@
 package com.alessandro.astages.mixin;
 
-import com.alessandro.astages.util.develop.UnderDevelopment;
+import com.alessandro.astages.api.develop.UnderDevelopment;
 import dev.latvian.mods.kubejs.item.ItemClickedKubeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 

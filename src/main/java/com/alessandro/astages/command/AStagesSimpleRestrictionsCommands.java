@@ -1,5 +1,7 @@
 package com.alessandro.astages.command;
 
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.command.argument.AStagesSimpleRestrictionTypeArgument;
 import com.alessandro.astages.command.argument.AStagesSimpleRestrictionsIdsArgument;
 import com.alessandro.astages.simple.ASimpleElaborator;
 import com.mojang.brigadier.CommandDispatcher;
@@ -16,10 +18,10 @@ import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.registries.Registries;
-import org.jetbrains.annotations.NotNull;
 
+@NotNullParams
 public class AStagesSimpleRestrictionsCommands {
-    public static void register(@NotNull CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2))
             .then(Commands.literal("restrict").then(Commands.argument("id", StringArgumentType.string()).then(Commands.argument("stage", StringArgumentType.string())
                 .then(Commands.literal("item").then(Commands.argument("item", ItemArgument.item(context)).executes(ASimpleElaborator::commandItem)))
@@ -35,7 +37,7 @@ public class AStagesSimpleRestrictionsCommands {
                 .then(Commands.literal("recipe").then(Commands.argument("recipe", ResourceLocationArgument.id()).executes(ASimpleElaborator::commandRecipe)))
                 .then(Commands.literal("armor").then(Commands.argument("item", ItemArgument.item(context)).executes(ASimpleElaborator::commandArmor)))
             )))
-            .then(Commands.literal("remove_restrict").then(Commands.argument("type", AStagesSimpleRestrictionsIdsArgument.simpleRestrictionIds()).executes(ASimpleElaborator::removeRestriction)))
+            .then(Commands.literal("remove_restrict").then(Commands.argument("id", AStagesSimpleRestrictionsIdsArgument.simpleRestrictionIds()).then(Commands.argument("type", AStagesSimpleRestrictionTypeArgument.types()).executes(ASimpleElaborator::removeRestriction))))
         );
     }
 }

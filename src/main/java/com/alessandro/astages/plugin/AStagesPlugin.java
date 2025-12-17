@@ -1,17 +1,15 @@
 package com.alessandro.astages.plugin;
 
 import com.alessandro.astages.plugin.container.AttributeContainer;
+import com.alessandro.astages.plugin.container.FolderContainer;
 import com.alessandro.astages.plugin.container.ManagerContainer;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public interface AStagesPlugin {
     default void reloadBeforeScripts() { }
     default void clientSynchronization(@Nullable ServerPlayer player) { }
@@ -20,6 +18,7 @@ public interface AStagesPlugin {
     default void clearClientOnLogin() { }
     default void registerManagers(ManagerContainer container) { }
     default void attachAttributes(AttributeContainer container) { }
+    default void registerFolders(FolderContainer container) { }
 
     ResourceLocation id();
 }

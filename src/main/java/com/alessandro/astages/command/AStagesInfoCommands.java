@@ -4,6 +4,7 @@ import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.store.server.ARestriction;
 import com.alessandro.astages.util.AChatBundle;
 import com.alessandro.astages.util.AChatUtils;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -15,17 +16,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 public class AStagesInfoCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("astages_utils").requires(c -> c.hasPermission(2))
-                .then(Commands.literal("hand").executes(AStagesInfoCommands::getItemInHandInfo))
-                .then(Commands.literal("stages").executes(c -> AStagesInfoCommands.allServerStages(c, false)))
-                .then(Commands.literal("stages").then(Commands.argument("printInLogs", BoolArgumentType.bool()).executes(c -> AStagesInfoCommands.allServerStages(c, BoolArgumentType.getBool(c, "printInLogs")))))
-                .then(Commands.literal("ids").executes(c -> AStagesInfoCommands.allServerIds(c, false)))
-                .then(Commands.literal("ids").then(Commands.argument("printInLogs", BoolArgumentType.bool()).executes(c -> AStagesInfoCommands.allServerIds(c, BoolArgumentType.getBool(c, "printInLogs")))))
+            .then(Commands.literal("hand").executes(AStagesInfoCommands::getItemInHandInfo))
+            .then(Commands.literal("stages").executes(c -> AStagesInfoCommands.allServerStages(c, false)))
+            .then(Commands.literal("stages").then(Commands.argument("printInLogs", BoolArgumentType.bool()).executes(c -> AStagesInfoCommands.allServerStages(c, BoolArgumentType.getBool(c, "printInLogs")))))
+            .then(Commands.literal("ids").executes(c -> AStagesInfoCommands.allServerIds(c, false)))
+            .then(Commands.literal("ids").then(Commands.argument("printInLogs", BoolArgumentType.bool()).executes(c -> AStagesInfoCommands.allServerIds(c, BoolArgumentType.getBool(c, "printInLogs")))))
         );
     }
 

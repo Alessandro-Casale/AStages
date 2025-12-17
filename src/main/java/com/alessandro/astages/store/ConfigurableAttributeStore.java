@@ -1,10 +1,11 @@
 package com.alessandro.astages.store;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@ParametersAreNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class ConfigurableAttributeStore extends AttributeStore {
     private final Set<Attribute<?>> modifiedAttributes = new HashSet<>();
 

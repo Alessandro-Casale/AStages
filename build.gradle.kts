@@ -1,3 +1,6 @@
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 @Suppress("PropertyName") val mod_group_id: String by project
 @Suppress("PropertyName") val mod_id: String by project
 @Suppress("PropertyName") val mod_version: String by project
@@ -19,6 +22,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("net.neoforged.moddev") version "2.0.41-beta"
+    id("me.modmuss50.mod-publish-plugin") version "1.1.0"
 }
 
 version = mod_version
@@ -205,4 +209,74 @@ publishing {
             url = uri("file://${project.projectDir}/repo")
         }
     }
+}
+
+publishMods {
+    file.set(tasks.jar.flatMap { it.archiveFile })
+    modLoaders.add("neoforge")
+    val today = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val formattedDate: String = today.format(formatter)
+
+    when {
+        mod_version.contains("alpha", true) -> {
+            type.set(ALPHA)
+            changelog.set(
+                """
+                        ## [$mod_version] - $formattedDate
+                        This is an alpha version meant to be used only by developers!   
+                        Changelog can be found in Discord server.
+                    """.trimIndent()
+            )
+        }
+        mod_version.contains("beta", true) -> {
+            type.set(BETA)
+            changelog.set(
+                """
+                        ## [$mod_version] - $formattedDate
+                        This is a beta version meant to be used only by developers!   
+                        Changelog can be found in Discord server.
+                    """.trimIndent()
+            )
+        }
+        else -> {
+            type.set(STABLE)
+            changelog.set("# Changelog!")
+        }
+    }
+
+    curseforge {
+        accessToken.set(providers.environmentVariable("CURSEFORGE_API_KEY"))
+        projectId.set("1120180")
+        minecraftVersions.add(minecraft_version)
+        changelogType.set("markdown")
+        optional("roughly-enough-items", "jei", "kubejs")
+
+        displayName.set("astages-$mod_version")
+
+        projectSlug.set("astages") // For discord setup
+        announcementTitle.set("Download from CurseForge") // For discord setup
+    }
+
+    modrinth {
+        accessToken.set(providers.environmentVariable("MODRINTH_API_KEY"))
+        projectId.set("6wy8fmIk")
+        minecraftVersions.add(minecraft_version)
+        optional("rei", "jei", "kubejs")
+
+        displayName.set("astages-$mod_version")
+
+        announcementTitle.set("Download from Modrinth")
+    }
+
+//    discord {
+//        webhookUrl.set(providers.environmentVariable("DISCORD_WEBHOOK"))
+//        username.set("AServer")
+//        avatarUrl.set("URL_HERE!!!!!!!!!!")
+//        content.set(changelog)
+//
+//        style {
+//            link
+//        }
+//    }
 }

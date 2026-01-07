@@ -185,7 +185,7 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         Set<String> toReturn = new HashSet<>();
 
         mods.forEach(restriction -> {
-            if (Objects.equals(restriction.getModId(), resourceLocation.getNamespace()) && restriction.isEnabled(Attributes.HIDING_JEI)) {
+            if (restriction.getModIds().contains(resourceLocation.getNamespace()) && restriction.isEnabled(Attributes.HIDING_JEI)) {
                 toReturn.add(restriction.getStage());
             }
         });

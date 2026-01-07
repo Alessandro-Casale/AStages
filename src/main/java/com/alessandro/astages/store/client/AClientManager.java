@@ -40,7 +40,7 @@ public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V
     public R getRestriction(AClientHolder holder, V object) {
         if (holder.isServerActive()) {
             var serverRestriction = restrictions.stream().filter(r ->
-                AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                 r.isRestricted(object)
             ).findFirst().orElse(null);
 
@@ -49,7 +49,7 @@ public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V
 
         if (holder.isPlayerActive()) {
             return restrictions.stream().filter(r ->
-                AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                 r.isRestricted(object)
             ).findFirst().orElse(null);
         }

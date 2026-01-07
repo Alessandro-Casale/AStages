@@ -71,7 +71,7 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
     public R getRestriction(AHolder holder, V object) {
         if (holder.isServerActive()) {
             var serverRestriction = restrictions.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                 r.isRestricted(object)
             ).findFirst().orElse(null);
 
@@ -80,7 +80,7 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
 
         if (holder.isPlayerActive()) {
             return restrictions.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                 r.isRestricted(object)
             ).findFirst().orElse(null);
         }

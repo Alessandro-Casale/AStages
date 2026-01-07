@@ -116,7 +116,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
     public ABaseItemRestriction<?, ?> getRestriction(AHolder holder, ItemStack stack) {
         if (holder.isServerActive()) {
             var serverRestriction = restrictions.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                 r.isRestricted(stack)
             ).findFirst().orElse(null);
 
@@ -125,7 +125,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
 
         if (holder.isPlayerActive()) {
             return restrictions.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                 r.isRestricted(stack)
             ).findFirst().orElse(null);
         }
@@ -144,7 +144,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
     public ABaseItemRestriction<?, ?> getInventoryRestriction(AHolder holder, ItemStack stack) {
         if (holder.isServerActive()) {
             var serverRestriction = INVENTORY_CACHE.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                     r.isRestricted(stack)
             ).findFirst().orElse(null);
 
@@ -153,7 +153,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
 
         if (holder.isPlayerActive()) {
             return INVENTORY_CACHE.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                     r.isRestricted(stack)
             ).findFirst().orElse(null);
         }
@@ -168,7 +168,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
     public ABaseItemRestriction<?, ?> getEquipmentRestriction(AHolder holder, ItemStack stack) {
         if (holder.isServerActive()) {
             var serverRestriction = EQUIPMENT_CACHE.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                     r.isRestricted(stack)
             ).findFirst().orElse(null);
 
@@ -177,7 +177,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>>
 
         if (holder.isPlayerActive()) {
             return EQUIPMENT_CACHE.stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                     r.isRestricted(stack)
             ).findFirst().orElse(null);
         }

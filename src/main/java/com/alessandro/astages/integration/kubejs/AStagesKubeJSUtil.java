@@ -127,8 +127,8 @@ public class AStagesKubeJSUtil {
         return ARestrictionUtils.addRestrictionForPredicate(id, stage, modelId);
     }
 
-    public static AItemModRestriction addRestrictionForMod(String id, String stage, String modId) {
-        return ARestrictionUtils.addRestrictionForMod(id, stage, modId);
+    public static AItemModRestriction addRestrictionForMod(String id, String stage, String... modIds) {
+        return ARestrictionUtils.addRestrictionForMod(id, stage, List.of(modIds));
     }
 
     public static AItemTagRestriction addRestrictionForTag(String id, String stage, ResourceLocation name) {

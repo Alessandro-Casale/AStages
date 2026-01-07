@@ -11,7 +11,7 @@ import java.util.List;
 
 @NotNullParams
 public class AClientItemModRestriction extends AClientBaseItemRestriction<AClientItemModRestriction, String> {
-    private String modId;
+    private final List<String> modIds = new ArrayList<>();
     private final List<Item> ignoredItems = new ArrayList<>();
     private final List<ResourceLocation> ignoredTags = new ArrayList<>();
 
@@ -21,7 +21,7 @@ public class AClientItemModRestriction extends AClientBaseItemRestriction<AClien
 
     @Override
     public AClientItemModRestriction restrict(String modId) {
-        this.modId = modId;
+        modIds.add(modId);
         return this;
     }
 
@@ -32,7 +32,7 @@ public class AClientItemModRestriction extends AClientBaseItemRestriction<AClien
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
         return !ignoredItems.contains(stack.getItem()) &&
-            modId.equals(registry.getNamespace()) &&
+            modIds.contains(registry.getNamespace()) &&
             stack.getTags().noneMatch(t -> ignoredTags.contains(t.location()));
     }
 
@@ -46,8 +46,8 @@ public class AClientItemModRestriction extends AClientBaseItemRestriction<AClien
         return this;
     }
 
-    public String getModId() {
-        return modId;
+    public List<String> getModIds() {
+        return modIds;
     }
 
     public List<Item> getIgnoredItems() {

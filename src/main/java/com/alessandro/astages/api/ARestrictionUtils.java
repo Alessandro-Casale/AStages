@@ -57,9 +57,9 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static AItemModRestriction addRestrictionForMod(String id, String stage, String modId) {
+    public static AItemModRestriction addRestrictionForMod(String id, String stage, List<String> modIds) {
         var restriction = new AItemModRestriction(id, stage);
-        restriction.restrict(modId);
+        for (var modId : modIds) { restriction.restrict(modId); }
         ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
 
         return restriction;

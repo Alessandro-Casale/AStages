@@ -15,7 +15,7 @@ import java.util.List;
 
 @NotNullParamsAndMethodsReturn
 public class AItemModRestriction extends ABaseItemRestriction<AItemModRestriction, String> {
-    private String modId;
+    private final List<String> modIds = new ArrayList<>();
     private final List<Item> ignoredItems = new ArrayList<>();
     private final List<ResourceLocation> ignoredTags = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
 
     @Override
     public AItemModRestriction restrict(String modId) {
-        this.modId = modId;
+        modIds.add(modId);
         return this;
     }
 
@@ -41,7 +41,7 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
         return !ignoredItems.contains(stack.getItem()) &&
-            modId.equals(registry.getNamespace()) &&
+            modIds.contains(registry.getNamespace()) &&
             stack.getTags().noneMatch(t -> ignoredTags.contains(t.location()));
     }
 
@@ -57,8 +57,8 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
         return this;
     }
 
-    public String getModId() {
-        return modId;
+    public List<String> getModIds() {
+        return modIds;
     }
 
     public List<Item> getIgnoredItems() {
@@ -78,7 +78,7 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
     @Override
     public AItemModRestriction associateLootRestriction(String id) {
         var restriction = new ALootRestriction(id, getStage()).applyForEveryLootTableAndDrop(true);
-        restriction.restrictMods(modId);
+        for (var modId : modIds) { restriction.restrictMods(modId); }
         for (var tag : ignoredTags) { restriction.ignoredTags(tag); }
         for (var item : ignoredItems) { restriction.ignoredItems(item); }
         ARestrictionManager.LOOT_INSTANCE.addRestriction(restriction);

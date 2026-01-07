@@ -12,6 +12,7 @@ public class AStagesCommon {
     public static final ModConfigSpec.ConfigValue<Integer> TICK_STRUCTURE_UPDATING;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_LOGS;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_STAGE_WARNING;
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_TEST_MODE;
 
     static {
         BUILDER.push("Configs for AStages Mod");
@@ -30,6 +31,9 @@ public class AStagesCommon {
 
         ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when a stage is not associated to any restriction")
             .define("Enable Warning", true);
+
+        ENABLE_TEST_MODE = BUILDER.comment("Enable test-mode used by developers to check if all restrictions work as expected")
+            .define("Enable Test Mode", false);
 
         BUILDER.pop();
 

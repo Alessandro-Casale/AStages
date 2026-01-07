@@ -41,6 +41,14 @@ public class ARestrictionUtils {
 //        ).findFirst().orElse(null);
 //    }
 
+    public static AItemRestriction addRestrictionForItem(String id, String stage, Item item) {
+        var restriction = new AItemRestriction(id, stage);
+        restriction.restrict(item);
+        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+
+        return restriction;
+    }
+
     public static AItemRestriction addRestrictionForItem(String id, String stage, List<Item> items) {
         var restriction = new AItemRestriction(id, stage);
         for (var item : items) { restriction.restrict(item); }
@@ -52,6 +60,14 @@ public class ARestrictionUtils {
     public static AItemPredicateRestriction addRestrictionForPredicate(String id, String stage, ResourceLocation modelId) {
         var restriction = new AItemPredicateRestriction(id, stage);
         restriction.restrict(modelId);
+        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+
+        return restriction;
+    }
+
+    public static AItemModRestriction addRestrictionForMod(String id, String stage, String modId) {
+        var restriction = new AItemModRestriction(id, stage);
+        restriction.restrict(modId);
         ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
 
         return restriction;

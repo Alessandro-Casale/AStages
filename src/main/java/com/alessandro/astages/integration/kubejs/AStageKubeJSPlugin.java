@@ -30,7 +30,7 @@ public class AStageKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void beforeScriptsLoaded(ScriptManager manager) {
-        if (manager.scriptType == ScriptType.CLIENT) {
+        if (manager.scriptType == ScriptType.SERVER) {
             AStageManager.reloadBeforeScripts();
             ARestrictionManager.reloadBeforeScripts();
             ARestrictionManager.addRestrictionsViaJavaCode(ARestrictionStage.BEFORE_JS);

@@ -32,6 +32,13 @@ public class ALanguageProvider extends LanguageProvider {
         add("chat.astages.timer.decrease_access", "Access decreased correctly for restriction %s by value %s!");
         add("chat.astages.timer.invalid_value_access", "Invalid value for restriction %s!");
 
+        // SIMPLE
+        add("chat.astages.simple.no_type_associated", "There is no simple restriction with id %s!");
+        add("chat.astages.simple.one_type_associated", "Simple restriction with id %s removed!");
+        add("chat.astages.simple.more_type_associated", "Ambiguity issue: %s is associated to more than one restriction! Provide restriction type in order to solve ambiguity.");
+        add("chat.astages.simple.valid_type", "Valid types are:");
+        add("chat.astages.simple.valid_type.item", "- %s");
+
         // ITEM
         add("tooltip.astages.item.hidden_name", "Unfamiliar Item");
         add("tooltip.astages.item.item_description", "This item has been staged to [%s]");

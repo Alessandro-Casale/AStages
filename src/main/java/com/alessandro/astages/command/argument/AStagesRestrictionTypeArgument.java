@@ -1,8 +1,8 @@
 package com.alessandro.astages.command.argument;
 
-import com.alessandro.astages.AStages;
-import com.alessandro.astages.api.develop.MustBeRefactored;
-import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.ACommandUtils;
+import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.develop.ToDo;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.registry.AStagesRegistries;
 import com.alessandro.astages.store.ARestrictionType;
@@ -18,11 +18,11 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-@MustBeRefactored
 @NotNullParamsAndMethodsReturn
 public class AStagesRestrictionTypeArgument implements ArgumentType<ARestrictionType> {
     private static final Collection<String> EXAMPLES = Arrays.asList("item", "recipe");
@@ -36,21 +36,41 @@ public class AStagesRestrictionTypeArgument implements ArgumentType<ARestriction
         return context.getArgument(name, ARestrictionType.class);
     }
 
-    @UnderDevelopment("Check for nullability!")
+    @SuppressWarnings("ConstantConditions")
     @Override
     public ARestrictionType parse(StringReader stringReader) throws CommandSyntaxException {
-        var typeString = ResourceLocation.read(stringReader); // stringReader.readUnquotedString();
+        var typeString = ACommandUtils.parseGenericString(stringReader); // stringReader.readUnquotedString();
+        ResourceLocation associatedResourceLocation;
+
+        if (!typeString.contains(":")) {
+            associatedResourceLocation = AResourceLocation.fromNamespaceAndPath(typeString);
+        } else {
+            associatedResourceLocation = AResourceLocation.parse(typeString);
+        }
 
         try {
-            return AStages.RESTRICTION_TYPES_REGISTRY.get(typeString);
+            return AStagesRegistries.RESTRICTION_TYPES.get(associatedResourceLocation);
         } catch (IllegalArgumentException exception) {
             throw ERROR_INVALID_TYPE.create(typeString);
         }
     }
 
+    @ToDo("Choose to show shortcuts or not!")
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(AStagesRegistries.getAllRestrictionTypeEntries().stream().map(ARestrictionType::getType), builder);
+        var suggestionList = new ArrayList<String>(); // Order-maintaining needed!
+
+        AStagesRegistries.RESTRICTION_TYPES
+            .keySet()
+            .forEach(key -> {
+//                if (key.getNamespace().equals(AStages.MODID)) {
+//                    suggestionList.add(key.getPath());
+//                }
+
+                suggestionList.add(key.toString());
+            });
+
+        return SharedSuggestionProvider.suggest(suggestionList, builder);
     }
 
     @Override

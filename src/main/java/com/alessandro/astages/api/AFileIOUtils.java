@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -21,6 +22,12 @@ import java.util.*;
 @NotNullParamsAndMethodsReturn
 public class AFileIOUtils {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+
+    public static final String JSON_EXTENSION = ".json";
+
+    public static boolean fileExists(Path file) {
+        return Files.exists(file);
+    }
 
     public static void createDirectory(Path dir) {
         if (Files.notExists(dir)) {
@@ -90,6 +97,30 @@ public class AFileIOUtils {
         }
     }
 
+    public static void deleteFile(Path file) {
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException exception) {
+            AStages.LOGGER.error(exception.getLocalizedMessage());
+        }
+    }
+
+    public static void deleteDirectory(Path directory) {
+        deleteFile(directory);
+    }
+
+    public static boolean directoryHasNoFilesWithExtension(Path directory, String extension) {
+        if (!Files.isDirectory(directory)) return true;
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, "*" + extension)) {
+            return !stream.iterator().hasNext();
+        } catch (IOException exception) {
+            AStages.LOGGER.error(exception.getLocalizedMessage());
+        }
+
+        return false;
+    }
+
     public static CompoundTag readFileNbt(Path file) {
         return Legacy.readFileNbt(file.toFile());
     }
@@ -156,6 +187,11 @@ public class AFileIOUtils {
             } catch (IOException exception) {
                 AStages.LOGGER.error(exception.getLocalizedMessage());
             }
+        }
+
+        @SuppressWarnings("ResultOfMethodCallIgnored")
+        public static void deleteFile(File file) {
+            file.delete();
         }
 
         public static CompoundTag readFileNbt(File file) {

@@ -1,148 +1,242 @@
 package com.alessandro.astages.simple;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.AFileIOUtils;
+import com.alessandro.astages.api.AStagesFolderSystem;
+import com.alessandro.astages.api.base.Elaborator;
 import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.exception.SimpleRestrictionsException;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.reload.RequestReloadS2CPacket;
+import com.alessandro.astages.plugin.APluginManager;
+import com.alessandro.astages.plugin.AStagesPlugin;
+import com.alessandro.astages.plugin.container.SimpleRestrictionsContainer;
+import com.alessandro.astages.registry.AStagesRegistries;
+import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.ARestrictionTypes;
+import com.alessandro.astages.store.ASimpleRestrictionType;
+import com.alessandro.astages.store.ASimpleRestrictionTypes;
 import com.alessandro.astages.util.ReloadType;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.neoforged.fml.loading.FMLPaths;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 @NotNullParamsAndMethodsReturn
 public class ASimpleRestrictionManager {
-    public static Map<ASimpleRestrictionType, List<ASimpleRestriction>> RESTRICTIONS = null;
+    public static Map<ASimpleRestrictionType, List<ASimpleRestriction>> RESTRICTION_CACHE = null;
+    public static Map<String, Set<ASimpleRestrictionType>> ID_TO_TYPE_CACHE = null;
+    public static Map<ASimpleRestrictionType, Boolean> HAS_RESTRICTION_BEEN_MODIFIED = null;
+    public static boolean IS_MIGRATION_HAPPENED = false;
     private static int canBeReloadable = 0;
 
-    //.setLenient()
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-    public static final Type TYPE = new TypeToken<Map<ASimpleRestrictionType, List<ASimpleRestriction>>>(){}.getType();
+    public static Map<ASimpleRestrictionType, ARestrictionType> CONVERSION_MAP = new HashMap<>();
+    public static Map<ASimpleRestrictionType, Elaborator<ASimpleRestriction, Boolean>> ELABORATION_MAP = new HashMap<>();
+    public static Map<ASimpleRestrictionType, Elaborator<String, ASimpleRestrictionType>> AFTER_REMOVE_ELABORATION_MAP = new HashMap<>();
+    public static Map<ASimpleRestrictionType, BiConsumer<CommandBuildContext, ArgumentBuilder<CommandSourceStack, ?>>> COMMAND_MAP = new HashMap<>();
+
+    static {
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.ITEM, ARestrictionTypes.ITEM);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.MOD, ARestrictionTypes.ITEM);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.ARMOR, ARestrictionTypes.ITEM);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.DIMENSION, ARestrictionTypes.DIMENSION);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.GUI, ARestrictionTypes.SCREEN);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.ORE, ARestrictionTypes.ORE);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.STRUCTURE, ARestrictionTypes.STRUCTURE);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.TAME, ARestrictionTypes.PET);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.MOUNT, ARestrictionTypes.PET);
+        CONVERSION_MAP.put(ASimpleRestrictionTypes.RECIPE, ARestrictionTypes.RECIPE);
+
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.ITEM, ASimpleElaborator::elaborateItem);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.MOD, ASimpleElaborator::elaborateMod);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.DIMENSION, ASimpleElaborator::elaborateDimension);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.GUI, ASimpleElaborator::elaborateGui);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.ORE, ASimpleElaborator::elaborateOre);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.STRUCTURE, ASimpleElaborator::elaborateStructure);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.TAME, ASimpleElaborator::elaborateTame);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.MOUNT, ASimpleElaborator::elaborateMount);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.RECIPE, ASimpleElaborator::elaborateRecipe);
+        ELABORATION_MAP.put(ASimpleRestrictionTypes.ARMOR, ASimpleElaborator::elaborateArmor);
+
+        AFTER_REMOVE_ELABORATION_MAP.put(ASimpleRestrictionTypes.ORE,
+            (restrictionId, type) -> ANetworking.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE)));
+
+        COMMAND_MAP.put(ASimpleRestrictionTypes.ITEM, ASimpleCommands::item);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.MOD, ASimpleCommands::mod);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.DIMENSION, ASimpleCommands::dimension);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.GUI, ASimpleCommands::gui);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.ORE, ASimpleCommands::ore);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.STRUCTURE, ASimpleCommands::structure);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.TAME, ASimpleCommands::tame);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.MOUNT, ASimpleCommands::mount);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.RECIPE, ASimpleCommands::recipe);
+        COMMAND_MAP.put(ASimpleRestrictionTypes.ARMOR, ASimpleCommands::armor);
+
+        var simpleRestrictionsContainer = SimpleRestrictionsContainer.initialize();
+        APluginManager.callMethod(simpleRestrictionsContainer, AStagesPlugin::registerSimpleRestriction);
+        CONVERSION_MAP.putAll(simpleRestrictionsContainer.getTemporaryConversionMap());
+        ELABORATION_MAP.putAll(simpleRestrictionsContainer.getTemporaryElaborationMap());
+        AFTER_REMOVE_ELABORATION_MAP.putAll(simpleRestrictionsContainer.getTemporaryAfterRemoveElaborationMap());
+        COMMAND_MAP.putAll(simpleRestrictionsContainer.getTemporaryCommandMap());
+    }
 
     public static void addRestriction(ASimpleRestrictionType type, String id, String stage, String object) {
-        var newList = RESTRICTIONS.getOrDefault(type, new ArrayList<>());
         var restriction = new ASimpleRestriction(id, stage, object);
-        newList.add(restriction);
-        RESTRICTIONS.put(type, newList);
+
+        RESTRICTION_CACHE.computeIfAbsent(type, key -> new ArrayList<>()).add(restriction);
+        ID_TO_TYPE_CACHE.computeIfAbsent(id, key -> new HashSet<>()).add(type);
+        HAS_RESTRICTION_BEEN_MODIFIED.put(type, true);
 
         synchronizeWithServer(type, restriction);
 
         canBeReloadable++;
-
-        if (canBeReloadable == 5) {
-            writeToFile();
+        if (canBeReloadable == AStagesCommon.SIMPLE_RESTRICTIONS_RELOADABLE.get()) {
+            writeToFile(false);
             canBeReloadable = 0;
         }
+    }
+
+    public static void synchronizeWithServer(ASimpleRestrictionType type, Collection<ASimpleRestriction> restrictions) {
+        restrictions.forEach(restriction -> synchronizeWithServer(type, restriction));
+    }
+
+    public static void synchronizeWithServerNoUpdate(ASimpleRestrictionType type, Collection<ASimpleRestriction> restrictions) {
+        restrictions.forEach(restriction -> synchronizeWithServerNoUpdate(type, restriction));
     }
 
     public static void synchronizeWithServer(ASimpleRestrictionType type, ASimpleRestriction restriction) {
         synchronizeWithServer(type, restriction, true);
     }
+
     public static void synchronizeWithServerNoUpdate(ASimpleRestrictionType type, ASimpleRestriction restriction) {
         synchronizeWithServer(type, restriction, false);
     }
 
     private static void synchronizeWithServer(ASimpleRestrictionType type, ASimpleRestriction restriction, boolean markAsDirty) {
-        switch (type) {
-            case ITEM -> ASimpleElaborator.elaborateItem(restriction, markAsDirty);
-            case MOD -> ASimpleElaborator.elaborateMod(restriction, markAsDirty);
-            case DIMENSION -> ASimpleElaborator.elaborateDimension(restriction);
-            case GUI -> ASimpleElaborator.elaborateGui(restriction);
-            case ORE -> ASimpleElaborator.elaborateOre(restriction, markAsDirty);
-            case STRUCTURE -> ASimpleElaborator.elaborateStructure(restriction);
-            case BIOME -> AStages.LOGGER.debug("NOT YET IMPLEMENTED!");
-            case TAME -> ASimpleElaborator.elaborateTame(restriction);
-            case MOUNT -> ASimpleElaborator.elaborateMount(restriction);
-            case RECIPE -> ASimpleElaborator.elaborateRecipe(restriction);
-            case ARMOR -> ASimpleElaborator.elaborateArmor(restriction, markAsDirty);
-        }
+        ELABORATION_MAP.get(type).elaborate(restriction, markAsDirty);
     }
 
     public static void readFromFile() {
-        if (RESTRICTIONS != null) {
-            AStages.LOGGER.error("SKIPPED READING!");
+        if (RESTRICTION_CACHE != null && IS_MIGRATION_HAPPENED) {
+            AStages.LOGGER.info("Simple Restrictions cache already built! Skipped file reading.");
             return;
         }
 
-        AStages.LOGGER.debug("READING IN PROGRESS...");
+        RESTRICTION_CACHE = new HashMap<>();
+        ID_TO_TYPE_CACHE = new HashMap<>();
+        HAS_RESTRICTION_BEEN_MODIFIED = new HashMap<>();
 
-        try (var fileReader = new FileReader(getConfigFileWithRestrictions())) {
-            RESTRICTIONS = GSON.fromJson(fileReader, TYPE);
+        // Issue: doesn't check if the folder has a registry associated.
+        // The implementation below this block of code checks only for actual existing registries.
+//        var root = AStagesFolderSystem.getSimpleRestrictionsFolder().getValue();
+//        Files.list(root).forEach(directory -> {
+//            var modId = directory.getFileName().toString();
+//
+//            Files.list(directory).forEach(file -> {
+//                var restrictionTypeIdentifier = file.getFileName().toString();
+//
+//                List<ASimpleRestriction> restrictions = AFileIOUtils.readList(file, ASimpleRestriction.class);
+//
+//                var restrictionType = AStagesRegistries.SIMPLE_RESTRICTION_TYPES.getValue(AResourceLocation.fromNamespaceAndPath(modId, restrictionTypeIdentifier));
+//                RESTRICTION_CACHE.put(restrictionType, restrictions);
+//                HAS_RESTRICTION_BEEN_MODIFIED.put(restrictionType, false);
+//
+//                synchronizeWithServer(restrictionType, restrictions);
+//            });
+//        });
 
-            if (RESTRICTIONS == null) {
-                RESTRICTIONS = new HashMap<>();
-            } else {
-                for (var type : RESTRICTIONS.keySet()) {
-                    for (var restriction : RESTRICTIONS.get(type)) {
-                        synchronizeWithServer(type, restriction);
+        AStagesRegistries.SIMPLE_RESTRICTION_TYPES.entrySet()
+            .forEach(entry -> {
+                var restrictionIdentifier = entry.getKey().location();
+                var modId = restrictionIdentifier.getNamespace();
+                var restrictionTypeIdentifier = restrictionIdentifier.getPath();
+
+                var file = AStagesFolderSystem.getSimpleRestrictionsFolderForMod(modId)
+                    .resolve(restrictionTypeIdentifier + AFileIOUtils.JSON_EXTENSION);
+
+                if (AFileIOUtils.fileExists(file)) {
+                    List<ASimpleRestriction> restrictions = AFileIOUtils.readList(file, ASimpleRestriction.class);
+
+                    var restrictionType = entry.getValue();
+                    RESTRICTION_CACHE.put(restrictionType, restrictions);
+                    HAS_RESTRICTION_BEEN_MODIFIED.put(restrictionType, false);
+
+                    for (var restriction : restrictions) {
+                        ID_TO_TYPE_CACHE.computeIfAbsent(restriction.id, key -> new HashSet<>()).add(restrictionType);
                     }
+
+                    synchronizeWithServer(restrictionType, restrictions);
+                }
+            });
+    }
+
+    public static void writeToFile(boolean clearCaches) {
+        HAS_RESTRICTION_BEEN_MODIFIED.forEach((type, hasBeenModified) -> {
+            if (hasBeenModified) {
+                var restrictionsToStore = RESTRICTION_CACHE.getOrDefault(type, null);
+
+                var identifier = AStagesRegistries.SIMPLE_RESTRICTION_TYPES.getKey(type);
+                if (identifier == null) {
+                    throw SimpleRestrictionsException.onWrite();
+                }
+
+                var modId = identifier.getNamespace();
+                var restrictionTypeIdentifier = identifier.getPath();
+
+                var file = AStagesFolderSystem.getSimpleRestrictionsFolderForMod(modId)
+                    .resolve(restrictionTypeIdentifier + AFileIOUtils.JSON_EXTENSION);
+
+                if (restrictionsToStore == null) {
+                    AFileIOUtils.deleteFile(file);
+
+                    var parentDirectory = file.getParent();
+                    if (AFileIOUtils.directoryHasNoFilesWithExtension(parentDirectory, AFileIOUtils.JSON_EXTENSION)) {
+                        AFileIOUtils.deleteDirectory(parentDirectory);
+                    }
+                } else {
+                    AFileIOUtils.writeFileContent(file, restrictionsToStore);
                 }
             }
-        } catch (IOException exception) {
-            AStages.LOGGER.error(exception.getLocalizedMessage());
+        });
+
+        if (clearCaches) {
+            RESTRICTION_CACHE = null;
+            ID_TO_TYPE_CACHE = null;
+            HAS_RESTRICTION_BEEN_MODIFIED = null;
         }
-    }
-
-    public static void writeToFile() {
-        AStages.LOGGER.debug("WRITING IN PROGRESS...");
-
-        try (var fileWriter = new FileWriter(getConfigFileWithRestrictions())) {
-            GSON.toJson(RESTRICTIONS, fileWriter);
-        } catch (IOException exception) {
-            AStages.LOGGER.error(exception.getLocalizedMessage());
-        }
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static File getConfigFileWithRestrictions() {
-        File saveDir = new File(FMLPaths.CONFIGDIR.get().toFile(), "astages");
-
-        if (!saveDir.exists()) {
-            saveDir.mkdirs();
-        }
-
-        File file = new File(saveDir, "simple_restrictions.json");
-        try {
-            file.createNewFile();
-        } catch (IOException exception) {
-            AStages.LOGGER.error(exception.getLocalizedMessage());
-        }
-
-        return file;
     }
 
     public static void removeRestriction(String id, ASimpleRestrictionType type) {
-        ARestrictionManager.removeRestriction(id, type.convert());
-        RESTRICTIONS.get(type).removeIf(restriction -> restriction.id.equals(id));
+        ARestrictionManager.removeRestriction(id, CONVERSION_MAP.get(type));
+        RESTRICTION_CACHE.get(type).removeIf(restriction -> restriction.id.equals(id));
+        ID_TO_TYPE_CACHE.get(id).remove(type);
         ARestrictionManager.SIMPLE_IDS.remove(id);
+        HAS_RESTRICTION_BEEN_MODIFIED.put(type, true);
+
         ARestrictionManager.reflectSimpleIdsChangesToClients(null, List.of(id.substring(7)), ASyncOperation.REMOVE);
 
-        if (RESTRICTIONS.get(type).isEmpty()) {
-            RESTRICTIONS.remove(type);
+        if (RESTRICTION_CACHE.get(type).isEmpty()) {
+            RESTRICTION_CACHE.remove(type);
         }
 
-        if (type == ASimpleRestrictionType.ORE) {
-            ANetworking.sendToAllPlayers(new RequestReloadS2CPacket(ReloadType.ORE));
+        if (AFTER_REMOVE_ELABORATION_MAP.containsKey(type)) {
+            AFTER_REMOVE_ELABORATION_MAP.get(type).elaborate(id, type);
         }
     }
 
     public static void reloadBeforeScripts() { // BETTER BEFORE!
-        for (var type : RESTRICTIONS.keySet()) {
-            for (var restriction : RESTRICTIONS.get(type)) {
-                synchronizeWithServerNoUpdate(type, restriction);
-            }
+        for (var type : RESTRICTION_CACHE.keySet()) {
+            synchronizeWithServerNoUpdate(type, RESTRICTION_CACHE.get(type));
         }
+    }
+
+    public static Set<ASimpleRestrictionType> getAssociatedTypes(String id) {
+        AStages.LOGGER.debug(ID_TO_TYPE_CACHE.toString());
+        return ID_TO_TYPE_CACHE.getOrDefault(id, new HashSet<>());
     }
 }

@@ -1,8 +1,10 @@
 package com.alessandro.astages.api.holder;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.capability.OfflinePlayerStage;
 import com.alessandro.astages.capability.ServerStage;
 import net.minecraft.server.MinecraftServer;
@@ -50,8 +52,16 @@ public class AHolder {
         return new AHolder(true, false, false);
     }
 
-    public static AHolder serverAndPlayer(Player player) {
-        return new AHolder(true, true, false).addPlayer(player);
+    public static AHolder serverAndPlayer(@Nullable Player player) {
+        var holder = new AHolder(true, true, false);
+
+        if (player != null) {
+            holder.addPlayer(player);
+        } else {
+            AStages.LOGGER.info("Encountered null player, skipped adding it to holder!");
+        }
+
+        return holder;
     }
 
     private AHolder addPlayer(UUID uuid) {

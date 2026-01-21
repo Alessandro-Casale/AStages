@@ -14,6 +14,6 @@ public class AInventoryUtils {
     public static void updateSelectedSlot(ServerPlayer player) {
         // Synchronize changes with client!
         var slot = player.getInventory().selected;
-        player.connection.send(new ClientboundContainerSetSlotPacket(-2, 0, slot, player.getInventory().getItem(slot)));
+        APlayerUtils.sendVanillaPacket(player, new ClientboundContainerSetSlotPacket(-2, 0, slot, player.getInventory().getItem(slot)));
     }
 }

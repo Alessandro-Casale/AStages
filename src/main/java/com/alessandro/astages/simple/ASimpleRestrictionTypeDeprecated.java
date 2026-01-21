@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 @NotNullParamsAndMethodsReturn
-public enum ASimpleRestrictionType {
+public enum ASimpleRestrictionTypeDeprecated {
     ITEM,
     MOD,
     DIMENSION,
@@ -36,8 +36,8 @@ public enum ASimpleRestrictionType {
         return toReturn;
     }
 
-    public static ASimpleRestrictionType getType(String name) {
-        return ASimpleRestrictionType.valueOf(name.toUpperCase(Locale.ROOT));
+    public static ASimpleRestrictionTypeDeprecated getType(String name) {
+        return ASimpleRestrictionTypeDeprecated.valueOf(name.toUpperCase(Locale.ROOT));
     }
 
     public ARestrictionType convert() {

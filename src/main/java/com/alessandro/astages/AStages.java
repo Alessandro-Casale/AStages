@@ -36,6 +36,7 @@ public class AStages {
 
     public static final Registry<Attribute<?>> ATTRIBUTES_REGISTRY = Attributes.ATTRIBUTES.makeRegistry(builder -> builder.sync(true));
     public static final Registry<ARestrictionType> RESTRICTION_TYPES_REGISTRY = ARestrictionTypes.RESTRICTION_TYPES.makeRegistry(builder -> builder.sync(true));
+    public static final Registry<ASimpleRestrictionType> SIMPLE_RESTRICTION_TYPES_REGISTRY = ASimpleRestrictionTypes.SIMPLE_RESTRICTION_TYPES.makeRegistry(builder -> builder.sync(true));
 
     public AStages(IEventBus modEventBus, ModContainer modContainer) {
         AProvider.ATTACHMENT_TYPES.register(modEventBus);
@@ -54,9 +55,10 @@ public class AStages {
         Attributes.Region.ATTRIBUTES.register(modEventBus);
 
         ARestrictionTypes.RESTRICTION_TYPES.register(modEventBus);
+        ASimpleRestrictionTypes.SIMPLE_RESTRICTION_TYPES.register(modEventBus);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, AStagesCommon.SPEC, "astages-common.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, AStagesClient.SPEC, "astages-client.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, AStagesCommon.SPEC, "astages/astages-common.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, AStagesClient.SPEC, "astages/astages-client.toml");
 
         APluginFinder.getAllPlugins();
 

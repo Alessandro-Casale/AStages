@@ -32,4 +32,11 @@ public class Ref<T> {
     public int hashCode() {
         return Objects.hashCode(value);
     }
+
+    @Override
+    public String toString() {
+        return "Ref{" +
+            "value=" + value +
+            '}';
+    }
 }

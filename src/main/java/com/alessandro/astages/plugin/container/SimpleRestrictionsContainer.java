@@ -27,40 +27,45 @@ public class SimpleRestrictionsContainer {
         return new SimpleRestrictionsContainer();
     }
 
-    public void registerFor(ASimpleRestrictionType newType) {
+    public SimpleRestrictionsContainer registerFor(ASimpleRestrictionType newType) {
         latestModifiedType = newType;
+        return this;
     }
 
-    public void convertTo(ARestrictionType associatedType) {
+    public SimpleRestrictionsContainer convertTo(ARestrictionType associatedType) {
         if (latestModifiedType == null) {
             throw SimpleRestrictionsException.onRegisterConversionMethod();
         }
 
         TEMPORARY_CONVERSION_MAP.put(latestModifiedType, associatedType);
+        return this;
     }
 
-    public void elaborateUsing(Elaborator<ASimpleRestriction, Boolean> elaborator) {
+    public SimpleRestrictionsContainer elaborateUsing(Elaborator<ASimpleRestriction, Boolean> elaborator) {
         if (latestModifiedType == null) {
             throw SimpleRestrictionsException.onRegisterElaborationMethod();
         }
 
         TEMPORARY_ELABORATION_MAP.put(latestModifiedType, elaborator);
+        return this;
     }
 
-    public void afterRemoveRun(Elaborator<String, ASimpleRestrictionType> elaborator) {
+    public SimpleRestrictionsContainer afterRemoveRun(Elaborator<String, ASimpleRestrictionType> elaborator) {
         if (latestModifiedType == null) {
             throw SimpleRestrictionsException.onRegisterAfterRemoveMethod();
         }
 
         TEMPORARY_AFTER_REMOVE_ELABORATION_MAP.put(latestModifiedType, elaborator);
+        return this;
     }
 
-    public void addCommand(BiConsumer<CommandBuildContext, ArgumentBuilder<CommandSourceStack, ?>> command) {
+    public SimpleRestrictionsContainer addCommand(BiConsumer<CommandBuildContext, ArgumentBuilder<CommandSourceStack, ?>> command) {
         if (latestModifiedType == null) {
             throw SimpleRestrictionsException.onCommandAddedMethod();
         }
 
         TEMPORARY_COMMAND_MAP.put(latestModifiedType, command);
+        return this;
     }
 
     public Map<ASimpleRestrictionType, ARestrictionType> getTemporaryConversionMap() {

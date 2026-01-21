@@ -71,8 +71,8 @@ public class ASimpleElaborator {
 
     public static void elaborateOre(ASimpleRestriction simple, boolean markAsDirty) {
         String[] splice = simple.object.split("//");
-        BlockState original = Objects.requireNonNull(BuiltInRegistries.BLOCK.get(AResourceLocation.parse(splice[0]))).defaultBlockState();
-        var replacement = Objects.requireNonNull(BuiltInRegistries.BLOCK.get(AResourceLocation.parse(splice[1]))).defaultBlockState();
+        BlockState original = BuiltInRegistries.BLOCK.get(AResourceLocation.parse(splice[0])).defaultBlockState();
+        var replacement = BuiltInRegistries.BLOCK.get(AResourceLocation.parse(splice[1])).defaultBlockState();
 
         if (Attributes.AFFECTS_PLAYER_ACTIONS.getDefaultValue() != null) { // Only for suppressing unboxing error
             // For backward compatibility
@@ -128,7 +128,7 @@ public class ASimpleElaborator {
 
     public static void elaborateArmor(ASimpleRestriction simple, boolean markAsDirty) {
         var restriction = new AItemRestriction(simple.id, simple.stage);
-        restriction.restrict(Objects.requireNonNull(BuiltInRegistries.ITEM.get(AResourceLocation.parse(simple.object))));
+        restriction.restrict(BuiltInRegistries.ITEM.get(AResourceLocation.parse(simple.object)));
         restriction.setArmorAttributes();
 
         ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
@@ -155,9 +155,9 @@ public class ASimpleElaborator {
 
     public static int commandOreWithDefaultValue(CommandContext<CommandSourceStack> c) {
         return addRestrictionForType(c.getSource().getPlayer(), ASimpleRestrictionTypes.ORE, StringArgumentType.getString(c, "id"), StringArgumentType.getString(c, "stage"),
-            Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "original").getState().getBlock())) +
+            BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "original").getState().getBlock()) +
                 "//" +
-                Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "replacement").getState().getBlock())) +
+                BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "replacement").getState().getBlock()) +
                 "//" +
                 Attributes.AFFECTS_PLAYER_ACTIONS.getDefaultValue()
         );
@@ -165,9 +165,9 @@ public class ASimpleElaborator {
 
     public static int commandOre(CommandContext<CommandSourceStack> c) {
         return addRestrictionForType(c.getSource().getPlayer(), ASimpleRestrictionTypes.ORE, StringArgumentType.getString(c, "id"), StringArgumentType.getString(c, "stage"),
-            Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "original").getState().getBlock())) +
+            BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "original").getState().getBlock()) +
                 "//" +
-                Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "replacement").getState().getBlock())) +
+                BuiltInRegistries.BLOCK.getKey(BlockStateArgument.getBlock(c, "replacement").getState().getBlock()) +
                 "//" +
                 BoolArgumentType.getBool(c, "affects_player_actions")
         );
@@ -186,6 +186,7 @@ public class ASimpleElaborator {
         return addRestrictionForType(c.getSource().getPlayer(), ASimpleRestrictionTypes.STRUCTURE, StringArgumentType.getString(c, "id"), StringArgumentType.getString(c, "stage"), structureId.toString());
     }
 
+    @SuppressWarnings("unused")
     public static int commandBiome(CommandContext<CommandSourceStack> ignoredC) {
         throw new UnsupportedOperationException("Biome elaboration not supported!");
     }
@@ -200,9 +201,9 @@ public class ASimpleElaborator {
 
     public static int commandRecipe(CommandContext<CommandSourceStack> c) throws CommandSyntaxException {
         return addRestrictionForType(c.getSource().getPlayer(), ASimpleRestrictionTypes.RECIPE, StringArgumentType.getString(c, "id"), StringArgumentType.getString(c, "stage"),
-            Objects.requireNonNull(Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getKey(ResourceLocationArgument.getRecipe(c, "recipe").value().getType())).toString()) +
+            BuiltInRegistries.RECIPE_TYPE.getKey(ResourceLocationArgument.getRecipe(c, "recipe").value().getType()) +
                 "//" +
-                Objects.requireNonNull(ResourceLocationArgument.getRecipe(c, "recipe").id().toString())
+                ResourceLocationArgument.getRecipe(c, "recipe").id()
         );
     }
 

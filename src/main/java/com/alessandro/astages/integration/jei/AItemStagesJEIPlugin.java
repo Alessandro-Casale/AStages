@@ -2,10 +2,11 @@ package com.alessandro.astages.integration.jei;
 
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.AStagesClientUtils;
 import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
@@ -30,15 +31,16 @@ public class AItemStagesJEIPlugin implements IModPlugin {
     private static final HashMap<String, List<ItemStack>> ITEM_CACHE = new HashMap<>();
     private static final HashMap<String, HashMap<IIngredientType<?>, List<Object>>> GENERIC_CACHE = new HashMap<>();
 
-
     private IJeiRuntime runtime;
     private static final ResourceLocation PLUGIN_ID = AResourceLocation.fromNamespaceAndPath("item_jei");
 
     public AItemStagesJEIPlugin() {
         if (!Mods.JEI.isLoaded()) return;
 
-        if (EffectiveSide.get().isClient() && !EffectiveSide.get().isServer()) {
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class, e -> updateGui(null, null));
+        if (EffectiveSide.get().isClient()) {
+            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class,
+                e -> updateGui(null, null)
+            );
 
             NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
                 if (e.getOperation() != AOperation.LOGIN) {
@@ -106,25 +108,26 @@ public class AItemStagesJEIPlugin implements IModPlugin {
 
                 for (var stage : ITEM_CACHE.keySet()) {
                     // You don't need to "add" stacks, is really weird, no?!
-                    if (!ClientPlayerStage.hasStage(stage)) {
-                        var itemList = ITEM_CACHE.get(stage);
-                        if (itemList.size() < 500) {
-                            manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
-                        } else {
-                            var mod = itemList.size() % 500;
-                            for (int i = 0; i <= itemList.size(); i += 500) {
-                                try {
-                                    manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
-                                } catch (IndexOutOfBoundsException exception) {
-                                    manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
-                                }
-                            }
-                        }
+                    if (!AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(), stage)) {
+                        manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                        var itemList = ITEM_CACHE.get(stage);
+//                        if (itemList.size() < 500) {
+//                            manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                        } else {
+//                            var mod = itemList.size() % 500;
+//                            for (int i = 0; i <= itemList.size(); i += 500) {
+//                                try {
+//                                    manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
+//                                } catch (IndexOutOfBoundsException exception) {
+//                                    manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
+//                                }
+//                            }
+//                        }
                     }
                 }
 
                 for (var stage : GENERIC_CACHE.keySet()) {
-                    if (!ClientPlayerStage.hasStage(stage)) {
+                    if (!AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(),stage)) {
                         for (var type : GENERIC_CACHE.get(stage).keySet()) {
                             manager.removeIngredientsAtRuntime((IIngredientType<T>) type, (Collection<T>) GENERIC_CACHE.get(stage).get(type));
                         }
@@ -137,20 +140,20 @@ public class AItemStagesJEIPlugin implements IModPlugin {
                 case REMOVE -> {
                     for (var stage : stages) {
                         if (ITEM_CACHE.containsKey(stage)) {
-                            // manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
-                            var itemList = ITEM_CACHE.get(stage);
-                            if (itemList.size() < 500) {
-                                manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
-                            } else {
-                                var mod = itemList.size() % 500;
-                                for (int i = 0; i <= itemList.size(); i += 500) {
-                                    try {
-                                        manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
-                                    } catch (IndexOutOfBoundsException exception) {
-                                        manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
-                                    }
-                                }
-                            }
+                            manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                            var itemList = ITEM_CACHE.get(stage);
+//                            if (itemList.size() < 500) {
+//                                manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                            } else {
+//                                var mod = itemList.size() % 500;
+//                                for (int i = 0; i <= itemList.size(); i += 500) {
+//                                    try {
+//                                        manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
+//                                    } catch (IndexOutOfBoundsException exception) {
+//                                        manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
+//                                    }
+//                                }
+//                            }
                         }
 
                         if (GENERIC_CACHE.containsKey(stage)) {
@@ -163,20 +166,20 @@ public class AItemStagesJEIPlugin implements IModPlugin {
                 case ADD -> {
                     for (var stage : stages) {
                         if (ITEM_CACHE.containsKey(stage)) {
-                            // manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
-                            var itemList = ITEM_CACHE.get(stage);
-                            if (itemList.size() < 500) {
-                                manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
-                            } else {
-                                var mod = itemList.size() % 500;
-                                for (int i = 0; i <= itemList.size(); i += 500) {
-                                    try {
-                                        manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
-                                    } catch (IndexOutOfBoundsException exception) {
-                                        manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
-                                    }
-                                }
-                            }
+                            manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                            var itemList = ITEM_CACHE.get(stage);
+//                            if (itemList.size() < 500) {
+//                                manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ITEM_CACHE.get(stage));
+//                            } else {
+//                                var mod = itemList.size() % 500;
+//                                for (int i = 0; i <= itemList.size(); i += 500) {
+//                                    try {
+//                                        manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(i, i + 500));
+//                                    } catch (IndexOutOfBoundsException exception) {
+//                                        manager.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemList.subList(itemList.size() - mod, itemList.size() - 1));
+//                                    }
+//                                }
+//                            }
                         }
 
                         if (GENERIC_CACHE.containsKey(stage)) {

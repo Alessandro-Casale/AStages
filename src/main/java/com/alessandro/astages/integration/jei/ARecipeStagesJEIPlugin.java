@@ -2,10 +2,11 @@ package com.alessandro.astages.integration.jei;
 
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.AStagesClientUtils;
 import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.capability.ClientPlayerStage;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
@@ -16,7 +17,6 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -97,7 +97,7 @@ public class ARecipeStagesJEIPlugin implements IModPlugin {
         for (var stage : map.keySet()) {
             recipeList = lookup.get().filter(c -> map.get(stage).contains(c.id())).toList();
 
-            if (ClientPlayerStage.hasStage(stage)) {
+            if (AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(), stage)) {
                 runtime.getRecipeManager().unhideRecipes(jeiType, recipeList);
             } else {
                 runtime.getRecipeManager().hideRecipes(jeiType, recipeList);
@@ -122,7 +122,7 @@ public class ARecipeStagesJEIPlugin implements IModPlugin {
             .filter(r -> r.id().getNamespace().equals(modId))
             .toList();
 
-        if (ClientPlayerStage.hasStage(stage)) {
+        if (AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(), stage)) {
             runtime.getRecipeManager().unhideRecipes(type, newList);
         } else {
             runtime.getRecipeManager().hideRecipes(type, newList);

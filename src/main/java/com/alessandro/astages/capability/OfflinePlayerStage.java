@@ -27,8 +27,11 @@ import java.util.*;
 @EventBusSubscriber(modid = AStages.MODID)
 public class OfflinePlayerStage {
     public static final Map<UUID, Set<String>> CACHE = new HashMap<>();
+
+    // Try using a Google BiMap
     public static Map<UUID, String> UUID_USERNAME;
     public static Map<String, UUID> USERNAME_UUID;
+    // public static BiMap<String, UUID> USERNAME_UUID = HashBiMap.create();
 
     @SubscribeEvent
     public static void serverStarted(ServerStartingEvent event) {

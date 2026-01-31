@@ -1,8 +1,8 @@
 package com.alessandro.astages.core.client.restriction.item;
 
-import com.alessandro.astages.core.AModelManager;
-import com.alessandro.astages.store.AModel;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.core.AClientModelManager;
+import com.alessandro.astages.store.AModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +27,7 @@ public class AClientItemPredicateRestriction extends AClientBaseItemRestriction<
     public boolean isRestricted(ItemStack stack) {
         if (stack.isEmpty()) { return false; }
 
-        return ((AModel<Predicate<ItemStack>>) AModelManager.MODELS.getModel(modelId)).modelObject().test(stack);
+        return ((AModel<Predicate<ItemStack>>) AClientModelManager.MODELS.getModel(modelId)).modelObject().test(stack);
     }
 
     public ResourceLocation getModelId() {

@@ -3,7 +3,7 @@ package com.alessandro.astages.core;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.constant.AOperation;
-import com.alessandro.astages.api.constant.ARestrictionStage;
+import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.constant.ASyncOperation;
 import com.alessandro.astages.api.develop.NotYetImplemented;
 import com.alessandro.astages.api.event.AddRestrictionEvent;
@@ -148,7 +148,7 @@ public class ARestrictionManager {
         APluginManager.callMethod(AStagesPlugin::clearClientOnLogin);
     }
 
-    public static void addRestrictionsViaJavaCode(ARestrictionStage stage) {
+    public static void addRestrictionsViaJavaCode(AEventPhase stage) {
         ALoader.EVENT_BUS.post(new AddRestrictionEvent(stage));
     }
 

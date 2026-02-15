@@ -1,5 +1,8 @@
 package com.alessandro.astages.core;
 
+import com.alessandro.astages.api.ALoader;
+import com.alessandro.astages.api.constant.AEventPhase;
+import com.alessandro.astages.api.event.AddStageEvent;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.core.stage.manager.AGenericManager;
 import com.alessandro.astages.core.stage.manager.APermanentManager;
@@ -27,5 +30,9 @@ public class AStageManager {
 
     public static void clientSynchronization(@Nullable ServerPlayer player) {
         GENERIC_INSTANCE.synchronizeWithClient(player);
+    }
+
+    public static void addStagesViaJavaCode(AEventPhase stage) {
+        ALoader.EVENT_BUS.post(new AddStageEvent(stage));
     }
 }

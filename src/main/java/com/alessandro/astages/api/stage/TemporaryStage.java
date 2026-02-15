@@ -34,8 +34,8 @@ public class TemporaryStage extends BaseStage<TemporaryStage> implements ATickab
     @Override
     public AttributeStore allowedAttributes() {
         var attributeStore = new AttributeStore()
-            .addAttribute(StageAttributes.TICK_EVENT)
-            .addAttribute(StageAttributes.EXPIRED_EVENT);
+            .addAttribute(StageAttributes.TICK_EVENT, true)
+            .addAttribute(StageAttributes.EXPIRED_EVENT, true);
 
         return super.allowedAttributes().combineWith(attributeStore);
     }

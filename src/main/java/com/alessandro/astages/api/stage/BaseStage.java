@@ -101,19 +101,19 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AGrantable {
             .addAttribute(StageAttributes.SERVER_ONLY)
 
             .addAttribute(StageAttributes.TITLE_ADD)
-            .addAttribute(StageAttributes.TITLE_REMOVE)
-            .addAttribute(StageAttributes.SUBTITLE_ADD)
-            .addAttribute(StageAttributes.SUBTITLE_REMOVE)
-            .addAttribute(StageAttributes.CHAT_MESSAGE_ADD)
-            .addAttribute(StageAttributes.CHAT_MESSAGE_REMOVE)
+            .addAttribute(StageAttributes.TITLE_REMOVE, true)
+            .addAttribute(StageAttributes.SUBTITLE_ADD, true)
+            .addAttribute(StageAttributes.SUBTITLE_REMOVE, true)
+            .addAttribute(StageAttributes.CHAT_MESSAGE_ADD, true)
+            .addAttribute(StageAttributes.CHAT_MESSAGE_REMOVE, true)
 
             .addAttribute(StageAttributes.FADE_IN)
             .addAttribute(StageAttributes.FADE_OUT)
             .addAttribute(StageAttributes.STAY)
 
-            .addAttribute(StageAttributes.ICON)
+            .addAttribute(StageAttributes.ICON, true)
 
-            .addAttribute(StageAttributes.GRANTED_EVENT);
+            .addAttribute(StageAttributes.GRANTED_EVENT, true);
 
         var pluginAttributes = AStageManager.ATTACHED_ATTRIBUTES.getOrDefault(BaseStage.class, null);
 

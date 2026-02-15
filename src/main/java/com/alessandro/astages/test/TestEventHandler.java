@@ -6,6 +6,8 @@ import com.alessandro.astages.api.ARestrictionUtils;
 import com.alessandro.astages.api.constant.ARestrictionStage;
 import com.alessandro.astages.api.event.AddRestrictionEvent;
 import com.alessandro.astages.config.AStagesCommon;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,5 +25,10 @@ public class TestEventHandler {
             .setCanPickedUp(true)
             .setCanBeStoredInContainers(false);
         ARestrictionUtils.addRestrictionForTag("astages:item3", "stage_item_3", AResourceLocation.fromTag("#forge:ingots/iron"));
+
+        ARestrictionUtils.addRestrictionForMob("astages:mob1", "stage_mob_1", EntityType.BEE)
+            .setDimension(AResourceLocation.parse("minecraft:overworld"))
+            .restrictSpawnType(MobSpawnType.SPAWN_EGG)
+            .restrictBiomeSpawn(AResourceLocation.parse("minecraft:plains"));
     }
 }

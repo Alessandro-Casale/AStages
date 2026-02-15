@@ -1,16 +1,16 @@
 package com.alessandro.astages.integration.kubejs.util;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.event.player.StageAddedPlayerEvent;
 import com.alessandro.astages.api.event.player.StageRemovedPlayerEvent;
 import com.alessandro.astages.integration.kubejs.event.StageAddedEventJS;
 import com.alessandro.astages.integration.kubejs.event.StageRemovedEventJS;
 import dev.latvian.mods.kubejs.script.ScriptTypeHolder;
-import net.neoforged.neoforge.common.NeoForge;
 
 public class KubeJSStageEventHandler {
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(KubeJSStageEventHandler::stageAdded);
-        NeoForge.EVENT_BUS.addListener(KubeJSStageEventHandler::stageRemoved);
+        ALoader.EVENT_BUS.addListener(KubeJSStageEventHandler::stageAdded);
+        ALoader.EVENT_BUS.addListener(KubeJSStageEventHandler::stageRemoved);
     }
 
     public static void stageAdded(StageAddedPlayerEvent event) {

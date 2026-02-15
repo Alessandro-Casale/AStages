@@ -1,6 +1,7 @@
 package com.alessandro.astages.core;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.ARestrictionStage;
 import com.alessandro.astages.api.constant.ASyncOperation;
@@ -26,7 +27,6 @@ import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.server.AMinimalManager;
 import com.alessandro.astages.util.ReloadType;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.*;
@@ -149,7 +149,7 @@ public class ARestrictionManager {
     }
 
     public static void addRestrictionsViaJavaCode(ARestrictionStage stage) {
-        NeoForge.EVENT_BUS.post(new AddRestrictionEvent(stage));
+        ALoader.EVENT_BUS.post(new AddRestrictionEvent(stage));
     }
 
     public static void removeRestriction(String id, ARestrictionType type) {

@@ -1,11 +1,11 @@
 package com.alessandro.astages.mixin.food;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.event.custom.LivingEntityEatEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,6 +21,6 @@ public class ALivingEntity {
 
     @Inject(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"))
     private void astages$eat(Level level, ItemStack food, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
-        NeoForge.EVENT_BUS.post(new LivingEntityEatEvent(livingEntity$self(), food));
+        ALoader.EVENT_BUS.post(new LivingEntityEatEvent(livingEntity$self(), food));
     }
 }

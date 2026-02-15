@@ -1,11 +1,11 @@
 package com.alessandro.astages.mixin.mob;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.event.custom.MobInteractEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +22,7 @@ public class AMob {
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     public void astages$mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         var event = new MobInteractEvent(player, hand, mob$self().getType());
-        NeoForge.EVENT_BUS.post(event);
+        ALoader.EVENT_BUS.post(event);
 
         if (event.isCanceled()) {
             cir.setReturnValue(InteractionResult.PASS);

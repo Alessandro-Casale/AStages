@@ -1,24 +1,24 @@
 package com.alessandro.astages.event.ore;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.ALoader;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.event.custom.actions.ClientOreUpdateEvent;
-import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.util.thread.EffectiveSide;
-import net.neoforged.neoforge.common.NeoForge;
 
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
     static {
         if (EffectiveSide.get().isClient()) {
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientOreUpdateEvent.class, e -> renderAllAgain());
+            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientOreUpdateEvent.class, e -> renderAllAgain());
         }
     }
 

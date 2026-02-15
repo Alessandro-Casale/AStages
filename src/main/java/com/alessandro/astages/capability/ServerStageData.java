@@ -1,9 +1,6 @@
 package com.alessandro.astages.capability;
 
-import com.alessandro.astages.api.AFileIOUtils;
-import com.alessandro.astages.api.ASetUtils;
-import com.alessandro.astages.api.AStagesFolderSystem;
-import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.*;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStatus;
 import com.alessandro.astages.api.event.server.*;
@@ -19,7 +16,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Contract;
 
@@ -74,17 +70,17 @@ public class ServerStageData extends SavedData {
 
         var server = ServerLifecycleHooks.getCurrentServer();
         var event = new StageSyncedServerEvent(ServerLifecycleHooks.getCurrentServer(), operation, stages);
-        NeoForge.EVENT_BUS.post(event);
+        ALoader.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
             ANetworking.sendTo(player, new ServerStagesSyncerS2CPacket(stages, operation));
 
             switch (operation) {
-                case ADD -> NeoForge.EVENT_BUS.post(new StageAddedServerEvent(server, ASetUtils.getOnlyElement(stages)));
-                case ADD_ALL -> NeoForge.EVENT_BUS.post(new AllStagesAddedServerEvent(server, stages));
-                case REMOVE -> NeoForge.EVENT_BUS.post(new StageRemovedServerEvent(server, ASetUtils.getOnlyElement(stages)));
-                case REMOVE_ALL -> NeoForge.EVENT_BUS.post(new AllStagesRemovedServerEvent(server, stages));
-                case LOGIN -> NeoForge.EVENT_BUS.post(new StageLoginServerEvent(server, stages));
+                case ADD -> ALoader.EVENT_BUS.post(new StageAddedServerEvent(server, ASetUtils.getOnlyElement(stages)));
+                case ADD_ALL -> ALoader.EVENT_BUS.post(new AllStagesAddedServerEvent(server, stages));
+                case REMOVE -> ALoader.EVENT_BUS.post(new StageRemovedServerEvent(server, ASetUtils.getOnlyElement(stages)));
+                case REMOVE_ALL -> ALoader.EVENT_BUS.post(new AllStagesRemovedServerEvent(server, stages));
+                case LOGIN -> ALoader.EVENT_BUS.post(new StageLoginServerEvent(server, stages));
             }
         } else {
             switch (event.getOperation()) {

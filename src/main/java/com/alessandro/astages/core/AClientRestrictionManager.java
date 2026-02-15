@@ -1,17 +1,20 @@
 package com.alessandro.astages.core;
 
+import com.alessandro.astages.api.ALoader;
+import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.core.client.manager.AClientItemManager;
 import com.alessandro.astages.core.client.manager.AClientMobManager;
 import com.alessandro.astages.core.client.manager.AClientOreManager;
 import com.alessandro.astages.core.client.manager.AClientRecipeManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientRecipeUpdateEvent;
-import com.alessandro.astages.store.client.AClientMinimalManager;
 import com.alessandro.astages.store.ARestrictionType;
-import com.alessandro.astages.api.develop.Info;
-import net.neoforged.neoforge.common.NeoForge;
+import com.alessandro.astages.store.client.AClientMinimalManager;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class AClientRestrictionManager {
     public static final Map<ARestrictionType, AClientMinimalManager<?>> ASSOCIATION_MAP = new HashMap<>();
@@ -80,8 +83,8 @@ public class AClientRestrictionManager {
                 isReloading = false;
             }
 
-            NeoForge.EVENT_BUS.post(new ClientItemUpdateEvent());
-            NeoForge.EVENT_BUS.post(new ClientRecipeUpdateEvent());
+            ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
+            ALoader.EVENT_BUS.post(new ClientRecipeUpdateEvent());
         }
     }
 
@@ -96,8 +99,8 @@ public class AClientRestrictionManager {
             isReloading = false;
         }
 
-        NeoForge.EVENT_BUS.post(new ClientItemUpdateEvent());
-        NeoForge.EVENT_BUS.post(new ClientRecipeUpdateEvent());
+        ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
+        ALoader.EVENT_BUS.post(new ClientRecipeUpdateEvent());
     }
 
     public static void reloadStarted() {

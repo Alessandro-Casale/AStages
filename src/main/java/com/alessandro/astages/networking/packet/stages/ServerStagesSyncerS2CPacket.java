@@ -1,5 +1,6 @@
 package com.alessandro.astages.networking.packet.stages;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.ASetUtils;
 import com.alessandro.astages.api.AStagesClientUtils;
@@ -12,7 +13,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashSet;
@@ -38,7 +38,7 @@ public record ServerStagesSyncerS2CPacket(Set<String> stages, AOperation operati
             case LOGIN -> AStagesClientUtils.setStages(AClientHolder.server(), stages);
         }
 
-        NeoForge.EVENT_BUS.post(new ClientSynchronizeServerStagesEvent(stages, operation));
+        ALoader.EVENT_BUS.post(new ClientSynchronizeServerStagesEvent(stages, operation));
     }
 
     @Override

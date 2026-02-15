@@ -1,6 +1,7 @@
 package com.alessandro.astages.networking.packet.reload;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
@@ -13,7 +14,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @MethodsReturnNonnullByDefault
@@ -32,9 +32,9 @@ public record RequestReloadS2CPacket(ReloadType reloadType) implements AStagesPa
             case CLIENT_BEFORE -> AClientRestrictionManager.reloadBeforeScripts();
             case CLIENT_SYNC -> AClientRestrictionManager.reloadAfterScripts();
             case RELOAD_BEFORE -> AClientRestrictionManager.reloadStarted();
-            case JEI_ITEM -> NeoForge.EVENT_BUS.post(new ClientItemUpdateEvent());
-            case JEI_RECIPE -> NeoForge.EVENT_BUS.post(new ClientRecipeUpdateEvent());
-            case ORE -> NeoForge.EVENT_BUS.post(new ClientOreUpdateEvent());
+            case JEI_ITEM -> ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
+            case JEI_RECIPE -> ALoader.EVENT_BUS.post(new ClientRecipeUpdateEvent());
+            case ORE -> ALoader.EVENT_BUS.post(new ClientOreUpdateEvent());
             case ITEM -> AClientRestrictionManager.ITEM_INSTANCE.clearProperties();
             case RECIPE -> AStages.LOGGER.debug("No other operations required for MarkAsDirty method for recipe restrictions!");
         }

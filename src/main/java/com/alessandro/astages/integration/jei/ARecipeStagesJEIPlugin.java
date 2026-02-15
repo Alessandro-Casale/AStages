@@ -1,6 +1,7 @@
 package com.alessandro.astages.integration.jei;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.AStagesClientUtils;
 import com.alessandro.astages.api.constant.AOperation;
@@ -23,7 +24,6 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.util.thread.EffectiveSide;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 import java.util.Set;
@@ -40,17 +40,17 @@ public class ARecipeStagesJEIPlugin implements IModPlugin {
         if (!Mods.JEI.isLoaded()) return;
 
         if (EffectiveSide.get().isClient()) {
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientRecipeUpdateEvent.class,
+            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientRecipeUpdateEvent.class,
                 e -> updateRecipeGui(null, null)
             );
 
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
+            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
                 if (e.getOperation() != AOperation.LOGIN) {
                     updateRecipeGui(e.getOperation(), e.getStagesSynced());
                 }
             });
 
-            NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeServerStagesEvent.class, e -> {
+            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeServerStagesEvent.class, e -> {
                 if (e.getOperation() != AOperation.LOGIN) {
                     updateRecipeGui(e.getOperation(), e.getStagesSynced());
                 }

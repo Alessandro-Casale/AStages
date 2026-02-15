@@ -1,5 +1,6 @@
 package com.alessandro.astages.capability;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.ASetUtils;
 import com.alessandro.astages.api.AStagesUtils;
 import com.alessandro.astages.api.ATitleUtils;
@@ -14,7 +15,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -46,7 +46,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
         AStagesUtils.checkPlayerStages(player, operation, stages);
 
         StageSyncedPlayerEvent event = new StageSyncedPlayerEvent(player, operation, stages);
-        NeoForge.EVENT_BUS.post(event);
+        ALoader.EVENT_BUS.post(event);
 
         if (!event.isCanceled()) {
             ANetworking.sendToPlayer((ServerPlayer) player, new ClientStagesSyncerS2CPacket(stages, operation));
@@ -58,11 +58,11 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
             }
 
             switch (operation) {
-                case ADD -> NeoForge.EVENT_BUS.post(new StageAddedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
-                case ADD_ALL -> NeoForge.EVENT_BUS.post(new AllStagesAddedPlayerEvent(player, stages));
-                case REMOVE -> NeoForge.EVENT_BUS.post(new StageRemovedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
-                case REMOVE_ALL -> NeoForge.EVENT_BUS.post(new AllStagesRemovedPlayerEvent(player, stages));
-                case LOGIN -> NeoForge.EVENT_BUS.post(new StageLoginPlayerEvent(player, stages));
+                case ADD -> ALoader.EVENT_BUS.post(new StageAddedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
+                case ADD_ALL -> ALoader.EVENT_BUS.post(new AllStagesAddedPlayerEvent(player, stages));
+                case REMOVE -> ALoader.EVENT_BUS.post(new StageRemovedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
+                case REMOVE_ALL -> ALoader.EVENT_BUS.post(new AllStagesRemovedPlayerEvent(player, stages));
+                case LOGIN -> ALoader.EVENT_BUS.post(new StageLoginPlayerEvent(player, stages));
             }
         } else {
             switch (event.getOperation()) {

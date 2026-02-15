@@ -11,6 +11,7 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.stage.event.ExpiredEvent;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
+import com.alessandro.astages.api.stage.event.TickEvent;
 import com.alessandro.astages.capability.ServerStage;
 import com.alessandro.astages.core.AStageManager;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -65,13 +66,21 @@ public class ServerEventHandler {
         }
     }
 
-    @Info("For stage expiration calculation!")
+    @Info("For stage expiration calculation! And ticking also!")
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Pre event) {
-        AServerUtils.runOnceASecond(event.getServer(), server -> {
-            var stages = AStageManager.TEMPORARY_INSTANCE.getStageContainersForServer();
-            if (stages == null) { return; }
+        var server = event.getServer();
+        var stages = AStageManager.TEMPORARY_INSTANCE.getStageContainersForServer();
+        if (stages == null) { return; }
+        stages.forEach(container -> {
+            var stage = container.getStage();
 
+            if (stage.hasCustomTickEvent()) {
+                stage.postTickEvent(new TickEvent(null, server, false));
+            }
+        });
+
+        AServerUtils.runOnceASecond(event.getServer(), ignoredServer -> {
             var listIterator = stages.iterator();
             while (listIterator.hasNext()) {
                 var stageContainer = listIterator.next();

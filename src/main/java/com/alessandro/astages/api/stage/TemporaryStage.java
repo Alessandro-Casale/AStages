@@ -1,6 +1,5 @@
 package com.alessandro.astages.api.stage;
 
-import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.stage.event.ExpiredEvent;
 import com.alessandro.astages.api.stage.event.TickEvent;
@@ -38,7 +37,6 @@ public class TemporaryStage extends BaseStage<TemporaryStage> implements ATickab
         return hasCustomTickEvent;
     }
 
-    @UnderDevelopment
     public TemporaryStage everyTick(Consumer<TickEvent> consumer) {
         tickEvent = consumer;
         hasCustomTickEvent = true;

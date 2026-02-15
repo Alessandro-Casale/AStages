@@ -7,10 +7,17 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.core.stage.manager.AGenericManager;
 import com.alessandro.astages.core.stage.manager.APermanentManager;
 import com.alessandro.astages.core.stage.manager.ATemporaryManager;
+import com.alessandro.astages.plugin.ForPlugins;
+import com.alessandro.astages.store.AttributeStore;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AStageManager {
+    @ForPlugins public static final Map<Class<?>, AttributeStore> ATTACHED_ATTRIBUTES = new HashMap<>();
+
     public static final AGenericManager GENERIC_INSTANCE = new AGenericManager();
     public static final APermanentManager PERMANENT_INSTANCE = new APermanentManager();
     public static final ATemporaryManager TEMPORARY_INSTANCE = new ATemporaryManager();

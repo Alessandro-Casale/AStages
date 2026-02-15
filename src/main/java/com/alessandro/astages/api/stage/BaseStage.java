@@ -1,27 +1,28 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.ATextUtils;
+import com.alessandro.astages.api.exception.SetAttributeNotSupported;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.implementation.AGrantable;
+import com.alessandro.astages.core.AStageManager;
+import com.alessandro.astages.store.Attribute;
+import com.alessandro.astages.store.AttributeStore;
+import com.alessandro.astages.store.StageAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @NotNullParams
 @SuppressWarnings("unchecked")
-public abstract class BaseStage<T extends BaseStage<T>> implements AGrantable {
+public abstract class BaseStage<S extends BaseStage<S>> implements AGrantable {
     private final String stage;
     private final String description;
 
-    private boolean serverOnly = false;
-    private boolean playerOnly = false;
-
-    private final StageDisplay displayConfig = new StageDisplay();
-
-    private boolean hasCustomGrantedEvent = false;
-    private Consumer<GrantedEvent> grantedEvent;
+    private final AttributeStore attributes;
 
     public BaseStage(String stage) {
         this(stage, ATextUtils.capitalizeWords(stage.replace('_', ' ')));
@@ -30,6 +31,7 @@ public abstract class BaseStage<T extends BaseStage<T>> implements AGrantable {
     public BaseStage(String stage, String description) {
         this.stage = stage;
         this.description = description;
+        attributes = allowedAttributes();
     }
 
     public String getStage() {
@@ -38,6 +40,46 @@ public abstract class BaseStage<T extends BaseStage<T>> implements AGrantable {
 
     public String getDescription() {
         return description;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isValueNull(Attribute<?> attribute) {
+        return get(attribute) == null;
+    }
+
+    public <T> T get(Attribute<T> attribute) {
+        checkAttribute(attribute);
+
+        return attributes.getAttribute(attribute);
+    }
+
+    public <T> Component getMessageOrNull(Attribute<Function<T, Component>> attribute, T value) {
+        if (isValueNull(attribute)) { return null; }
+        var message = attributes.getAttribute(attribute);
+
+        return message.apply(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> S set(Attribute<T> attribute, T value) {
+        checkAttribute(attribute);
+        attributes.setAttribute(attribute, value);
+
+        return (S) this;
+    }
+
+    public boolean isDisabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
+        return !get(attribute);
+    }
+
+    public boolean isEnabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
+        return get(attribute);
+    }
+
+    public void checkAttribute(Attribute<?> attribute) throws SetAttributeNotSupported {
+        if (!allowedAttributes().containsKey(attribute)) {
+            throw new SetAttributeNotSupported(attribute);
+        }
     }
 
     @Override
@@ -53,132 +95,102 @@ public abstract class BaseStage<T extends BaseStage<T>> implements AGrantable {
         return stage.hashCode();
     }
 
-    public boolean isServerOnly() {
-        return serverOnly;
+    public @NotNull AttributeStore allowedAttributes() {
+        var defaultAttributes = AttributeStore.builder()
+            .addAttribute(StageAttributes.PLAYER_ONLY)
+            .addAttribute(StageAttributes.SERVER_ONLY)
+
+            .addAttribute(StageAttributes.TITLE_ADD)
+            .addAttribute(StageAttributes.TITLE_REMOVE)
+            .addAttribute(StageAttributes.SUBTITLE_ADD)
+            .addAttribute(StageAttributes.SUBTITLE_REMOVE)
+            .addAttribute(StageAttributes.CHAT_MESSAGE_ADD)
+            .addAttribute(StageAttributes.CHAT_MESSAGE_REMOVE)
+
+            .addAttribute(StageAttributes.FADE_IN)
+            .addAttribute(StageAttributes.FADE_OUT)
+            .addAttribute(StageAttributes.STAY)
+
+            .addAttribute(StageAttributes.ICON)
+
+            .addAttribute(StageAttributes.GRANTED_EVENT);
+
+        var pluginAttributes = AStageManager.ATTACHED_ATTRIBUTES.getOrDefault(BaseStage.class, null);
+
+        if (pluginAttributes != null) {
+            return defaultAttributes.combineWith(pluginAttributes);
+        } else {
+            return defaultAttributes;
+        }
     }
 
-    public T setServerOnly(boolean serverOnly) {
-        this.serverOnly = serverOnly;
-        return (T) this;
+    public S setServerOnly(boolean serverOnly) {
+        set(StageAttributes.SERVER_ONLY, serverOnly);
+        return (S) this;
     }
 
-    public boolean isPlayerOnly() {
-        return playerOnly;
+    public S setPlayerOnly(boolean playerOnly) {
+        set(StageAttributes.PLAYER_ONLY, playerOnly);
+        return (S) this;
     }
 
-    public T setPlayerOnly(boolean playerOnly) {
-        this.playerOnly = playerOnly;
-        return (T) this;
-    }
-
-    @Override
-    public boolean hasCustomGrantedEvent() {
-        return hasCustomGrantedEvent;
-    }
-
-    public T whenGranted(Consumer<GrantedEvent> consumer) {
-        grantedEvent = consumer;
-        hasCustomGrantedEvent = true;
-        return (T) this;
+    public S whenGranted(Consumer<GrantedEvent> consumer) {
+        set(StageAttributes.GRANTED_EVENT, consumer);
+        return (S) this;
     }
 
     @Override
     public void postGrantedEvent(GrantedEvent event) {
-        grantedEvent.accept(event);
+        get(StageAttributes.GRANTED_EVENT).accept(event);
     }
 
-    public Component getAddTitle() {
-        return displayConfig.addTitle;
+    public S setAddTitle(Function<String, Component> addTitle) {
+        set(StageAttributes.TITLE_ADD, addTitle);
+        return (S) this;
     }
 
-    public T setAddTitle(Component addTitle) {
-        displayConfig.addTitle = addTitle;
-        return (T) this;
+    public S setRemoveTitle(Function<String, Component> removeTitle) {
+        set(StageAttributes.TITLE_REMOVE, removeTitle);
+        return (S) this;
     }
 
-    public Component getRemoveTitle() {
-        return displayConfig.removeTitle;
+    public S setAddSubTitle(Function<String, Component> addSubTitle) {
+        set(StageAttributes.SUBTITLE_ADD, addSubTitle);
+        return (S) this;
     }
 
-    public T setRemoveTitle(Component removeTitle) {
-        displayConfig.removeTitle = removeTitle;
-        return (T) this;
+    public S setRemoveSubTitle(Function<String, Component> removeSubTitle) {
+        set(StageAttributes.SUBTITLE_REMOVE, removeSubTitle);
+        return (S) this;
     }
 
-    public Component getAddSubTitle() {
-        return displayConfig.addSubTitle;
+    public S setAddChatMessage(Function<String, Component> addChatMessage) {
+        set(StageAttributes.CHAT_MESSAGE_ADD, addChatMessage);
+        return (S) this;
     }
 
-    public T setAddSubTitle(Component addSubTitle) {
-        displayConfig.addSubTitle = addSubTitle;
-        return (T) this;
+    public S setRemoveChatMessage(Function<String, Component> removeChatMessage) {
+        set(StageAttributes.CHAT_MESSAGE_REMOVE, removeChatMessage);
+        return (S) this;
     }
 
-    public Component getRemoveSubTitle() {
-        return displayConfig.removeSubTitle;
+    public S setFadeIn(int fadeIn) {
+        set(StageAttributes.FADE_IN, fadeIn);
+        return (S) this;
     }
 
-    public T setRemoveSubTitle(Component removeSubTitle) {
-        displayConfig.removeSubTitle = removeSubTitle;
-        return (T) this;
+    public S setFadeOut(int fadeOut) {
+        set(StageAttributes.FADE_OUT, fadeOut);
+        return (S) this;
     }
 
-    public Component getAddChatMessage() {
-        return displayConfig.addChatMessage;
+    public S setStay(int stay) {
+        set(StageAttributes.STAY, stay);
+        return (S) this;
     }
 
-    public T setAddChatMessage(Component addChatMessage) {
-        displayConfig.addChatMessage = addChatMessage;
-        return (T) this;
-    }
-
-    public Component getRemoveChatMessage() {
-        return displayConfig.removeChatMessage;
-    }
-
-    public T setRemoveChatMessage(Component removeChatMessage) {
-        displayConfig.removeChatMessage = removeChatMessage;
-        return (T) this;
-    }
-
-    public int getFadeIn() {
-        return displayConfig.fadeIn;
-    }
-
-    public T setFadeIn(int fadeIn) {
-        displayConfig.fadeIn = fadeIn;
-        return (T) this;
-    }
-
-    public int getFadeOut() {
-        return displayConfig.fadeOut;
-    }
-
-    public T setFadeOut(int fadeOut) {
-        displayConfig.fadeOut = fadeOut;
-        return (T) this;
-    }
-
-    public int getStay() {
-        return displayConfig.stay;
-    }
-
-    public T setStay(int stay) {
-        displayConfig.stay = stay;
-        return (T) this;
-    }
-
-    public ItemStack getStack() {
-        return displayConfig.stack;
-    }
-
-    public T setStack(ItemStack stack) {
-        displayConfig.hasCustomStack = true;
-        displayConfig.stack = stack;
-        return (T) this;
-    }
-
-    public boolean hasCustomStack() {
-        return displayConfig.hasCustomStack;
+    public S setIcon(ItemStack stack) {
+        set(StageAttributes.ICON, stack);
+        return (S) this;
     }
 }

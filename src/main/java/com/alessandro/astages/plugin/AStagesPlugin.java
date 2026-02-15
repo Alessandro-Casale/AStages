@@ -20,6 +20,7 @@ public interface AStagesPlugin {
     default void clearClientOnLogin() { }
     default void registerManagers(ManagerContainer container) { }
     default void attachAttributes(AttributeContainer container) { }
+    default void attachStageAttributes(AttributeContainer container) { }
     default void registerConfigFolders(FolderContainer container) { }
     default void registerServerFolders(FolderContainer container) { }
     default void registerSimpleRestriction(SimpleRestrictionsContainer container) { }

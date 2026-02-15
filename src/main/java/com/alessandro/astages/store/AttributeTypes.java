@@ -19,6 +19,8 @@ public class AttributeTypes {
     public static final AttributeType<ResourceLocation> RESOURCE_LOCATION = AttributeType.create(ResourceLocation.class);
     public static final AttributeType<ACompareCondition> COMPARE_CONDITION = AttributeType.create(ACompareCondition.class);
     public static final AttributeType<ChatFormatting> CHAT_FORMATTING = AttributeType.create(ChatFormatting.class);
+    public static final AttributeType<Component> COMPONENT = AttributeType.create(Component.class);
+    public static final AttributeType<ItemStack> ITEM_STACK = AttributeType.create(ItemStack.class);
 
     public static final AttributeType<EntityType<?>> ENTITY = AttributeType.create(new TypeToken<>() { });
 

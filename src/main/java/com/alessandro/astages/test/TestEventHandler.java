@@ -7,8 +7,11 @@ import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.event.AddRestrictionEvent;
 import com.alessandro.astages.api.event.AddStageEvent;
 import com.alessandro.astages.api.stage.Stage;
+import com.alessandro.astages.api.stage.TemporaryStage;
+import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.config.AStagesCommon;
 import com.alessandro.astages.core.AStageManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
@@ -42,5 +45,17 @@ public class TestEventHandler {
 
         var stage = new Stage("stage1");
         AStageManager.PERMANENT_INSTANCE.addStage(stage);
+
+        var temporaryStage = new TemporaryStage("stage_temporary", new ATime("1m"));
+        temporaryStage.whenGranted(e -> e.getPlayer());
+        temporaryStage.everyTick(e -> {
+            var server = e.getServer();
+
+            if (server != null) {
+                server.sendSystemMessage(Component.literal("Tick!"));
+            }
+        });
+        temporaryStage.whenExpired(e -> e.getPlayer());
+        AStageManager.TEMPORARY_INSTANCE.addStage(temporaryStage);
     }
 }

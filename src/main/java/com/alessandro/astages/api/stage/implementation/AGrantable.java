@@ -5,6 +5,5 @@ import com.alessandro.astages.api.stage.event.GrantedEvent;
 
 @NotNullParams
 public interface AGrantable {
-    boolean hasCustomGrantedEvent();
     void postGrantedEvent(GrantedEvent event);
 }

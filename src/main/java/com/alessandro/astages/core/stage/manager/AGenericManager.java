@@ -9,6 +9,7 @@ import com.alessandro.astages.api.stage.implementation.AGrantable;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.stages.StageDisplaySyncerS2CPacket;
+import com.alessandro.astages.store.StageAttributes;
 import com.alessandro.astages.store.stage.AStageBaseManager;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -39,7 +40,7 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> implements 
     @Override
     public void reloadAfterScripts() {
         getStages().values().forEach(stage -> {
-            if (!stage.isServerOnly()) {
+            if (stage.isDisabled(StageAttributes.SERVER_ONLY)) {
                 ARestrictionManager.ALL_STAGES.add(stage.getStage());
             }
         });
@@ -51,7 +52,7 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> implements 
         for (var stageKey : stageKeys) {
             var stage = getStage(stageKey);
 
-            if (stage != null && stage.hasCustomGrantedEvent()) {
+            if (stage != null && !stage.isValueNull(StageAttributes.GRANTED_EVENT)) {
                 toReturn.add(stage);
             }
         }
@@ -61,14 +62,14 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> implements 
 
     public boolean isServerOnly(String stageKey) {
         var stage = getStage(stageKey);
-        if (stage != null) { return stage.isServerOnly(); }
+        if (stage != null) { return stage.get(StageAttributes.SERVER_ONLY); }
 
         return false;
     }
 
     public boolean isPlayerOnly(String stageKey) {
         var stage = getStage(stageKey);
-        if (stage != null) { return stage.isPlayerOnly(); }
+        if (stage != null) { return stage.get(StageAttributes.PLAYER_ONLY); }
 
         return false;
     }
@@ -76,8 +77,8 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> implements 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
         getStages().forEach((stageKey, stage) -> {
-            if (stage.hasCustomStack()) {
-                ANetworking.sendTo(player, new StageDisplaySyncerS2CPacket(stage.getStage(), stage.getStack()));
+            if (!stage.isValueNull(StageAttributes.ICON)) {
+                ANetworking.sendTo(player, new StageDisplaySyncerS2CPacket(stage.getStage(), stage.get(StageAttributes.ICON)));
             }
         });
     }

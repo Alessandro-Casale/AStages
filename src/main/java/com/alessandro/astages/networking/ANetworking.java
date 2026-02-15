@@ -13,10 +13,7 @@ import com.alessandro.astages.networking.packet.recipe.RecipeSyncerS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestReloadS2CPacket;
 import com.alessandro.astages.networking.packet.reload.RequestRestrictionDeleteS2CPacket;
 import com.alessandro.astages.networking.packet.simple.SimpleIdsSyncerS2CPacket;
-import com.alessandro.astages.networking.packet.stages.ClientStagesSyncerS2CPacket;
-import com.alessandro.astages.networking.packet.stages.ServerStagesSyncerS2CPacket;
-import com.alessandro.astages.networking.packet.stages.StageDisplaySyncerS2CPacket;
-import com.alessandro.astages.networking.packet.stages.StagesSyncerS2CPacket;
+import com.alessandro.astages.networking.packet.stages.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +34,8 @@ public class ANetworking {
         registrar.playToClient(ClientStagesSyncerS2CPacket.TYPE, ClientStagesSyncerS2CPacket.STREAM_CODEC, ClientStagesSyncerS2CPacket::handle);
         registrar.playToClient(StagesSyncerS2CPacket.TYPE, StagesSyncerS2CPacket.STREAM_CODEC, StagesSyncerS2CPacket::handle);
         registrar.playToClient(StageDisplaySyncerS2CPacket.TYPE, StageDisplaySyncerS2CPacket.STREAM_CODEC, StageDisplaySyncerS2CPacket::handle);
+        registrar.playToClient(RequestClientStagesS2CPacket.TYPE, RequestClientStagesS2CPacket.STREAM_CODEC, RequestClientStagesS2CPacket::handle);
+        registrar.playToServer(ClientStagesC2SPacket.TYPE, ClientStagesC2SPacket.STREAM_CODEC, ClientStagesC2SPacket::handle);
 
         // ITEMS
         registrar.playToClient(ItemSyncerS2CPacket.TYPE, ItemSyncerS2CPacket.STREAM_CODEC, ItemSyncerS2CPacket::handle);

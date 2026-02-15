@@ -1,16 +1,16 @@
 package com.alessandro.astages.command;
 
-import com.alessandro.astages.api.AStagesClientUtils;
 import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.constant.AStageSource;
 import com.alessandro.astages.api.constant.AStatus;
 import com.alessandro.astages.api.develop.NotYetImplemented;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.capability.OfflinePlayerStage;
 import com.alessandro.astages.command.argument.AStagesAddArgument;
 import com.alessandro.astages.command.argument.AStagesRemoveArgument;
+import com.alessandro.astages.networking.ANetworking;
+import com.alessandro.astages.networking.packet.stages.RequestClientStagesS2CPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -79,11 +79,14 @@ public class AStagesModificationCommands {
                 .executes(context -> info(context, context.getSource().getPlayer(), context.getSource().getPlayer()))
             )
             .then(Commands.literal("info").then(Commands.argument("player", EntityArgument.players())
-                .executes(context -> info(context, EntityArgument.getPlayer(context, "player"), context.getSource().getPlayer()))
+                .executes(context -> info(context, context.getSource().getPlayer(), EntityArgument.getPlayer(context, "player")))
             ))
             .then(Commands.literal("client_info")
-                .executes(context -> clientInfo(context.getSource().getPlayer()))
+                .executes(context -> clientInfo(context, context.getSource().getPlayer(), context.getSource().getPlayer()))
             )
+            .then(Commands.literal("client_info").then(Commands.argument("player", EntityArgument.players())
+                .executes(context -> clientInfo(context, context.getSource().getPlayer(), EntityArgument.getPlayer(context, "player")))
+            ))
         );
     }
 
@@ -167,14 +170,11 @@ public class AStagesModificationCommands {
         return 1;
     }
 
-    private static int info(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer player, @Nullable ServerPlayer executor) {
+    private static int info(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer executor, @Nullable ServerPlayer player) {
         if (player == null) { return 0; }
-        return info(context, player.getGameProfile().getName(), executor);
-    }
 
-    @NotYetImplemented("Prefer AChatBundle")
-    private static int info(CommandContext<CommandSourceStack> context, String username, @Nullable ServerPlayer executor) {
-        var uuid = OfflinePlayerStage.USERNAME_UUID.get(username);
+        var username = player.getGameProfile().getName();
+        var uuid = player.getUUID(); // OfflinePlayerStage.USERNAME_UUID.get(player.getGameProfile().getName());
         var stages = AStagesUtils.getStages(AHolder.player(uuid));
 
         if (stages.isEmpty()) {
@@ -189,17 +189,9 @@ public class AStagesModificationCommands {
         return 1;
     }
 
-    private static int clientInfo(@Nullable ServerPlayer executor) {
-        var stages = AStagesClientUtils.getStages(AClientHolder.player());
-
-        if (stages.isEmpty()) {
-            executor.sendSystemMessage(Component.translatable("chat.astages.info.no_stages", executor.getName()).withStyle(ChatFormatting.RED));
-        } else {
-            executor.sendSystemMessage(Component.translatable("chat.astages.info.has_stages", executor.getName()).withStyle(ChatFormatting.GREEN));
-            for (var stage : stages) {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.list_item", stage));
-            }
-        }
+    private static int clientInfo(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer executor, @Nullable ServerPlayer player) {
+        if (player == null) { return 0; }
+        ANetworking.sendToPlayer(executor, new RequestClientStagesS2CPacket(AStageSource.PLAYER, AStageSource.PLAYER, executor.getUUID(), player.getUUID()));
 
         return 1;
     }

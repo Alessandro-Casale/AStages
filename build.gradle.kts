@@ -152,7 +152,7 @@ dependencies {
 
     implementation("curse.maven:jade-324717:5976517")
     implementation("curse.maven:jei-238222:7229074")
-    implementation("curse.maven:roughly-enough-items-310111:6199140")
+    compileOnly("curse.maven:roughly-enough-items-310111:6199140")
 
     implementation("curse.maven:in-control-257356:5932871")
 

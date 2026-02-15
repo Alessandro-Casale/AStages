@@ -16,4 +16,5 @@ public class StageDisplay {
     public int stay = 60;
 
     @Info("For visualization representation") public ItemStack stack;
+    public boolean hasCustomStack = false;
 }

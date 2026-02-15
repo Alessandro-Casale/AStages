@@ -173,7 +173,12 @@ public abstract class BaseStage<T extends BaseStage<T>> implements AGrantable {
     }
 
     public T setStack(ItemStack stack) {
+        displayConfig.hasCustomStack = true;
         displayConfig.stack = stack;
         return (T) this;
+    }
+
+    public boolean hasCustomStack() {
+        return displayConfig.hasCustomStack;
     }
 }

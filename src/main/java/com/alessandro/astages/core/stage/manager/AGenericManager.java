@@ -75,6 +75,10 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> implements 
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        getStages().forEach((stageKey, stage) -> ANetworking.sendTo(player, new StageDisplaySyncerS2CPacket(stage.getStage(), stage.getStack())));
+        getStages().forEach((stageKey, stage) -> {
+            if (stage.hasCustomStack()) {
+                ANetworking.sendTo(player, new StageDisplaySyncerS2CPacket(stage.getStage(), stage.getStack()));
+            }
+        });
     }
 }

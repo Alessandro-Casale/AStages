@@ -1,0 +1,36 @@
+name: Label PR
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  label:
+    environment: Token
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = context.payload.pull_request.title.toLowerCase();
+            const labels = [];
+
+            if (title.startsWith("api:")) labels.push("api");
+            if (title.startsWith("fix:")) labels.push("fix");
+            if (title.startsWith("feat:")) labels.push("feat");
+            if (title.startsWith("removed:")) labels.push("removed");
+            if (title.startsWith("perf:")) labels.push("perf");
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels
+              });
+            }

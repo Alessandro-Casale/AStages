@@ -1,0 +1,32 @@
+{
+  "template": "\n\n#{{CHANGELOG}}\n",
+  "pr_template": "- #{{TITLE}}. ([##{{NUMBER}}](#{{URL}}))",
+  "categories": [
+    {
+      "title": "New Features",
+      "labels": ["feat"]
+    },
+    {
+      "title": "Bug Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "API Changes",
+      "labels": ["api"]
+    },
+    {
+      "title": "Performance Improvements",
+      "labels": ["perf"]
+    },
+    {
+      "title": "Removed Features",
+      "labels": ["removed"]
+    }
+  ],
+  "transformers": [
+    {
+      "pattern": "^(api|feat|fix|perf|removed):\\s*",
+      "target": ""
+    }
+  ]
+}

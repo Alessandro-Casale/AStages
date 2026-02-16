@@ -1,5 +1,5 @@
 name: Release
-on: [workflow_dispatch] # Push
+on: [workflow_dispatch] # push
 
 permissions:
   contents: write
@@ -8,16 +8,18 @@ jobs:
   build:
     environment: Token
     runs-on: ubuntu-22.04
+
     container:
       image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
-    steps:
-      - uses: actions/checkout@v4
 
+    steps:
       - name: Change wrapper permissions
-        run: chmod +x ./gradlew
+        uses: actions/checkout@v4
 
       - run: ./gradlew build publishMods
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}

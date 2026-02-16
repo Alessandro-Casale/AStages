@@ -1,3 +1,4 @@
+import me.modmuss50.mpp.ReleaseType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -218,13 +219,15 @@ publishMods {
     val today = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     val formattedDate: String = today.format(formatter)
+    val changelogFile = layout.projectDirectory.file("CHANGELOG.md")
+    val formattedVersion = mod_version.substringBeforeLast("-")
 
     when {
         mod_version.contains("alpha", true) -> {
             type.set(ALPHA)
             changelog.set(
                 """
-                        ## [$mod_version] - $formattedDate
+                        ## [$formattedVersion] - $formattedDate
                         This is an alpha version meant to be used only by developers!   
                         Changelog can be found in Discord server.
                     """.trimIndent()
@@ -234,7 +237,7 @@ publishMods {
             type.set(BETA)
             changelog.set(
                 """
-                        ## [$mod_version] - $formattedDate
+                        ## [$formattedVersion] - $formattedDate
                         This is a beta version meant to be used only by developers!   
                         Changelog can be found in Discord server.
                     """.trimIndent()
@@ -242,8 +245,19 @@ publishMods {
         }
         else -> {
             type.set(STABLE)
-            changelog.set("# Changelog!")
+            changelog.set(providers.fileContents(changelogFile).asText.orElse("No changelog provided."))
         }
+    }
+
+    github {
+        accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
+        repository.set("Alessandro-Casale/AStages")
+        val version = mod_version.substringBeforeLast("-")
+        val branch = mod_version.substringAfterLast("-")
+        commitish.set(branch.toMcRange())
+        tagName.set("v$version")
+
+        announcementTitle.set("Download from GitHub")
     }
 
     curseforge {
@@ -251,7 +265,10 @@ publishMods {
         projectId.set("1120180")
         minecraftVersions.add(minecraft_version)
         changelogType.set("markdown")
-        optional("roughly-enough-items", "jei", "kubejs")
+        optional(
+            "roughly-enough-items", "jei", "kubejs",
+            "in-control", "jade", "fastworkbench"
+        )
 
         displayName.set("astages-$mod_version")
 
@@ -263,9 +280,22 @@ publishMods {
         accessToken.set(providers.environmentVariable("MODRINTH_API_KEY"))
         projectId.set("6wy8fmIk")
         minecraftVersions.add(minecraft_version)
-        optional("rei", "jei", "kubejs")
+        optional(
+            "rei", "jei", "kubejs",
+            "in-control", "jade"
+        )
 
         displayName.set("astages-$mod_version")
+
+        if (type.get() == ReleaseType.STABLE) {
+            changelog.set(
+                providers.fileContents(changelogFile)
+                    .asText
+                    .map { it.lineSequence().drop(3).joinToString("\n") }
+            )
+        } else {
+            changelog.set(changelog.get().dropFirstLine())
+        }
 
         announcementTitle.set("Download from Modrinth")
     }
@@ -273,11 +303,22 @@ publishMods {
 //    discord {
 //        webhookUrl.set(providers.environmentVariable("DISCORD_WEBHOOK"))
 //        username.set("AServer")
-//        avatarUrl.set("URL_HERE!!!!!!!!!!")
+//        avatarUrl.set(logoLocation)
 //        content.set(changelog)
+//        setPlatforms(publishMods.platforms["curseforge"], publishMods.platforms["modrinth"])
 //
 //        style {
-//            link
+//            thumbnailUrl = logoLocation
+//            look = "MODERN"
+//            link = "BUTTON"
 //        }
 //    }
+}
+
+fun String.toMcRange(): String {
+    return this.substringBeforeLast(".") + ".X"
+}
+
+fun String.dropFirstLine(): String {
+    return lines().drop(1).joinToString("\n")
 }

@@ -1,0 +1,66 @@
+name: Changelog
+on: [workflow_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  build_changelog:
+    environment: Token
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version from gradle.properties
+        id: version
+        run: |
+          FULL_VERSION=$(grep "^mod_version=" gradle.properties | sed 's/mod_version=//')
+          CLEAN_VERSION="${FULL_VERSION%-*}"
+          echo "version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set date
+        id: date
+        run: echo "today=$(date +'%d-%m-%Y')" >> $GITHUB_OUTPUT
+
+      - name: Get latest stable version tag
+        id: latest_tag
+        run: |
+          TAG=$(git tag --list 'v*' \
+            | grep -Ev 'alpha|beta|rc' \
+            | sort -V \
+            | tail -n 1)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@v6
+        with:
+          configuration: ".github/changelog-config.json"
+          ignorePreReleases: false
+          fetchViaCommits: true
+          fromTag: ${{ steps.latest_tag.outputs.tag }}
+          toTag: "HEAD"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          outputFile: "CHANGELOG.md"
+
+      - name: Prepend version and date
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DATE="${{ steps.date.outputs.today }}"
+          echo "## [$VERSION] - $DATE" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
+
+#      - name: Upload changelog
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: changelog
+#          path: CHANGELOG.md
+
+      - name: Commit and push changelog
+        run: |
+          git config user.name "alessandro-casale"
+          git config user.email "alessandro.casale.developer@gmail.com"
+          git add CHANGELOG.md
+          git diff --cached --quiet || git commit -m "docs: Update changelog for ${{ steps.version.outputs.version }}"
+          git push

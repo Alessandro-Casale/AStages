@@ -7,6 +7,9 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.holder.AStageHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.Stage;
+import com.alessandro.astages.api.stage.TemporaryStage;
+import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.capability.OfflinePlayerStage;
 import com.alessandro.astages.capability.ServerStage;
 import com.alessandro.astages.config.AStagesCommon;
@@ -26,6 +29,31 @@ import java.util.function.Consumer;
 
 @NotNullParamsAndMethodsReturn
 public class AStagesUtils {
+    public static Stage customizeStage(String stageKey) {
+        var stage = new Stage(stageKey);
+        AStageManager.PERMANENT_INSTANCE.addStage(stage);
+        return stage;
+    }
+
+    public static Stage customizeStage(String stageKey, String description) {
+        var stage = new Stage(stageKey, description);
+        AStageManager.PERMANENT_INSTANCE.addStage(stage);
+        return stage;
+    }
+
+    public static TemporaryStage customizeTemporaryStage(String stageKey, ATime initialTime) {
+        var stage = new TemporaryStage(stageKey, initialTime);
+        AStageManager.TEMPORARY_INSTANCE.addStage(stage);
+        return stage;
+    }
+
+    public static TemporaryStage customizeTemporaryStage(String stageKey, String description, ATime initialTime) {
+        var stage = new TemporaryStage(stageKey, description, initialTime);
+        AStageManager.TEMPORARY_INSTANCE.addStage(stage);
+        return stage;
+    }
+
+
     public static Set<String> getStages(AHolder holder) {
         return holder.getStages().getAllStages();
     }

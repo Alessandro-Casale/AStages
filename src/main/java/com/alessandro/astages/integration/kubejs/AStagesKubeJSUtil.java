@@ -8,11 +8,12 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.stage.Stage;
+import com.alessandro.astages.api.stage.TemporaryStage;
+import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.capability.PlayerStage;
 import com.alessandro.astages.capability.PlayerStageWrapper;
 import com.alessandro.astages.capability.ServerStageData;
 import com.alessandro.astages.core.ARestrictionManager;
-import com.alessandro.astages.core.AStageManager;
 import com.alessandro.astages.core.server.restriction.*;
 import com.alessandro.astages.core.server.restriction.item.AItemModRestriction;
 import com.alessandro.astages.core.server.restriction.item.AItemPredicateRestriction;
@@ -112,10 +113,20 @@ public class AStagesKubeJSUtil {
     }
 
     // STAGES
-    public static Stage customizeStage(String s) {
-        var stage = new Stage(s);
-        AStageManager.PERMANENT_INSTANCE.addStage(stage);
-        return stage;
+    public static Stage customizeStage(String stageKey) {
+        return AStagesUtils.customizeStage(stageKey);
+    }
+
+    public static Stage customizeStage(String stageKey, String description) {
+        return AStagesUtils.customizeStage(stageKey, description);
+    }
+
+    public static TemporaryStage customizeTemporaryStage(String stageKey, ATime initialTime) {
+        return AStagesUtils.customizeTemporaryStage(stageKey, initialTime);
+    }
+
+    public static TemporaryStage customizeTemporaryStage(String stageKey, String description, ATime initialTime) {
+        return AStagesUtils.customizeTemporaryStage(stageKey, description, initialTime);
     }
 
     // ITEM Restrictions

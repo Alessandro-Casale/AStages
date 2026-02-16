@@ -22,13 +22,16 @@ public class TemporaryStage extends BaseStage<TemporaryStage> implements ATickab
     }
 
     public TemporaryStage(String stage, ATime initialTimer) {
-        super(stage);
-        this.timer = AMutableTime.fromFixed(initialTimer);
+        this(stage, AMutableTime.fromFixed(initialTimer));
     }
 
     public TemporaryStage(String stage, String description, AMutableTime initialTimer) {
         super(stage, description);
         this.timer = initialTimer;
+    }
+
+    public TemporaryStage(String stage, String description, ATime initialTimer) {
+        this(stage, description, AMutableTime.fromFixed(initialTimer));
     }
 
     @Override

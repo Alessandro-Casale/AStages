@@ -257,6 +257,8 @@ publishMods {
         commitish.set(branch.toMcRange())
         tagName.set("v$mod_version")
 
+        displayName.set("AStages $mod_version")
+
         announcementTitle.set("Download from GitHub")
     }
 

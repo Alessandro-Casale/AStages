@@ -7,6 +7,7 @@ import com.alessandro.astages.api.stage.implementation.AExpirable;
 import com.alessandro.astages.api.stage.implementation.ATickable;
 import com.alessandro.astages.api.time.AMutableTime;
 import com.alessandro.astages.api.time.ATime;
+import com.alessandro.astages.core.AStageManager;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.StageAttributes;
 
@@ -40,7 +41,14 @@ public class TemporaryStage extends BaseStage<TemporaryStage> implements ATickab
             .addAttribute(StageAttributes.TICK_EVENT, true)
             .addAttribute(StageAttributes.EXPIRED_EVENT, true);
 
-        return super.allowedAttributes().combineWith(attributeStore);
+        var newStore = super.allowedAttributes().combineWith(attributeStore);
+        var pluginAttributes = AStageManager.ATTACHED_ATTRIBUTES.getOrDefault(TemporaryStage.class, null);
+
+        if (pluginAttributes != null) {
+            return newStore.combineWith(pluginAttributes);
+        } else {
+            return newStore;
+        }
     }
 
     public AMutableTime getActualTimer() {

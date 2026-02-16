@@ -255,7 +255,7 @@ publishMods {
         val version = mod_version.substringBeforeLast("-")
         val branch = mod_version.substringAfterLast("-")
         commitish.set(branch.toMcRange())
-        tagName.set("v$version")
+        tagName.set("v$mod_version")
 
         announcementTitle.set("Download from GitHub")
     }

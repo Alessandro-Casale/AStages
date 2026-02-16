@@ -1,6 +1,7 @@
 package com.alessandro.astages.networking.packet.ore;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.AClientOreRestriction;
 import com.alessandro.astages.core.server.restriction.AOreRestriction;
@@ -15,9 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 public record OreSyncerS2CPacket(String id, String stage, BlockState original, BlockState replacement, boolean stageAllBlockStates) implements AStagesPacket {
     public static final Type<OreSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("ore_syncer_s2c_packet"));
 

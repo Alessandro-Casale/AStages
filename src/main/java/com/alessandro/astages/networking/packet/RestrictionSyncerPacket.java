@@ -1,10 +1,9 @@
 package com.alessandro.astages.networking.packet;
 
 import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.nullability.NotNullParams;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
+@NotNullParams
 @Info("TO BE REMOVED")
 public abstract class RestrictionSyncerPacket {
     // implements AStagesPacket {

@@ -2,12 +2,12 @@ package com.alessandro.astages.networking.packet.recipe;
 
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.recipe.AClientRecipeModRestriction;
 import com.alessandro.astages.core.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.core.wrapper.RecipeModWrapper;
 import com.alessandro.astages.networking.AStagesPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 @Info("For now, required only by JEI.")
 public record RecipeModSyncerS2CPacket(String id, String stage, int priority, String modId) implements AStagesPacket {
     public static final Type<RecipeModSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("recipe_mod_syncer_s2c_packet"));

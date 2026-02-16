@@ -2,9 +2,9 @@ package com.alessandro.astages.networking.packet.simple;
 
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.networking.AStagesPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.Collection;
 import java.util.HashSet;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record SimpleIdsSyncerS2CPacket(Collection<String> ids, ASyncOperation operation) implements AStagesPacket {
     public static final Type<SimpleIdsSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("simple_stages_syncer_s2c_packet"));
 

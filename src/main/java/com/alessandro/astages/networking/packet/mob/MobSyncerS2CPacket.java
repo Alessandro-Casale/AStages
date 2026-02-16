@@ -1,12 +1,12 @@
 package com.alessandro.astages.networking.packet.mob;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.AClientMobRestriction;
 import com.alessandro.astages.core.server.restriction.AMobRestriction;
 import com.alessandro.astages.networking.AStagesPacket;
 import com.alessandro.astages.store.Attributes;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -17,11 +17,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public record MobSyncerS2CPacket(String id, String stage, List<EntityType<?>> types, Component jadeMobMessage) implements AStagesPacket {
     public static final Type<MobSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("mob_syncer_s2c_packet"));
 

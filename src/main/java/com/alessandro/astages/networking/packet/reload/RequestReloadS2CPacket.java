@@ -3,20 +3,20 @@ package com.alessandro.astages.networking.packet.reload;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientOreUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientRecipeUpdateEvent;
 import com.alessandro.astages.networking.AStagesPacket;
 import com.alessandro.astages.util.ReloadType;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record RequestReloadS2CPacket(ReloadType reloadType) implements AStagesPacket {
     public static final Type<RequestReloadS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("request_reload_s2c_packet"));
 

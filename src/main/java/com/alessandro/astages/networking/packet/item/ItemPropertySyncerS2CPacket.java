@@ -1,10 +1,10 @@
 package com.alessandro.astages.networking.packet.item;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.client.restriction.item.AClientItemPropertyRestriction;
 import com.alessandro.astages.networking.AStagesPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -14,7 +14,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record ItemPropertySyncerS2CPacket(String id, String stage, ItemStack stack, Component hiddenName, Component jadeItemMessage, Component jadeBlockMessage) implements AStagesPacket {
     public static final Type<ItemPropertySyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("item_property_syncer_s2c_packet"));
 

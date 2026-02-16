@@ -1,6 +1,6 @@
 package com.alessandro.astages.capability;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -10,12 +10,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullParamsAndMethodsReturn
 public class StructureData extends SavedData {
     private static final String STRUCTURE_ID = "astages_structure_data_";
     private final HashSet<BlockPos> placedByPlayerBlocks = new HashSet<>(); // StructureStart: Block Positions

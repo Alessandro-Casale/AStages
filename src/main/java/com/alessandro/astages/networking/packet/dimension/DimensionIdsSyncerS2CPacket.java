@@ -1,9 +1,9 @@
 package com.alessandro.astages.networking.packet.dimension;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.networking.AStagesPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record DimensionIdsSyncerS2CPacket(List<String> ids) implements AStagesPacket {
     public static final Type<DimensionIdsSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("dimension_ids_syncer_s2c_packet"));
 

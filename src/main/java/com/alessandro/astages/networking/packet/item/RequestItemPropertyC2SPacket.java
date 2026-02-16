@@ -1,11 +1,11 @@
 package com.alessandro.astages.networking.packet.item;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.AStagesPacket;
 import com.alessandro.astages.store.Attributes;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Contract;
 import java.util.Objects;
 import java.util.function.Function;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record RequestItemPropertyC2SPacket(String id, String stage, ItemStack stack) implements AStagesPacket {
     private static final Function<String, RuntimeException> EXCEPTION = id -> new RuntimeException("Illegal identifier synchronization: " + id + " de-synchronized between server and client!");
     private static final Function<String, RuntimeException> NULL_EXCEPTION = id -> new NullPointerException("Illegal null synchronization: " + id + " not found on server!");

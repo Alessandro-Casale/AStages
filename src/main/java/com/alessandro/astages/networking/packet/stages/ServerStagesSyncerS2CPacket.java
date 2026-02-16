@@ -6,9 +6,9 @@ import com.alessandro.astages.api.ASetUtils;
 import com.alessandro.astages.api.AStagesClientUtils;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.holder.AClientHolder;
+import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.event.custom.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.networking.AStagesPacket;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,7 +18,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.HashSet;
 import java.util.Set;
 
-@MethodsReturnNonnullByDefault
+@NotNullMethodsReturn
 public record ServerStagesSyncerS2CPacket(Set<String> stages, AOperation operation) implements AStagesPacket {
     public static final Type<ServerStagesSyncerS2CPacket> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("server_stages_syncer_s2c_packet"));
 

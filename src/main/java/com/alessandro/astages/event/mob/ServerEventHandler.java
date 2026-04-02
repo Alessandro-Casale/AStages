@@ -21,7 +21,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
 public class ServerEventHandler {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void checkMobSpawning(MobSpawnEvent.PositionCheck event) {
         Player nearestPlayer = APlayerUtils.getNearestPlayer(event.getLevel().getLevel(), new Vec3(event.getX(), event.getY(), event.getZ()));
         var server = event.getEntity().getServer();

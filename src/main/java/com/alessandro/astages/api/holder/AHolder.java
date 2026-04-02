@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 @NotNullParamsAndMethodsReturn
 public class AHolder {
     private final boolean isServer;
-    private final boolean isPlayer;
+    private boolean isPlayer;
     private final boolean isMultiple;
 
     private final List<UUID> uuids = new ArrayList<>();
@@ -58,7 +58,8 @@ public class AHolder {
         if (player != null) {
             holder.addPlayer(player);
         } else {
-            AStages.LOGGER.info("Encountered null player, skipped adding it to holder!");
+            holder.setPlayer(false);
+            AStages.LOGGER.debug("Encountered null player, skipped adding it to holder!");
         }
 
         return holder;
@@ -126,5 +127,10 @@ public class AHolder {
         if (isPlayer && isMultiple) {
             forPlayers.accept(uuids);
         }
+    }
+
+    private AHolder setPlayer(boolean player) {
+        isPlayer = player;
+        return this;
     }
 }

@@ -17,7 +17,7 @@ public record RequestRestrictionDeleteS2CPacket(String id, ARestrictionType rest
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestRestrictionDeleteS2CPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, RequestRestrictionDeleteS2CPacket::id,
-            ByteBufCodecs.registry(AStagesRegistries.Keys.RESTRICTION_TYPES), RequestRestrictionDeleteS2CPacket::restrictionType,
+            ByteBufCodecs.registry(AStagesRegistries.RESTRICTION_TYPES.key()), RequestRestrictionDeleteS2CPacket::restrictionType,
             RequestRestrictionDeleteS2CPacket::new
     );
 

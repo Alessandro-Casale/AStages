@@ -41,13 +41,11 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
             .addAttribute(Attributes.Pet.BREED_MESSAGE)
             .addAttribute(Attributes.Pet.MOUNT_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(APetRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, APetRestriction.class)
+            .build();
     }
 
     @Override

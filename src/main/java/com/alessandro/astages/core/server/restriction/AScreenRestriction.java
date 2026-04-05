@@ -42,13 +42,11 @@ public class AScreenRestriction extends ARestriction<AScreenRestriction, MenuTyp
             .addAttribute(Attributes.Screen.OPEN_MESSAGE)
             .addAttribute(Attributes.HAS_CHECKER);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AScreenRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AScreenRestriction.class)
+            .build();
     }
 
     @Override

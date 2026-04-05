@@ -4,15 +4,15 @@ import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.core.AStageManager;
 import com.alessandro.astages.store.AttributeStore;
 
-public class ClientStage extends ClientBaseStage<ClientStage> {
-    public ClientStage(String stage) {
+public class ClientTemporaryStage extends ClientBaseStage<ClientTemporaryStage> {
+    public ClientTemporaryStage(String stage) {
         super(stage);
     }
 
     @Override
     public @NotNull AttributeStore allowedAttributes() {
         return AttributeStore.compose()
-            .withPlugin(AStageManager.ATTACHED_ATTRIBUTES, ClientStage.class)
+            .withPlugin(AStageManager.ATTACHED_ATTRIBUTES, ClientTemporaryStage.class)
             .build();
     }
 }

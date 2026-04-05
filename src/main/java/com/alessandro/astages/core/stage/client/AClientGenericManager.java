@@ -1,6 +1,7 @@
 package com.alessandro.astages.core.stage.client;
 
 import com.alessandro.astages.api.stage.ClientStage;
+import com.alessandro.astages.store.StageAttributes;
 import com.alessandro.astages.store.stage.AStageClientBaseManager;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,6 +15,6 @@ public class AClientGenericManager extends AStageClientBaseManager<ClientStage> 
     }
 
     public ItemStack getCustomStack(String key) {
-        return getStages().get(key).stack();
+        return getStages().get(key).get(StageAttributes.ICON);
     }
 }

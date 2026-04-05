@@ -52,13 +52,11 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
             .addAttribute(Attributes.Structure.PLACING_MESSAGE)
             .addAttribute(Attributes.Structure.MINING_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AStructureRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AStructureRestriction.class)
+            .build();
     }
 
     @Override

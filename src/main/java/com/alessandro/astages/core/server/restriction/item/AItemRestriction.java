@@ -1,12 +1,13 @@
 package com.alessandro.astages.core.server.restriction.item;
 
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.server.restriction.ALootRestriction;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.item.ItemSyncerS2CPacket;
+import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.api.develop.Info;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,6 +25,14 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
     @SuppressWarnings("unused")
     public static AItemRestriction newBuilder() {
         return new AItemRestriction("null", "null");
+    }
+
+    @Override
+    public AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AItemRestriction.class)
+            .build();
     }
 
     @Override

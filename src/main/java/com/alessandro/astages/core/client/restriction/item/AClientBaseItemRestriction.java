@@ -13,10 +13,16 @@ public class AClientBaseItemRestriction<R extends AClientRestriction<R, U, ItemS
 
     @Override
     public @NotNull AttributeStore allowedAttributes() {
-        return AttributeStore.builder()
-                .addAttribute(Attributes.RENDERING_NAME)
-                .addAttribute(Attributes.HIDING_TOOLTIP)
-                .addAttribute(Attributes.HIDING_JEI);
+        var defaultAttributes = AttributeStore.builder()
+            .addAttribute(Attributes.RENDERING_NAME)
+            .addAttribute(Attributes.HIDING_TOOLTIP)
+            .addAttribute(Attributes.HIDING_JEI);
+
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientBaseItemRestriction.class)
+            .build();
     }
 
     @Override

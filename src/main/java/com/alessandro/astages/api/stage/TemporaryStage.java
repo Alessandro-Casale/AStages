@@ -37,18 +37,15 @@ public class TemporaryStage extends BaseStage<TemporaryStage> implements ATickab
 
     @Override
     public AttributeStore allowedAttributes() {
-        var attributeStore = new AttributeStore()
+        var defaultAttributes = new AttributeStore()
             .addAttribute(StageAttributes.TICK_EVENT, true)
             .addAttribute(StageAttributes.EXPIRED_EVENT, true);
 
-        var newStore = super.allowedAttributes().combineWith(attributeStore);
-        var pluginAttributes = AStageManager.ATTACHED_ATTRIBUTES.getOrDefault(TemporaryStage.class, null);
-
-        if (pluginAttributes != null) {
-            return newStore.combineWith(pluginAttributes);
-        } else {
-            return newStore;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(AStageManager.ATTACHED_ATTRIBUTES, TemporaryStage.class)
+            .build();
     }
 
     public AMutableTime getActualTimer() {

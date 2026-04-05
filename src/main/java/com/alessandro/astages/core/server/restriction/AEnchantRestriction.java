@@ -31,13 +31,11 @@ public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Encha
             .addAttribute(Attributes.COMPARE_CONDITION, true)
             .addAttribute(Attributes.LEVEL, true);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AEnchantRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AEnchantRestriction.class)
+            .build();
     }
 
     @Override

@@ -92,5 +92,28 @@ public class AStages {
         ARestrictionManager.ITEM_INSTANCE.whiteListContainer(ChestBlockEntity.class, null);
         ARestrictionManager.ITEM_INSTANCE.whiteListContainer(CompoundContainer.class, null);
         ARestrictionManager.ITEM_INSTANCE.whiteListContainer(BarrelBlockEntity.class, null);
+
+        AStages.LOGGER.debug("ATTRIBUTE STORE CHECK!");
+        var superStore = AttributeStore.builder()
+            .addAttribute(Attributes.AGE, true);
+
+        var restrictionStore = AttributeStore.builder()
+            .addAttribute(Attributes.ATTACKING)
+            .addAttribute(Attributes.BLOCK_PLACING);
+
+        var pluginStore = AttributeStore.builder()
+            .addAttribute(Attributes.BLOCK_BREAKING);
+
+        // var result = AttributeStore.of(superStore, restrictionStore, pluginStore);
+        var result = AttributeStore.compose()
+            .withSuper(superStore)
+            .withSelf(restrictionStore)
+            .withPlugin(pluginStore)
+            .build();
+
+        System.out.println(superStore);
+        System.out.println(restrictionStore);
+        System.out.println(pluginStore);
+        System.out.println(result);
     }
 }

@@ -1,9 +1,10 @@
 package com.alessandro.astages.core.client.restriction;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.client.AClientRestriction;
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.ArrayList;
@@ -19,8 +20,14 @@ public class AClientMobRestriction extends AClientRestriction<AClientMobRestrict
 
     @Override
     public AttributeStore allowedAttributes() {
-        return AttributeStore.builder()
-                .addAttribute(Attributes.Mob.JADE_MOB_MESSAGE);
+        var defaultAttributes = AttributeStore.builder()
+            .addAttribute(Attributes.Mob.JADE_MOB_MESSAGE);
+
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientMobRestriction.class)
+            .build();
     }
 
     @Override

@@ -27,13 +27,11 @@ public class ACropRestriction extends ARestriction<ACropRestriction, Block, Crop
             .addAttribute(Attributes.COMPARE_CONDITION, true)
             .addAttribute(Attributes.AGE, true);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ACropRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ACropRestriction.class)
+            .build();
     }
 
     @Override

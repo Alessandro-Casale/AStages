@@ -1,17 +1,24 @@
 package com.alessandro.astages.store;
 
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 @NotNullParamsAndMethodsReturn
 public class AttributeStore extends HashMap<Attribute<?>, Object> {
     @Contract(value = " -> new", pure = true)
     public static AttributeStore builder() {
         return new AttributeStore();
+    }
+
+    public static Builder compose() {
+        return new Builder();
     }
 
     public <T> AttributeStore addAttribute(Attribute<T> attribute) {
@@ -48,9 +55,13 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
         return this;
     }
 
-    public AttributeStore combineWith(AttributeStore store) {
-        putAll(store);
-        return this;
+    public AttributeStore combineWith(AttributeStore other) {
+//        putAll(store);
+//        return this;
+        AttributeStore result = new AttributeStore();
+        result.putAll(this);
+        result.putAll(other);
+        return result;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -76,12 +87,59 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
+        var joiner = new StringJoiner(", ");
 
         for (var attribute : keySet()) {
-            builder.append(attribute.getId()).append(" ");
+            joiner.add(attribute.getId());
         }
 
-        return builder.toString();
+
+        return "AttributeStore " + getClass().getName() + "@"
+            + Integer.toHexString(hashCode())
+            + " [" + joiner + "]";
+    }
+
+    public static class Builder {
+        private @Nullable AttributeStore selfAttributes;
+        private @Nullable AttributeStore superAttributes;
+        private @Nullable AttributeStore pluginAttributes;
+
+        public Builder withSelf(AttributeStore selfAttributes) {
+            this.selfAttributes = selfAttributes;
+            return this;
+        }
+
+        public Builder withSuper(AttributeStore superAttributes) {
+            this.superAttributes = superAttributes;
+            return this;
+        }
+
+        public Builder withPlugin(AttributeStore pluginAttributes) {
+            this.pluginAttributes = pluginAttributes;
+            return this;
+        }
+
+        public Builder withPlugin(Map<Class<?>, AttributeStore> map, Class<?> clazz) {
+            this.pluginAttributes = map.getOrDefault(clazz, null);
+            return this;
+        }
+
+        public AttributeStore build() {
+            AttributeStore result = new AttributeStore();
+
+            if (superAttributes != null) {
+                result = result.combineWith(superAttributes);
+            }
+
+            if (selfAttributes != null) {
+                result = result.combineWith(selfAttributes);
+            }
+
+            if (pluginAttributes != null) {
+                result = result.combineWith(pluginAttributes);
+            }
+
+            return result;
+        }
     }
 }

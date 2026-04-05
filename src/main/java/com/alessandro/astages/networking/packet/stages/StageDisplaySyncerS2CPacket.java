@@ -5,6 +5,7 @@ import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.api.stage.ClientStage;
 import com.alessandro.astages.core.AClientStageManager;
 import com.alessandro.astages.networking.AStagesPacket;
+import com.alessandro.astages.store.StageAttributes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -24,7 +25,7 @@ public record StageDisplaySyncerS2CPacket(String stageKey, ItemStack stack) impl
 
     @Override
     public void run(IPayloadContext context) {
-        AClientStageManager.GENERIC_INSTANCE.addStageInternal(stageKey, new ClientStage(stageKey, stack));
+        AClientStageManager.GENERIC_INSTANCE.addStageInternal(stageKey, new ClientStage(stageKey).set(StageAttributes.ICON, stack));
     }
 
     @Override

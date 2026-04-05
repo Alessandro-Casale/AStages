@@ -1,10 +1,11 @@
 package com.alessandro.astages.core.client.restriction;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.wrapper.OreWrapper;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.client.AClientRestriction;
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParamsAndMethodsReturn
@@ -18,8 +19,14 @@ public class AClientOreRestriction extends AClientRestriction<AClientOreRestrict
 
     @Override
     public AttributeStore allowedAttributes() {
-        return AttributeStore.builder()
+        var defaultAttributes = AttributeStore.builder()
             .addAttribute(Attributes.STAGE_ALL_BLOCK_STATES);
+
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientOreRestriction.class)
+            .build();
     }
 
     @Override

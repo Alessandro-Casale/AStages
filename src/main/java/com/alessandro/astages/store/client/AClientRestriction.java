@@ -1,7 +1,10 @@
 package com.alessandro.astages.store.client;
 
-import com.alessandro.astages.api.exception.SetAttributeNotSupported;
 import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.core.AClientRestrictionManager;
+import com.alessandro.astages.core.ARestrictionManager;
+import com.alessandro.astages.core.server.restriction.item.ABaseItemRestriction;
+import com.alessandro.astages.store.AStore;
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
 import net.minecraft.network.chat.Component;
@@ -9,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements Comparable<R> {
+public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements AStore<R>, Comparable<R> {
     private final String id;
     private final String stage;
     private int priority = 0;
@@ -22,11 +25,7 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         this.attributes = allowedAttributes();
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isValueNull(Attribute<?> attribute) {
-        return get(attribute) == null;
-    }
-
+    @Override
     public <T> T get(Attribute<T> attribute) {
         checkAttribute(attribute);
 
@@ -40,6 +39,7 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> R set(Attribute<T> attribute, T value) {
         checkAttribute(attribute);
         attributes.setAttribute(attribute, value);
@@ -47,21 +47,12 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         return (R) this;
     }
 
-    public boolean isDisabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
-        return !get(attribute);
+    @Override
+    public AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientRestriction.class)
+            .build();
     }
-
-    public boolean isEnabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
-        return get(attribute);
-    }
-
-    public void checkAttribute(Attribute<?> attribute) throws SetAttributeNotSupported {
-        if (!allowedAttributes().containsKey(attribute)) {
-            throw new SetAttributeNotSupported(attribute);
-        }
-    }
-
-    public abstract @NotNull AttributeStore allowedAttributes();
 
     public abstract R restrict(U object);
 

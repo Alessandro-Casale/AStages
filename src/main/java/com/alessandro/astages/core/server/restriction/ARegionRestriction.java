@@ -51,13 +51,11 @@ public class ARegionRestriction extends ARestriction<ARegionRestriction, Void, B
             .addAttribute(Attributes.Region.INTERACT_MESSAGE)
             .addAttribute(Attributes.Region.COMMAND_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ARegionRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ARegionRestriction.class)
+            .build();
     }
 
     @Override

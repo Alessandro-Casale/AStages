@@ -1,14 +1,15 @@
 package com.alessandro.astages.store.server;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.core.ARestrictionManager;
+import com.alessandro.astages.store.AStore;
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.ConfigurableAttributeStore;
-import com.alessandro.astages.api.exception.SetAttributeNotSupported;
-import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -20,7 +21,7 @@ import java.util.function.Function;
  * @param <U> For restrict method object type
  * @param <V> For isRestricted method object type
  */
-public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements Comparable<R> {
+public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements AStore<R>, Comparable<R> {
     private final String id;
     private final String stage;
     private int priority = 0;
@@ -42,11 +43,7 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isValueNull(Attribute<?> attribute) {
-        return get(attribute) == null;
-    }
-
+    @Override
     public <T> T get(Attribute<T> attribute) {
         checkAttribute(attribute);
 
@@ -66,6 +63,7 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> R set(Attribute<T> attribute, T value) {
         if (!markForConfig) {
             checkAttribute(attribute);
@@ -79,18 +77,11 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
         return (R) this;
     }
 
-    public boolean isDisabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
-        return !get(attribute);
-    }
-
-    public boolean isEnabled(Attribute<Boolean> attribute) throws SetAttributeNotSupported {
-        return get(attribute);
-    }
-
-    public void checkAttribute(Attribute<?> attribute) throws SetAttributeNotSupported {
-        if (!allowedAttributes().containsKey(attribute)) {
-            throw new SetAttributeNotSupported(attribute);
-        }
+    @Override
+    public @NotNull AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ARestriction.class)
+            .build();
     }
 
     @Override
@@ -110,8 +101,6 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
 
         return -Integer.compare(this.priority, that.getPriority()); // Ascending order!
     }
-
-    public abstract @NotNull AttributeStore allowedAttributes();
 
     public abstract R restrict(U object);
 

@@ -24,15 +24,10 @@ public class AEffectRestriction extends ARestriction<AEffectRestriction, MobEffe
 
     @Override
     public AttributeStore allowedAttributes() {
-        var defaultAttributes = AttributeStore.builder();
-
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AEffectRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AEffectRestriction.class)
+            .build();
     }
 
     @Override

@@ -26,15 +26,10 @@ public class ABaseRecipeRestriction<R extends ARestriction<R, U, V>, U, V> exten
 
     @Override
     public @NotNull AttributeStore allowedAttributes() {
-        var defaultAttributes = AttributeStore.builder();
-
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ABaseRecipeRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ABaseRecipeRestriction.class)
+            .build();
     }
 
     @Override

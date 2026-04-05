@@ -1,10 +1,12 @@
 package com.alessandro.astages.core.server.restriction.item;
 
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.core.AModelManager;
+import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.item.ItemPredicateSyncerS2CPacket;
 import com.alessandro.astages.store.AModel;
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.store.AttributeStore;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +23,14 @@ public class AItemPredicateRestriction extends ABaseItemRestriction<AItemPredica
     @SuppressWarnings("unused")
     public static AItemPredicateRestriction newBuilder() {
         return new AItemPredicateRestriction("null", "null");
+    }
+
+    @Override
+    public AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AItemPredicateRestriction.class)
+            .build();
     }
 
     @Override

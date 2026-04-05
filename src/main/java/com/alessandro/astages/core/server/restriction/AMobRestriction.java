@@ -53,13 +53,11 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
             .addAttribute(Attributes.Mob.INTERACTION_MESSAGE)
             .addAttribute(Attributes.Mob.ATTACK_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AMobRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AMobRestriction.class)
+            .build();
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.alessandro.astages.core.server.restriction.recipe;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.core.ARestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
 import com.alessandro.astages.networking.ANetworking;
 import com.alessandro.astages.networking.packet.recipe.RecipeSyncerS2CPacket;
+import com.alessandro.astages.store.AttributeStore;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -24,6 +26,14 @@ public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestrictio
     @SuppressWarnings("unused")
     public static ARecipeRestriction newBuilder() {
         return new ARecipeRestriction("null", "null");
+    }
+
+    @Override
+    public AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ARecipeRestriction.class)
+            .build();
     }
 
     @Override

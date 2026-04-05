@@ -54,13 +54,11 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
             .addAttribute(Attributes.HAS_REPLACER)
             .addAttribute(Attributes.APPLY_EVERYWHERE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ALootRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ALootRestriction.class)
+            .build();
     }
 
     @Override

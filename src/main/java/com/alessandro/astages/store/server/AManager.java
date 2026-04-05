@@ -23,7 +23,7 @@ import java.util.Map;
  * @param <V> For isRestricted method object type
  */
 @NotNullParams
-public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements AMinimalManager<R>/*, ServerStageReadable<R, V>*/ {
+public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements AMinimalManager<R> {
     private final List<R> restrictions = new ArrayList<>();
     private final Map<String, R> IDS = new HashMap<>();
 

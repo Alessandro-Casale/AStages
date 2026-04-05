@@ -1,8 +1,11 @@
 package com.alessandro.astages.core.client.restriction.item;
 
+import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.AModelManager;
 import com.alessandro.astages.store.AModel;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.store.AttributeStore;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,6 +18,15 @@ public class AClientItemPredicateRestriction extends AClientBaseItemRestriction<
     public AClientItemPredicateRestriction(String id, String stage) {
         super(id, stage);
     }
+
+    @Override
+    public @NotNull AttributeStore allowedAttributes() {
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientItemPredicateRestriction.class)
+            .build();
+    }
+
 
     @Override
     public AClientItemPredicateRestriction restrict(ResourceLocation model) {

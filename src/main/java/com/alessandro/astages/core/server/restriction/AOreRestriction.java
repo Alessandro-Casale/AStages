@@ -35,13 +35,11 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
             .addAttribute(Attributes.AFFECTS_PLAYER_ACTIONS)
             .addAttribute(Attributes.STAGE_ALL_BLOCK_STATES);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(AOreRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, AOreRestriction.class)
+            .build();
     }
 
     @Override

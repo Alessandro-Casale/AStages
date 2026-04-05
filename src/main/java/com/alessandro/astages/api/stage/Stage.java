@@ -16,12 +16,9 @@ public class Stage extends BaseStage<Stage> {
 
     @Override
     public AttributeStore allowedAttributes() {
-        var pluginAttributes = AStageManager.ATTACHED_ATTRIBUTES.getOrDefault(Stage.class, null);
-
-        if (pluginAttributes != null) {
-            return super.allowedAttributes().combineWith(pluginAttributes);
-        } else {
-            return super.allowedAttributes();
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withPlugin(AStageManager.ATTACHED_ATTRIBUTES, Stage.class)
+            .build();
     }
 }

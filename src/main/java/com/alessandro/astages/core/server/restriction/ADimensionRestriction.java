@@ -47,13 +47,11 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
             .addAttribute(Attributes.Dimension.LEAVE_MESSAGE)
             .addAttribute(Attributes.Dimension.EXPIRED_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ADimensionRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ADimensionRestriction.class)
+            .build();
     }
 
     @Override

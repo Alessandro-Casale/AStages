@@ -63,13 +63,11 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
             .addAttribute(Attributes.Item.JADE_ITEM_MESSAGE)
             .addAttribute(Attributes.Item.JADE_BLOCK_MESSAGE);
 
-        var pluginAttributes = ARestrictionManager.ATTACHED_ATTRIBUTES.getOrDefault(ABaseItemRestriction.class, null);
-
-        if (pluginAttributes != null) {
-            return defaultAttributes.combineWith(pluginAttributes);
-        } else {
-            return defaultAttributes;
-        }
+        return AttributeStore.compose()
+            .withSuper(super.allowedAttributes())
+            .withSelf(defaultAttributes)
+            .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ABaseItemRestriction.class)
+            .build();
     }
 
     @Override

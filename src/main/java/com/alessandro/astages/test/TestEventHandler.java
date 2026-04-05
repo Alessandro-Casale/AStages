@@ -3,20 +3,19 @@ package com.alessandro.astages.test;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.ARestrictionUtils;
+import com.alessandro.astages.api.AStagesUtils;
 import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.event.AddRestrictionEvent;
 import com.alessandro.astages.api.event.AddStageEvent;
-import com.alessandro.astages.api.stage.Stage;
-import com.alessandro.astages.api.stage.TemporaryStage;
 import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.config.AStagesCommon;
-import com.alessandro.astages.core.AStageManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(modid = AStages.MODID)
 public class TestEventHandler {
@@ -43,19 +42,27 @@ public class TestEventHandler {
         if (!AStagesCommon.ENABLE_TEST_MODE.get()) { return; }
         if (event.getEventPhase() != AEventPhase.BEFORE_JS) { return; }
 
-        var stage = new Stage("stage1");
-        AStageManager.PERMANENT_INSTANCE.addStage(stage);
+        AStagesUtils.customizeStage("stage_permanent");
 
-        var temporaryStage = new TemporaryStage("stage_temporary", new ATime("1m"));
-        temporaryStage.whenGranted(e -> e.getPlayer());
-        temporaryStage.everyTick(e -> {
-            var server = e.getServer();
+        AStagesUtils.customizeTemporaryStage("stage_temporary", new ATime("1m"))
+            .whenGranted(e -> e.getPlayer())
+            .everyTick(e -> {
+                var server = e.getServer();
 
-            if (server != null) {
-                server.sendSystemMessage(Component.literal("Tick!"));
-            }
-        });
-        temporaryStage.whenExpired(e -> e.getPlayer());
-        AStageManager.TEMPORARY_INSTANCE.addStage(temporaryStage);
+                if (server != null) {
+                    server.sendSystemMessage(Component.literal("Tick!"));
+                }
+            })
+            .whenExpired(e -> e.getPlayer());
+    }
+
+    @SubscribeEvent
+    public static void playerTick(PlayerTickEvent.Pre event) {
+        if (!AStagesCommon.ENABLE_TEST_MODE.get()) { return; }
+
+//        AStages.LOGGER.debug(AClientStageManager.PERMANENT_INSTANCE.getStages().toString());
+//        AStages.LOGGER.debug(AClientStageManager.TEMPORARY_INSTANCE.getStages().toString());
+//        AStages.LOGGER.debug(AStageManager.PERMANENT_INSTANCE.getStages().toString());
+//        AStages.LOGGER.debug(AStageManager.TEMPORARY_INSTANCE.getStages().toString());
     }
 }

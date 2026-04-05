@@ -36,7 +36,8 @@ public class AStageManager {
     }
 
     public static void clientSynchronization(@Nullable ServerPlayer player) {
-        GENERIC_INSTANCE.synchronizeWithClient(player);
+        PERMANENT_INSTANCE.synchronizeWithClient(player);
+        TEMPORARY_INSTANCE.synchronizeWithClient(player);
     }
 
     public static void addStagesViaJavaCode(AEventPhase stage) {

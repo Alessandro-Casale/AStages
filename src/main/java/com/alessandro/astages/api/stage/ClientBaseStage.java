@@ -1,7 +1,7 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.core.AStageManager;
+import com.alessandro.astages.core.AClientStageManager;
 import com.alessandro.astages.store.AStore;
 import com.alessandro.astages.store.Attribute;
 import com.alessandro.astages.store.AttributeStore;
@@ -40,7 +40,7 @@ public abstract class ClientBaseStage<S extends ClientBaseStage<S>> implements A
 
         return AttributeStore.compose()
             .withSelf(defaultAttributes)
-            .withPlugin(AStageManager.ATTACHED_ATTRIBUTES, ClientBaseStage.class)
+            .withPlugin(AClientStageManager.ATTACHED_ATTRIBUTES, ClientBaseStage.class)
             .build();
     }
 

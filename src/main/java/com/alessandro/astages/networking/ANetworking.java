@@ -33,7 +33,8 @@ public class ANetworking {
         // STAGES
         registrar.playToClient(ClientStagesSyncerS2CPacket.TYPE, ClientStagesSyncerS2CPacket.STREAM_CODEC, ClientStagesSyncerS2CPacket::handle);
         registrar.playToClient(StagesSyncerS2CPacket.TYPE, StagesSyncerS2CPacket.STREAM_CODEC, StagesSyncerS2CPacket::handle);
-        registrar.playToClient(StageDisplaySyncerS2CPacket.TYPE, StageDisplaySyncerS2CPacket.STREAM_CODEC, StageDisplaySyncerS2CPacket::handle);
+        registrar.playToClient(StageSyncerS2CPacket.TYPE, StageSyncerS2CPacket.STREAM_CODEC, StageSyncerS2CPacket::handle);
+        registrar.playToClient(TemporaryStageSyncerS2CPacket.TYPE, TemporaryStageSyncerS2CPacket.STREAM_CODEC, TemporaryStageSyncerS2CPacket::handle);
         registrar.playToClient(RequestClientStagesS2CPacket.TYPE, RequestClientStagesS2CPacket.STREAM_CODEC, RequestClientStagesS2CPacket::handle);
         registrar.playToServer(ClientStagesC2SPacket.TYPE, ClientStagesC2SPacket.STREAM_CODEC, ClientStagesC2SPacket::handle);
 

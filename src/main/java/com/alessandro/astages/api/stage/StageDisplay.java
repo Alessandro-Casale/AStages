@@ -4,6 +4,7 @@ import com.alessandro.astages.api.develop.Info;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+@Deprecated(forRemoval = true)
 public class StageDisplay {
     public Component addTitle;
     public Component removeTitle;

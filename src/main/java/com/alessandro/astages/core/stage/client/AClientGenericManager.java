@@ -1,20 +1,17 @@
 package com.alessandro.astages.core.stage.client;
 
+import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.stage.ClientBaseStage;
 import com.alessandro.astages.api.stage.ClientStage;
-import com.alessandro.astages.store.StageAttributes;
 import com.alessandro.astages.store.stage.AStageClientBaseManager;
-import net.minecraft.world.item.ItemStack;
 
-public class AClientGenericManager extends AStageClientBaseManager<ClientStage> {
+public class AClientGenericManager extends AStageClientBaseManager<ClientBaseStage<?>> {
     public void addStage(String key, ClientStage stage) {
         addStageInternal(key, stage);
     }
 
-    public boolean hasCustomStack(String key) {
-        return getStages().containsKey(key);
-    }
-
-    public ItemStack getCustomStack(String key) {
-        return getStages().get(key).get(StageAttributes.ICON);
+    @Info("Only for consistency with server-side AGenericManager")
+    public void addStageNoCheck(ClientBaseStage<?> stage) {
+        addStageInternal(stage.getStage(), stage);
     }
 }

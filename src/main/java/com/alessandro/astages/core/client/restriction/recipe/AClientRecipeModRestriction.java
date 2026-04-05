@@ -6,10 +6,15 @@ import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.core.wrapper.RecipeModWrapper;
 import com.alessandro.astages.core.wrapper.RecipeWrapper;
 import com.alessandro.astages.store.AttributeStore;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NotNullParams
 public class AClientRecipeModRestriction extends AClientBaseRecipeRestriction<AClientRecipeModRestriction, RecipeModWrapper, RecipeWrapper> {
     private String modId = null;
+    private final List<ResourceLocation> ignoredRecipeIds = new ArrayList<>();
 
     public AClientRecipeModRestriction(String id, String stage) {
         super(id, stage);
@@ -31,10 +36,19 @@ public class AClientRecipeModRestriction extends AClientBaseRecipeRestriction<AC
 
     @Override
     public boolean isRestricted(RecipeWrapper wrapper) {
-        return modId.equals(wrapper.recipe().getNamespace());
+        return modId.equals(wrapper.recipe().getNamespace()) && !ignoredRecipeIds.contains(wrapper.recipe());
+    }
+
+    public AClientRecipeModRestriction ignoreItems(List<ResourceLocation> recipeIds) {
+        ignoredRecipeIds.addAll(recipeIds);
+        return this;
     }
 
     public String getModId() {
         return modId;
+    }
+
+    public List<ResourceLocation> getIgnoredRecipeIds() {
+        return ignoredRecipeIds;
     }
 }

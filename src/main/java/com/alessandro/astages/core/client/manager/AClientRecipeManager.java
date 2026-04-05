@@ -58,9 +58,9 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
     }
 
     public AClientBaseRecipeRestriction<?, ?, ?> getRestriction(AClientHolder holder, RecipeWrapper wrapper) {
-        var serverModRestriction = mods.stream().filter(r -> r.getModId().equals(wrapper.recipe().getNamespace()) && !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage())).findFirst().orElse(null);
+        var serverModRestriction = mods.stream().filter(r -> r.isRestricted(wrapper) && !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage())).findFirst().orElse(null);
         if (serverModRestriction == null) { return null; }
-        var modRestriction = mods.stream().filter(r -> r.getModId().equals(wrapper.recipe().getNamespace()) && !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage())).findFirst().orElse(null);
+        var modRestriction = mods.stream().filter(r -> r.isRestricted(wrapper) && !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage())).findFirst().orElse(null);
         if (modRestriction != null) { return modRestriction; }
 
         var restrictions = RECIPE_TYPE_CACHE.get(wrapper.type());

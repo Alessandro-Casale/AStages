@@ -1,5 +1,6 @@
 package com.alessandro.astages.core.client.restriction.item;
 
+import com.alessandro.astages.core.AClientRestrictionManager;
 import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.Attributes;
 import com.alessandro.astages.store.client.AClientRestriction;

@@ -8,7 +8,9 @@ import com.alessandro.astages.core.client.manager.AClientOreManager;
 import com.alessandro.astages.core.client.manager.AClientRecipeManager;
 import com.alessandro.astages.event.custom.actions.ClientItemUpdateEvent;
 import com.alessandro.astages.event.custom.actions.ClientRecipeUpdateEvent;
+import com.alessandro.astages.plugin.ForPlugins;
 import com.alessandro.astages.store.ARestrictionType;
+import com.alessandro.astages.store.AttributeStore;
 import com.alessandro.astages.store.client.AClientMinimalManager;
 
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.Set;
 
 public class AClientRestrictionManager {
     public static final Map<ARestrictionType, AClientMinimalManager<?>> ASSOCIATION_MAP = new HashMap<>();
+    @ForPlugins public static final Map<Class<?>, AttributeStore> ATTACHED_ATTRIBUTES = new HashMap<>();
 
     public static final AClientItemManager ITEM_INSTANCE = new AClientItemManager();
     public static final AClientRecipeManager RECIPE_INSTANCE = new AClientRecipeManager();

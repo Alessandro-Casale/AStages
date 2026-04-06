@@ -2,8 +2,8 @@ package com.alessandro.astages.api.holder;
 
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
-import com.alessandro.astages.capability.ClientPlayerStage;
-import com.alessandro.astages.capability.ClientServerStage;
+import com.alessandro.astages.infrastructure.capability.ClientPlayerStage;
+import com.alessandro.astages.infrastructure.capability.ClientServerStage;
 
 @NotNullMethodsReturn
 public class AClientHolder {

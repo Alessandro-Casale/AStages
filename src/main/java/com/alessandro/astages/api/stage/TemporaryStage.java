@@ -7,9 +7,9 @@ import com.alessandro.astages.api.stage.implementation.AExpirable;
 import com.alessandro.astages.api.stage.implementation.ATickable;
 import com.alessandro.astages.api.time.AMutableTime;
 import com.alessandro.astages.api.time.ATime;
-import com.alessandro.astages.core.AStageManager;
-import com.alessandro.astages.store.AttributeStore;
-import com.alessandro.astages.store.StageAttributes;
+import com.alessandro.astages.engine.AStageManager;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.engine.store.StageAttributes;
 
 import java.util.function.Consumer;
 

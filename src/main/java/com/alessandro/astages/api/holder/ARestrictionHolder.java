@@ -1,8 +1,8 @@
 package com.alessandro.astages.api.holder;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.store.Attribute;
-import com.alessandro.astages.store.server.ARestriction;
+import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.restriction.ARestriction;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Consumer;

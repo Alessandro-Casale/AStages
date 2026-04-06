@@ -1,23 +1,27 @@
 package com.alessandro.astages;
 
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.capability.AProvider;
-import com.alessandro.astages.command.argument.ACommandArguments;
-import com.alessandro.astages.config.AStagesClient;
-import com.alessandro.astages.config.AStagesCommon;
-import com.alessandro.astages.core.AClientRestrictionManager;
-import com.alessandro.astages.core.AClientStageManager;
-import com.alessandro.astages.core.ARestrictionManager;
-import com.alessandro.astages.core.AStageManager;
-import com.alessandro.astages.loot.AModifiers;
-import com.alessandro.astages.plugin.APluginFinder;
-import com.alessandro.astages.plugin.APluginManager;
-import com.alessandro.astages.plugin.AStagesPlugin;
-import com.alessandro.astages.plugin.container.AttributeContainer;
-import com.alessandro.astages.plugin.container.ManagerContainer;
-import com.alessandro.astages.store.*;
-import com.alessandro.astages.util.underdevelopment.block.ModBlocks;
-import com.alessandro.astages.util.underdevelopment.item.ModItems;
+import com.alessandro.astages.api.plugin.AStagesPlugin;
+import com.alessandro.astages.api.plugin.container.AttributeContainer;
+import com.alessandro.astages.api.store.ARestrictionType;
+import com.alessandro.astages.api.store.ASimpleRestrictionType;
+import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.engine.*;
+import com.alessandro.astages.engine.store.ARestrictionTypes;
+import com.alessandro.astages.engine.store.ASimpleRestrictionTypes;
+import com.alessandro.astages.engine.store.Attributes;
+import com.alessandro.astages.engine.store.StageAttributes;
+import com.alessandro.astages.infrastructure.capability.AProvider;
+import com.alessandro.astages.infrastructure.command.argument.ACommandArguments;
+import com.alessandro.astages.infrastructure.config.AStagesClient;
+import com.alessandro.astages.infrastructure.config.AStagesCommon;
+import com.alessandro.astages.infrastructure.manager.ClientManagerScanner;
+import com.alessandro.astages.infrastructure.manager.ManagerScanner;
+import com.alessandro.astages.infrastructure.plugin.PluginScanner;
+import com.alessandro.astages.internal.experimental.block.ModBlocks;
+import com.alessandro.astages.internal.experimental.item.ModItems;
+import com.alessandro.astages.internal.experimental.loot.AModifiers;
 import com.google.common.base.Stopwatch;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
@@ -65,35 +69,33 @@ public class AStages {
         modContainer.registerConfig(ModConfig.Type.COMMON, AStagesCommon.SPEC, "astages/astages-common.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, AStagesClient.SPEC, "astages/astages-client.toml");
 
-        APluginFinder.getAllPlugins();
-
-        var managerContainer = ManagerContainer.initialize();
-        APluginManager.callMethod(managerContainer, AStagesPlugin::registerManagers);
-        ARestrictionManager.EXTERNAL_MANAGERS.putAll(managerContainer.get());
+        ManagerScanner.getAllManagers();
+        ClientManagerScanner.getAllClientManagers();
+        PluginScanner.getAllPlugins();
 
         var attributeContainer = AttributeContainer.initialize();
-        APluginManager.callMethod(attributeContainer, AStagesPlugin::attachAttributes);
+        PluginManager.callMethod(attributeContainer, AStagesPlugin::attachAttributes);
         var result = attributeContainer.get();
         for (var clazz : result.keySet()) {
             ARestrictionManager.ATTACHED_ATTRIBUTES.computeIfAbsent(clazz, key -> AttributeStore.builder()).combineWith(result.get(clazz));
         }
 
         var clientAttributeContainer = AttributeContainer.initialize();
-        APluginManager.callMethod(attributeContainer, AStagesPlugin::attachClientAttributes);
+        PluginManager.callMethod(attributeContainer, AStagesPlugin::attachClientAttributes);
         var clientResult = clientAttributeContainer.get();
         for (var clazz : clientResult.keySet()) {
             AClientRestrictionManager.ATTACHED_ATTRIBUTES.computeIfAbsent(clazz, key -> AttributeStore.builder()).combineWith(clientResult.get(clazz));
         }
 
         var stageAttributeContainer = AttributeContainer.initialize();
-        APluginManager.callMethod(attributeContainer, AStagesPlugin::attachStageAttributes);
+        PluginManager.callMethod(attributeContainer, AStagesPlugin::attachStageAttributes);
         var stageResult = stageAttributeContainer.get();
         for (var clazz : stageResult.keySet()) {
             AStageManager.ATTACHED_ATTRIBUTES.computeIfAbsent(clazz, key -> AttributeStore.builder()).combineWith(stageResult.get(clazz));
         }
 
         var clientStageAttributeContainer = AttributeContainer.initialize();
-        APluginManager.callMethod(attributeContainer, AStagesPlugin::attachClientStageAttributes);
+        PluginManager.callMethod(attributeContainer, AStagesPlugin::attachClientStageAttributes);
         var clientStageResult = clientStageAttributeContainer.get();
         for (var clazz : clientStageResult.keySet()) {
             AClientStageManager.ATTACHED_ATTRIBUTES.computeIfAbsent(clazz, key -> AttributeStore.builder()).combineWith(clientStageResult.get(clazz));

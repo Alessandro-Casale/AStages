@@ -1,11 +1,11 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.core.AClientStageManager;
-import com.alessandro.astages.store.AStore;
-import com.alessandro.astages.store.Attribute;
-import com.alessandro.astages.store.AttributeStore;
-import com.alessandro.astages.store.StageAttributes;
+import com.alessandro.astages.api.store.AStore;
+import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.engine.AClientStageManager;
+import com.alessandro.astages.engine.store.StageAttributes;
 
 public abstract class ClientBaseStage<S extends ClientBaseStage<S>> implements AStore<S> {
     private final String stage;

@@ -1,8 +1,8 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.core.AStageManager;
-import com.alessandro.astages.store.AttributeStore;
+import com.alessandro.astages.engine.AStageManager;
+import com.alessandro.astages.api.store.container.AttributeStore;
 
 @NotNullParamsAndMethodsReturn
 public class Stage extends BaseStage<Stage> {

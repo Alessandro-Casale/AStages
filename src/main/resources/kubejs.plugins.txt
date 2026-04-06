@@ -1,1 +1,1 @@
-com.alessandro.astages.integration.kubejs.AStageKubeJSPlugin
+com.alessandro.astages.infrastructure.integration.kubejs.AKubeJSPlugin

@@ -1,8 +1,8 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
-import com.alessandro.astages.core.AClientStageManager;
-import com.alessandro.astages.store.AttributeStore;
+import com.alessandro.astages.engine.AClientStageManager;
+import com.alessandro.astages.api.store.container.AttributeStore;
 
 @NotNullMethodsReturn
 public class ClientTemporaryStage extends ClientBaseStage<ClientTemporaryStage> {

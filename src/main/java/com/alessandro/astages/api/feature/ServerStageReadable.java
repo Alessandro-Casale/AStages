@@ -1,6 +1,6 @@
 package com.alessandro.astages.api.feature;
 
-import com.alessandro.astages.store.server.ARestriction;
+import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.develop.Info;
 import net.minecraft.server.MinecraftServer;

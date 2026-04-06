@@ -1,15 +1,15 @@
 package com.alessandro.astages.api.stage;
 
-import com.alessandro.astages.api.ATextUtils;
 import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.implementation.AGrantable;
-import com.alessandro.astages.core.AStageManager;
-import com.alessandro.astages.store.AStore;
-import com.alessandro.astages.store.Attribute;
-import com.alessandro.astages.store.AttributeStore;
-import com.alessandro.astages.store.StageAttributes;
+import com.alessandro.astages.api.store.AStore;
+import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.api.util.ATextUtils;
+import com.alessandro.astages.engine.AStageManager;
+import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 

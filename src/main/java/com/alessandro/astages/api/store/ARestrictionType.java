@@ -27,4 +27,11 @@ public class ARestrictionType {
     public String getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "ARestrictionType{" +
+            "type='" + type + '\'' +
+            '}';
+    }
 }

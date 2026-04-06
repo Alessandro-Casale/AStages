@@ -1,15 +1,15 @@
 package com.alessandro.astages.api.reload;
 
+import com.alessandro.astages.api.nullability.Nullable;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
-public class ReloadContext {
-    private final MinecraftServer server;
-
+public record ReloadContext(@Nullable MinecraftServer server, @Nullable ServerPlayer player) {
     public ReloadContext(MinecraftServer server) {
-        this.server = server;
+        this(server, null);
     }
 
-    public MinecraftServer getServer() {
-        return server;
+    public ReloadContext(ServerPlayer player) {
+        this(null, player);
     }
 }

@@ -30,7 +30,9 @@
     "recipe.minecraft.ASmithingMenu",
     "recipe.minecraft.AStonecutterMenu",
     "reload.AJeiStarter",
+    "reload.AMinecraftServer",
     "reload.AReloadCommand",
+    "reload.AWorldLoader",
     "screen.AServerPlayer",
     "structure.AEntity"
   ],

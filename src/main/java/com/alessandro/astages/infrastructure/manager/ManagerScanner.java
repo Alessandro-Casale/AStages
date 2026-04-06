@@ -18,34 +18,36 @@ public class ManagerScanner {
         var type = Type.getType(AManagerContainer.class);
 
         for (ModFileScanData scanData : ModList.get().getAllScanData()) {
-            for (ModFileScanData.ClassData classData : scanData.getClasses()) {
-                if (classData.interfaces().contains(type)) {
-                    try {
-                        // Get class full name
-                        String className = Type.getObjectType(classData.clazz().getInternalName()).getClassName();
+            for (ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
+                if (!annotationData.annotationType().equals(type)) {
+                    continue;
+                }
 
-                        // Load class
-                        Class<?> clazz = Class.forName(className);
-                        for (Field field : clazz.getDeclaredFields()) {
-                            if (!field.isAnnotationPresent(ManagerInstance.class)) continue;
+                try {
+                    // Get class full name
+                    String className = Type.getObjectType(annotationData.clazz().getInternalName()).getClassName();
 
-                            if (!Modifier.isStatic(field.getModifiers())) {
-                                throw new IllegalStateException("@ManagerInstance must be static: " + field);
-                            }
+                    // Load class
+                    Class<?> clazz = Class.forName(className);
+                    for (Field field : clazz.getDeclaredFields()) {
+                        if (!field.isAnnotationPresent(ManagerInstance.class)) continue;
 
-                            try {
-                                Object instance = field.get(null);
-                                if (instance instanceof AMinimalManager<?, ?> manager) {
-                                    RestrictionRegistry.register(manager.associatedType(), manager);
-                                    AStages.LOGGER.info("[ManagerScanner] Registered manager: {}", manager.associatedType());
-                                }
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException("Cannot access field: " + field, e);
-                            }
+                        if (!Modifier.isStatic(field.getModifiers())) {
+                            throw new IllegalStateException("@ManagerInstance must be static: " + field);
                         }
-                    } catch (Exception e) {
-                        AStages.LOGGER.warn(e.getLocalizedMessage());
+
+                        try {
+                            Object instance = field.get(null);
+                            if (instance instanceof AMinimalManager<?, ?> manager) {
+                                RestrictionRegistry.register(manager.associatedType(), manager);
+                                AStages.LOGGER.info("[ManagerScanner] Registered manager: {}", manager.associatedType());
+                            }
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException("Cannot access field: " + field, e);
+                        }
                     }
+                } catch (Exception e) {
+                    AStages.LOGGER.warn(e.getLocalizedMessage());
                 }
             }
         }

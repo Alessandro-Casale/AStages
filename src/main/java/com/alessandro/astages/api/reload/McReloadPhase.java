@@ -1,0 +1,21 @@
+package com.alessandro.astages.api.reload;
+
+public enum McReloadPhase {
+    WORLD_LOAD_STARTED,
+
+    SERVER_ABOUT_TO_START,
+    SERVER_STARTING,
+    SERVER_STARTED,
+
+    WORLD_LOAD_FINISHED,
+
+    PLAYER_LOGGED_IN,
+
+    RELOAD_STARTED,
+    RELOAD_FINISHED,
+
+    PLAYER_LOGGED_OUT,
+
+    SERVER_STOPPING,
+    SERVER_STOPPED
+}

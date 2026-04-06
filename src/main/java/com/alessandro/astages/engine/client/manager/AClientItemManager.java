@@ -80,11 +80,12 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
     @Override
     public void reloadBeforeScripts() {
         registry.clear();
-        registry.clearProperties();
     }
 
     @Override
-    public void reloadAfterScripts() { }
+    public void reloadAfterScripts() {
+        registry.clearProperties();
+    }
 
     @Override
     public void removeRestriction(String id) {

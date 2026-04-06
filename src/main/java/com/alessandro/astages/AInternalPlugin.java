@@ -16,6 +16,7 @@ import com.alessandro.astages.engine.AStageManager;
 import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
+import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
 import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("unused")
@@ -52,6 +53,7 @@ public class AInternalPlugin implements AStagesPlugin {
             RestrictionSyncService.reflectSimpleIdsChangesToClients(player, MiscStorage.SIMPLE_IDS, ASyncOperation.ADD);
             RestrictionSyncService.reflectAllStagesChangesToClients(player);
             RestrictionSyncService.clientSynchronization(player);
+            CommonEventSettings.allInventoryChanged();
         }
     }
 

@@ -160,8 +160,8 @@ dependencies {
     implementation("curse.maven:fastworkbench-288885:5670423")
     implementation("curse.maven:placebo-283644:6105436")
 
-    implementation("curse.maven:toxony-1236984:6811991")
-    implementation("curse.maven:pagans-blessing-952071:5817130")
+    compileOnly("curse.maven:toxony-1236984:6811991")
+    compileOnly("curse.maven:pagans-blessing-952071:5817130")
 
     implementation("curse.maven:sodium-394468:6382651")
 }

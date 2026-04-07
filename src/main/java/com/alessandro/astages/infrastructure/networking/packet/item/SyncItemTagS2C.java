@@ -5,7 +5,7 @@ import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.item.AClientItemTagRestriction;
 import com.alessandro.astages.engine.server.restriction.item.AItemTagRestriction;
-import com.alessandro.astages.api.network.ACodes;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.core.registries.Registries;
@@ -23,10 +23,10 @@ import java.util.List;
 public record SyncItemTagS2C(String id, String stage, ResourceLocation tag, List<Item> ignoredItems, boolean renderItemName, boolean hideTooltip, boolean hideInJei) implements AStagesPacket {
     public static final Type<SyncItemTagS2C> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("tag_syncer_s2c_packet"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncItemTagS2C> STREAM_CODEC = ACodes.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncItemTagS2C> STREAM_CODEC = ACodecs.composite(
         ByteBufCodecs.STRING_UTF8, SyncItemTagS2C::id,
         ByteBufCodecs.STRING_UTF8, SyncItemTagS2C::stage,
-        ACodes.RESOURCE_LOCATION, SyncItemTagS2C::tag,
+        ACodecs.RESOURCE_LOCATION, SyncItemTagS2C::tag,
         ByteBufCodecs.registry(Registries.ITEM).apply(ByteBufCodecs.list()), SyncItemTagS2C::ignoredItems,
         ByteBufCodecs.BOOL, SyncItemTagS2C::renderItemName,
         ByteBufCodecs.BOOL, SyncItemTagS2C::hideTooltip,

@@ -1,6 +1,7 @@
 package com.alessandro.astages.infrastructure.networking.packet.stages;
 
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.api.stage.ClientTemporaryStage;
 import com.alessandro.astages.engine.AClientStageManager;
@@ -19,7 +20,7 @@ public record SyncTemporaryStageS2C(String stageKey, ItemStack stack) implements
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemporaryStageS2C> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8, SyncTemporaryStageS2C::stageKey,
-        ItemStack.OPTIONAL_STREAM_CODEC, SyncTemporaryStageS2C::stack,
+        ACodecs.nullableOr(ItemStack.OPTIONAL_STREAM_CODEC), SyncTemporaryStageS2C::stack,
         SyncTemporaryStageS2C::new
     );
 

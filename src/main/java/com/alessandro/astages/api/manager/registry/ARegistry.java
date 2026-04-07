@@ -30,7 +30,7 @@ public class ARegistry<R extends ARestriction<?, ?, ?>> implements AMinimalRegis
 
     public boolean register(R restriction, boolean addStageToRestrictionManager) {
         if (restrictionsById.containsKey(restriction.getId())) {
-            if (AStagesCommon.ENABLE_LOGS.get()) {
+            if (AStagesCommon.ENABLE_DEV_LOGS.get()) {
                 AStages.LOGGER.warn("Restriction with id {} already found!", restriction.getId());
             }
 

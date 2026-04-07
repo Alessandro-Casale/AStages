@@ -11,7 +11,7 @@ public class AStagesCommon {
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_TITLE_AFTER_STAGE_ADDING;
     public static final ModConfigSpec.EnumValue<ChatFormatting> TITLE_COLOR;
     public static final ModConfigSpec.ConfigValue<Integer> TICK_STRUCTURE_UPDATING;
-    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_LOGS;
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_DEV_LOGS;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_STAGE_WARNING;
     public static final ModConfigSpec.EnumValue<ASimpleLocation> SIMPLE_RESTRICTIONS_FOLDER;
     public static final ModConfigSpec.IntValue SIMPLE_RESTRICTIONS_RELOADABLE;
@@ -29,8 +29,8 @@ public class AStagesCommon {
         TICK_STRUCTURE_UPDATING = BUILDER.comment("Every how many ticks the updating of the structures in which the player is located is required")
             .define("Tick Structure Updating", 1);
 
-        ENABLE_LOGS = BUILDER.comment("Show logs related to dev things!")
-            .define("Enable Logs", true);
+        ENABLE_DEV_LOGS = BUILDER.comment("Show logs related to dev things!")
+            .define("Enable Dev Logs", false);
 
         ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when a stage is not associated to any restriction")
             .define("Enable Warning", true);

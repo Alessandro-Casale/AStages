@@ -1,4 +1,4 @@
-package com.alessandro.astages.infrastructure.mixin.reload;
+package com.alessandro.astages.infrastructure.mixin.integration.jei;
 
 import com.alessandro.astages.engine.client.ClientRestrictionReloadState;
 import mezz.jei.library.startup.JeiStarter;

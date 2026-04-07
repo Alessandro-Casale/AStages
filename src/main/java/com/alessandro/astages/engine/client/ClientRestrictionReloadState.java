@@ -1,5 +1,7 @@
 package com.alessandro.astages.engine.client;
 
+import com.alessandro.astages.infrastructure.integration.Mods;
+
 public class ClientRestrictionReloadState {
     private static boolean areScriptsAvailable = false;
     private static boolean didJeiFinishReloading = false;
@@ -42,6 +44,10 @@ public class ClientRestrictionReloadState {
     }
 
     public static boolean didJeiFinishReloading() {
+        if (!Mods.JEI.isLoaded()) {
+            return true;
+        }
+
         return didJeiFinishReloading;
     }
 

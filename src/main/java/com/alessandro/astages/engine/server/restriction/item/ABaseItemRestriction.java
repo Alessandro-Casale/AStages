@@ -23,16 +23,6 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static @NotNull ABaseItemRestriction<?, ?> newBuilder() {
-        return new ABaseItemRestriction<>("null", "null");
-    }
-
-    @Override
-    public boolean isCorrectClassForConfigs(@NotNull ARestriction<?, ?, ?> config) {
-        return config instanceof ABaseItemRestriction<?, ?>;
-    }
-
     @Override
     public @NotNull AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
@@ -83,7 +73,6 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     @Override
     public <T> R set(Attribute<T> attribute, T value) {
         var toReturn = super.set(attribute, value);
-        if (toReturn.isConfig()) { return toReturn; }
 
         if (attribute == Attributes.STORING_IN_INVENTORY || attribute == Attributes.EQUIPPING) {
             setChanged();

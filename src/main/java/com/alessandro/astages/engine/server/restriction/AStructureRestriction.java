@@ -30,11 +30,6 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static AStructureRestriction newBuilder() {
-        return new AStructureRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

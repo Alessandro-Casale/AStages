@@ -1,7 +1,7 @@
 package com.alessandro.astages.api.restriction;
 
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.store.AStore;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;

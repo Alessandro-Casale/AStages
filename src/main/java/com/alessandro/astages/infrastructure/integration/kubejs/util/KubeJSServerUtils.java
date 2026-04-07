@@ -8,7 +8,9 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.stage.Stage;
 import com.alessandro.astages.api.stage.TemporaryStage;
 import com.alessandro.astages.api.store.ARestrictionType;
+import com.alessandro.astages.api.store.config.AConfigPreset;
 import com.alessandro.astages.api.time.ATime;
+import com.alessandro.astages.api.util.APresetUtils;
 import com.alessandro.astages.api.util.ARestrictionUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -110,6 +112,11 @@ public class KubeJSServerUtils {
     // General
     public static <T> @Nullable T getRestrictionById(ARestrictionType type, String id) {
         return ARestrictionManager.getRestrictionById(id, type);
+    }
+
+    // Presets (old `config` system)
+    public static <T> AConfigPreset<T> createPresetFor(Class<T> clazz) {
+        return APresetUtils.createPresetFor(clazz);
     }
 
     // STAGES

@@ -65,23 +65,6 @@ public class AttributeStore extends HashMap<Attribute<?>, Object> {
         return result;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public AttributeStore overwrite(AttributeStore other) {
-        Set<Attribute<?>> attributesToOverwrite;
-
-        if (other instanceof ConfigurableAttributeStore config) {
-            attributesToOverwrite = config.getModifiedAttributes();
-        } else {
-            attributesToOverwrite = other.allAttributes();
-        }
-
-        for (var attribute : attributesToOverwrite) {
-            this.put(attribute, other.getAttribute(attribute));
-        }
-
-        return this;
-    }
-
     public Set<Attribute<?>> allAttributes() {
         return keySet();
     }

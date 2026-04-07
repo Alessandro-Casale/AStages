@@ -1,8 +1,8 @@
-package com.alessandro.astages.api.store;
+package com.alessandro.astages.api.store.container;
 
 import com.alessandro.astages.api.exception.SetAttributeNotSupported;
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.api.store.Attribute;
 
 public interface AStore<V> {
     <T> T get(Attribute<T> attribute);

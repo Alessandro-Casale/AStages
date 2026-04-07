@@ -30,11 +30,6 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static AMobRestriction newBuilder() {
-        return new AMobRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

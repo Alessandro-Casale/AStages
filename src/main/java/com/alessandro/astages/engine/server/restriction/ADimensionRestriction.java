@@ -28,11 +28,6 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static ADimensionRestriction newBuilder() {
-        return new ADimensionRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

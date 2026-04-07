@@ -1,4 +1,4 @@
-package com.alessandro.astages.infrastructure.mixin;
+package com.alessandro.astages.infrastructure.mixin.integration.kubejs;
 
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import dev.latvian.mods.kubejs.item.ItemClickedKubeEvent;

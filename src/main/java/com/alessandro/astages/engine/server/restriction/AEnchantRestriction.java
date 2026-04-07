@@ -16,11 +16,6 @@ public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Encha
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static AEnchantRestriction newBuilder() {
-        return new AEnchantRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

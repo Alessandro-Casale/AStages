@@ -4,8 +4,9 @@ import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.implementation.AGrantable;
-import com.alessandro.astages.api.store.AStore;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.config.AConfigurablePreset;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.util.ATextUtils;
 import com.alessandro.astages.engine.AStageManager;
@@ -18,7 +19,7 @@ import java.util.function.Function;
 
 @NotNullParams
 @SuppressWarnings("unchecked")
-public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AGrantable {
+public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AConfigurablePreset<S>, AGrantable {
     private final String stage;
     private final String description;
 
@@ -152,6 +153,36 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AG
 
     public S setRemoveChatMessage(Function<String, Component> removeChatMessage) {
         set(StageAttributes.CHAT_MESSAGE_REMOVE, removeChatMessage);
+        return (S) this;
+    }
+
+    public S setAddTitle(Component addTitle) {
+        set(StageAttributes.TITLE_ADD, stage -> addTitle);
+        return (S) this;
+    }
+
+    public S setRemoveTitle(Component removeTitle) {
+        set(StageAttributes.TITLE_REMOVE, stage -> removeTitle);
+        return (S) this;
+    }
+
+    public S setAddSubTitle(Component addSubTitle) {
+        set(StageAttributes.SUBTITLE_ADD, stage -> addSubTitle);
+        return (S) this;
+    }
+
+    public S setRemoveSubTitle(Component removeSubTitle) {
+        set(StageAttributes.SUBTITLE_REMOVE, stage -> removeSubTitle);
+        return (S) this;
+    }
+
+    public S setAddChatMessage(Component addChatMessage) {
+        set(StageAttributes.CHAT_MESSAGE_ADD, stage -> addChatMessage);
+        return (S) this;
+    }
+
+    public S setRemoveChatMessage(Component removeChatMessage) {
+        set(StageAttributes.CHAT_MESSAGE_REMOVE, stage -> removeChatMessage);
         return (S) this;
     }
 

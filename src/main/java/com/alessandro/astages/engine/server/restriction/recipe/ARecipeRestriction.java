@@ -23,11 +23,6 @@ public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestrictio
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static ARecipeRestriction newBuilder() {
-        return new ARecipeRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         return AttributeStore.compose()

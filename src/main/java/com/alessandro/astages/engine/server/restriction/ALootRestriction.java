@@ -2,6 +2,7 @@ package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.constant.AFilter;
 import com.alessandro.astages.api.develop.Info;
+import com.alessandro.astages.api.exception.UnsupportedMethodException;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.ARestriction;
@@ -43,11 +44,6 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static ALootRestriction newBuilder() {
-        return new ALootRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
@@ -62,10 +58,8 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
     }
 
     @Override
-    @DoNotCall
-    @Info("Prefer using methods below!")
     public ALootRestriction restrict(Void unused) {
-        return null;
+        throw UnsupportedMethodException.useInstead("any of ALootRestriction.restrict/ignore/set/apply(###) methods");
     }
 
     @SuppressWarnings("UnusedReturnValue")

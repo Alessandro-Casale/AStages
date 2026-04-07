@@ -1,12 +1,10 @@
 package com.alessandro.astages.api.restriction;
 
-import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.api.store.AStore;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.config.AConfigurablePreset;
 import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.api.store.container.ConfigurableAttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -21,26 +19,17 @@ import java.util.function.Function;
  * @param <U> For restrict method object type
  * @param <V> For isRestricted method object type
  */
-public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements AStore<R>, Comparable<R> {
+public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements AStore<R>, AConfigurablePreset<R>, Comparable<R> {
     private final String id;
     private final String stage;
     private int priority = 0;
-    private final boolean markForConfig;
 
     private final AttributeStore attributes;
 
     public ARestriction(@NotNull String id, @NotNull String stage) {
-        if (id.equals("null") && stage.equals("null")) {
-            this.id = id;
-            this.stage = stage;
-            this.attributes = new ConfigurableAttributeStore();
-            this.markForConfig = true;
-        } else {
-            this.id = id;
-            this.stage = stage;
-            this.attributes = allowedAttributes();
-            this.markForConfig = false;
-        }
+        this.id = id;
+        this.stage = stage;
+        this.attributes = allowedAttributes();
     }
 
     @Override
@@ -65,14 +54,8 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
     @SuppressWarnings("unchecked")
     @Override
     public <T> R set(Attribute<T> attribute, T value) {
-        if (!markForConfig) {
-            checkAttribute(attribute);
-            attributes.setAttribute(attribute, value);
-        } else {
-            if (attributes instanceof ConfigurableAttributeStore config) {
-                config.setAttribute(attribute, value);
-            }
-        }
+        checkAttribute(attribute);
+        attributes.setAttribute(attribute, value);
 
         return (R) this;
     }
@@ -105,37 +88,6 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
     public abstract R restrict(U object);
 
     public abstract boolean isRestricted(V object);
-
-    @NotNullParams
-    @SuppressWarnings({"unchecked", "unused"})
-    public R withAttributes(ARestriction<?, ?, ?>... configs) {
-        for (var config : configs) {
-            if (isCorrectClassForConfigs(config)) {
-                attributes.overwrite(config.getConfigurableAttributeStore());
-            } else {
-                AStages.LOGGER.debug("SKIPPED CONFIG");
-            }
-        }
-
-        return (R) this;
-    }
-
-    public ConfigurableAttributeStore getConfigurableAttributeStore() {
-        if (markForConfig && attributes instanceof ConfigurableAttributeStore config) {
-            return config;
-        }
-
-        throw new RuntimeException("You cannot use restriction with id " + getId() + " for configuration!");
-    }
-
-    public boolean isCorrectClassForConfigs(@NotNull ARestriction<?, ?, ?> config) {
-        Class<?> expectedClass = this.getClass();
-        return config.getClass().equals(expectedClass);
-    }
-
-    public boolean isConfig() {
-        return markForConfig && attributes instanceof ConfigurableAttributeStore;
-    }
 
     public String getId() {
         return id;

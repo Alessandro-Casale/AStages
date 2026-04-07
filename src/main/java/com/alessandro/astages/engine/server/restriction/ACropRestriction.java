@@ -16,11 +16,6 @@ public class ACropRestriction extends ARestriction<ACropRestriction, Block, Crop
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static ACropRestriction newBuilder() {
-        return new ACropRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

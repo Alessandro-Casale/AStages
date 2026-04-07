@@ -8,8 +8,11 @@ import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.AStageManager;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.restriction.*;
-import com.alessandro.astages.engine.server.restriction.item.AItemRestriction;
+import com.alessandro.astages.engine.server.restriction.item.*;
+import com.alessandro.astages.engine.server.restriction.recipe.ABaseRecipeRestriction;
+import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
+import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.engine.store.StageAttributes;
 import com.alessandro.astages.infrastructure.integration.Mods;
@@ -18,14 +21,12 @@ import com.alessandro.astages.infrastructure.integration.kubejs.bridge.KubeJSSta
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSClientUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSModelUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSServerUtils;
-import com.alessandro.astages.internal.experimental.StageEvent;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
-import dev.latvian.mods.kubejs.stages.StageEvents;
 
 @NotNullParams
 public class AKubeJSPlugin implements KubeJSPlugin {
@@ -74,6 +75,7 @@ public class AKubeJSPlugin implements KubeJSPlugin {
 
         bindings.add("AModels", KubeJSModelUtils.class);
         bindings.add("ATime", ATime.class);
+        bindings.add("ARestrictionTypes", ARestrictionTypes.class);
 
         bindings.add("Attributes", Attributes.class);
         bindings.add("ItemAttributes", Attributes.Item.class);
@@ -91,8 +93,16 @@ public class AKubeJSPlugin implements KubeJSPlugin {
         bindings.add("StructureAttributes", Attributes.Structure.class);
         bindings.add("StageAttributes", StageAttributes.class);
 
+        bindings.add("ABaseItemRestriction", ABaseItemRestriction.class);
         bindings.add("AItemRestriction", AItemRestriction.class);
+        bindings.add("AItemModRestriction", AItemModRestriction.class);
+        bindings.add("AItemTagRestriction", AItemTagRestriction.class);
+        bindings.add("AItemPredicateRestriction", AItemPredicateRestriction.class);
+
+        bindings.add("ABaseRecipeRestriction", ABaseRecipeRestriction.class);
         bindings.add("ARecipeRestriction", ARecipeRestriction.class);
+        bindings.add("ARecipeModRestriction", ARecipeModRestriction.class);
+
         bindings.add("ACropRestriction", ACropRestriction.class);
         bindings.add("ADimensionRestriction", ADimensionRestriction.class);
         bindings.add("AEffectRestriction", AEffectRestriction.class);

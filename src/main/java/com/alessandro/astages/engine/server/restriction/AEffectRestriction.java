@@ -17,11 +17,6 @@ public class AEffectRestriction extends ARestriction<AEffectRestriction, MobEffe
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static AEffectRestriction newBuilder() {
-        return new AEffectRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         return AttributeStore.compose()

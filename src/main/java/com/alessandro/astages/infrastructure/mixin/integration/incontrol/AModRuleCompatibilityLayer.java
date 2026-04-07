@@ -1,4 +1,4 @@
-package com.alessandro.astages.infrastructure.mixin;
+package com.alessandro.astages.infrastructure.mixin.integration.incontrol;
 
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.util.AStagesUtils;

@@ -25,11 +25,6 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static APetRestriction newBuilder() {
-        return new APetRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()

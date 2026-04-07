@@ -24,11 +24,6 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
         super(id, stage);
     }
 
-    @SuppressWarnings("unused")
-    public static AItemModRestriction newBuilder() {
-        return new AItemModRestriction("null", "null");
-    }
-
     @Override
     public AttributeStore allowedAttributes() {
         return AttributeStore.compose()

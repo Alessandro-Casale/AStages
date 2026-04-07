@@ -23,17 +23,8 @@ public class AScreenRestriction extends ARestriction<AScreenRestriction, MenuTyp
 
     private TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> checker;
 
-    public List<MenuType<?>> getMenus() {
-        return menus;
-    }
-
     public AScreenRestriction(String id, String stage) {
         super(id, stage);
-    }
-
-    @SuppressWarnings("unused")
-    public static AScreenRestriction newBuilder() {
-        return new AScreenRestriction("null", "null");
     }
 
     @Override
@@ -93,6 +84,10 @@ public class AScreenRestriction extends ARestriction<AScreenRestriction, MenuTyp
         this.checker = checker;
         set(Attributes.HAS_CHECKER, true);
         return this;
+    }
+
+    public List<MenuType<?>> getMenus() {
+        return menus;
     }
 
     public TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> getChecker() {

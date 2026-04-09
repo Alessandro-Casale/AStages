@@ -1,10 +1,13 @@
 package com.alessandro.astages.infrastructure.capability;
 
 import com.alessandro.astages.AStages;
+import net.minecraft.world.entity.MobSpawnType;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.Optional;
 
 public class AProvider {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, AStages.MODID);
@@ -16,5 +19,9 @@ public class AProvider {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockStage>> BLOCK_STAGE = ATTACHMENT_TYPES.register(
         "block_stage", () -> AttachmentType.serializable(BlockStage::new).build()
+    );
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Optional<MobSpawnType>>> SPAWN_TYPE = ATTACHMENT_TYPES.register(
+        "spawn_type", () -> AttachmentType.builder(Optional::<MobSpawnType>empty).build()
     );
 }

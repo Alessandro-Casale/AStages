@@ -1,2 +1,8 @@
 ## [2.0.0] - 09-04-2026
-- no changes
+
+
+Bug Fixes
+
+- Fix mob spawn deadlocks and implement transient data attachments. ([#98](https://github.com/Alessandro-Casale/AStages/pull/98))
+
+

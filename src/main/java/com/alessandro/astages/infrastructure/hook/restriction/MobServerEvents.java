@@ -7,94 +7,139 @@ import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.AMobRestriction;
 import com.alessandro.astages.engine.store.Attributes;
+import com.alessandro.astages.infrastructure.capability.AProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+
+import java.util.Optional;
 
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
 public class MobServerEvents {
+    /**
+     * This event is used to capture the MobSpawnType. <br> <br>
+     * IMPORTANT: This event can fire on asynchronous worker threads (e.g., during chunk generation).
+     * We only attach a data component here and avoid any world-access logic or player searches to prevent
+     * thread deadlocks between the WorldGen worker and the Main Server thread.
+     */
+    @SubscribeEvent
+    public static void onEntityJoin(FinalizeSpawnEvent event) {
+        if (event.getLevel().isClientSide()) {
+            return;
+        }
+
+        event.getEntity()
+            .setData(AProvider.SPAWN_TYPE, Optional.of(event.getSpawnType()));
+    }
+
+    /**
+     * This event fires when the entity is actually added to the level.
+     * It runs on the Main Server thread, making it safe to perform proximity checks for players
+     * and access game stages. We retrieve the SpawnType information stored earlier via data components.
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void checkMobSpawning(MobSpawnEvent.PositionCheck event) {
-        Player nearestPlayer = APlayerUtils.getNearestPlayer(event.getLevel().getLevel(), new Vec3(event.getX(), event.getY(), event.getZ()));
-        var server = event.getEntity().getServer();
-        var level = event.getEntity().level();
-        var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), event.getEntity().getType());
+    public static void checkMobSpawning(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide()) {
+            return;
+        }
+
+        var entity = event.getEntity();
+        var spawnType = entity.getData(AProvider.SPAWN_TYPE).orElse(null);
+
+        if (spawnType == null) { return; }
+        entity.setData(AProvider.SPAWN_TYPE, Optional.empty());
+
+        var x = entity.getBlockX();
+        var y = entity.getBlockY();
+        var z = entity.getBlockZ();
+        var pos = new BlockPos(x, y, z);
+
+        var entityType = entity.getType();
+
+        var level = event.getLevel();
+        Player nearestPlayer = APlayerUtils.getNearestPlayer(level, pos);
+        var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
 
         if (restriction != null) {
             if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
-                preventSpawning(event, restriction, level);
+                preventSpawning(event, restriction);
                 return;
             }
 
-            if (restriction.getDisabledSpawnTypes().contains(event.getSpawnType())) {
-                preventSpawning(event, restriction, level);
+            if (restriction.getDisabledSpawnTypes().contains(spawnType)) {
+                preventSpawning(event, restriction);
                 return;
             }
 
             if (!restriction.isValueNull(Attributes.DIMENSION)) {
                 if (restriction.get(Attributes.DIMENSION).equals(level.dimension().location())) {
-                    preventSpawning(event, restriction, level);
+                    preventSpawning(event, restriction);
                     return;
                 }
             }
 
-            var biome = level.getBiome(event.getEntity().blockPosition()).getKey();
+            var biome = level.getBiome(pos).getKey();
             if (biome != null) {
                 var biomeRS = biome.location();
                 if (restriction.getRestrictedBiomes().contains(biomeRS)) {
-                    preventSpawning(event, restriction, level);
+                    preventSpawning(event, restriction);
                     return;
                 }
             }
 
-            var lightLevel = level.getLightEmission(event.getEntity().blockPosition());
+            var lightLevel = level.getLightEmission(pos);
             if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                 if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel && lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
-                    preventSpawning(event, restriction, level);
+                    preventSpawning(event, restriction);
 //                     return;
                 }
             } else if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                 if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel) {
-                    preventSpawning(event, restriction, level);
+                    preventSpawning(event, restriction);
 //                     return;
                 }
             } else if (restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                 if (lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
-                    preventSpawning(event, restriction, level);
+                    preventSpawning(event, restriction);
 //                     return;
                 }
             }
         }
     }
 
-    private static void preventSpawning(MobSpawnEvent.PositionCheck event, AMobRestriction restriction, Level level) {
+    private static void preventSpawning(EntityJoinLevelEvent event, AMobRestriction restriction) {
         // If prevent spawn, you can place the replacer!
+        var level = event.getLevel();
+
         if (!restriction.isValueNull(Attributes.REPLACE)) {
-            LivingEntity newEntity = (LivingEntity) restriction.get(Attributes.REPLACE).create(level);
+            Entity newEntity = restriction.get(Attributes.REPLACE).create(level);
 
             if (newEntity != null) {
-                if (restriction.isEnabled(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)) {
-                    for (var wrapper : restriction.getEquipments()) {
-                        newEntity.setItemSlot(wrapper.slot(), wrapper.stack());
+                if (newEntity instanceof LivingEntity) {
+                    if (restriction.isEnabled(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)) {
+                        for (var wrapper : restriction.getEquipments()) {
+                            ((LivingEntity) newEntity).setItemSlot(wrapper.slot(), wrapper.stack());
+                        }
                     }
                 }
 
-                newEntity.setPos(event.getX(), event.getY(), event.getZ());
+                newEntity.setPos(event.getEntity().getBlockX(), event.getEntity().getBlockY(), event.getEntity().getBlockZ());
                 level.addFreshEntity(newEntity);
             } else {
                 AStages.LOGGER.warn("Features disabled in this level to spawn the replacer for restriction with id {}!", restriction.getId());
             }
         }
 
-        event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
+        event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

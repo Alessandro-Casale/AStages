@@ -164,6 +164,8 @@ dependencies {
     compileOnly("curse.maven:pagans-blessing-952071:5817130")
 
     implementation("curse.maven:sodium-394468:6382651")
+
+    compileOnly("curse.maven:modernfix-790626:7509726")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

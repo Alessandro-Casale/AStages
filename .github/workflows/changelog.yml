@@ -41,7 +41,7 @@ jobs:
           ignorePreReleases: false
           fetchViaCommits: true
           fromTag: ${{ steps.latest_tag.outputs.tag }}
-          toTag: "HEAD"
+          toTag: ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
           outputFile: "CHANGELOG.md"
 

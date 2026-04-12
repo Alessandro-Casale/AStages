@@ -16,6 +16,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
@@ -59,6 +61,26 @@ public class DebugEvents {
                 }
             })
             .whenExpired(e -> e.getPlayer());
+    }
+
+    @SubscribeEvent
+    public static void checkMobSpawnType(FinalizeSpawnEvent event) {
+        if (!AStagesCommon.SHOW_SPAWN_TYPES.get()) { return; }
+
+        var whitelistSpawnTypes = AStagesCommon.getWhitelistSpawnTypes();
+        var whitelistEntityTypes = AStagesCommon.getWhitelistEntityTypes();
+        if ((whitelistSpawnTypes.isEmpty() || whitelistSpawnTypes.contains(event.getSpawnType())) &&
+            (whitelistEntityTypes.isEmpty() || whitelistEntityTypes.contains(event.getEntity().getType()))) {
+            AStages.LOGGER.info("[AStages-SpawnTypes] {} for spawn type {}", event.getEntity().getType(), event.getSpawnType().name());
+        }
+    }
+
+    @SubscribeEvent
+    public static void serverStarted(ServerStartedEvent event) {
+//        NeoForgeRegistries.ATTACHMENT_TYPES.entrySet()
+//            .forEach(entry -> {
+//                AStages.LOGGER.debug(entry.getKey().toString());
+//            });
     }
 
     @SubscribeEvent

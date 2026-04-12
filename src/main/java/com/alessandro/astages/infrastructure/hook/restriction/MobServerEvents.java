@@ -7,10 +7,10 @@ import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.AMobRestriction;
 import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.infrastructure.capability.AProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,8 +19,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-
-import java.util.Optional;
 
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
@@ -37,8 +35,8 @@ public class MobServerEvents {
             return;
         }
 
-        event.getEntity()
-            .setData(AProvider.SPAWN_TYPE, Optional.of(event.getSpawnType()));
+//        event.getEntity()
+//            .setData(AProvider.SPAWN_TYPE, Optional.of(event.getSpawnType()));
     }
 
     /**
@@ -52,65 +50,64 @@ public class MobServerEvents {
             return;
         }
 
-        var entity = event.getEntity();
-        var spawnType = entity.getData(AProvider.SPAWN_TYPE).orElse(null);
+        if (event.getEntity() instanceof Mob mob) {
+            var x = mob.getBlockX();
+            var y = mob.getBlockY();
+            var z = mob.getBlockZ();
+            var pos = new BlockPos(x, y, z);
 
-        if (spawnType == null) { return; }
-        entity.setData(AProvider.SPAWN_TYPE, Optional.empty());
+            var entityType = mob.getType();
+            var spawnType = mob.getSpawnType();
 
-        var x = entity.getBlockX();
-        var y = entity.getBlockY();
-        var z = entity.getBlockZ();
-        var pos = new BlockPos(x, y, z);
+            var level = event.getLevel();
+            Player nearestPlayer = APlayerUtils.getNearestPlayer(level, pos);
+            var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
 
-        var entityType = entity.getType();
+            if (restriction != null) {
+                AStages.LOGGER.debug("Restriction: {}, {}, {}", restriction.getId(), restriction.get(Attributes.MOB_SPAWNING), restriction.getDisabledSpawnTypes());
 
-        var level = event.getLevel();
-        Player nearestPlayer = APlayerUtils.getNearestPlayer(level, pos);
-        var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
-
-        if (restriction != null) {
-            if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
-                preventSpawning(event, restriction);
-                return;
-            }
-
-            if (restriction.getDisabledSpawnTypes().contains(spawnType)) {
-                preventSpawning(event, restriction);
-                return;
-            }
-
-            if (!restriction.isValueNull(Attributes.DIMENSION)) {
-                if (restriction.get(Attributes.DIMENSION).equals(level.dimension().location())) {
+                if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
                     preventSpawning(event, restriction);
                     return;
                 }
-            }
 
-            var biome = level.getBiome(pos).getKey();
-            if (biome != null) {
-                var biomeRS = biome.location();
-                if (restriction.getRestrictedBiomes().contains(biomeRS)) {
+                if (restriction.getDisabledSpawnTypes().contains(spawnType)) {
                     preventSpawning(event, restriction);
                     return;
                 }
-            }
 
-            var lightLevel = level.getLightEmission(pos);
-            if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
-                if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel && lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
-                    preventSpawning(event, restriction);
-//                     return;
+                if (!restriction.isValueNull(Attributes.DIMENSION)) {
+                    if (restriction.get(Attributes.DIMENSION).equals(level.dimension().location())) {
+                        preventSpawning(event, restriction);
+                        return;
+                    }
                 }
-            } else if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
-                if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel) {
-                    preventSpawning(event, restriction);
-//                     return;
+
+                var biome = level.getBiome(pos).getKey();
+                if (biome != null) {
+                    var biomeRS = biome.location();
+                    if (restriction.getRestrictedBiomes().contains(biomeRS)) {
+                        preventSpawning(event, restriction);
+                        return;
+                    }
                 }
-            } else if (restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
-                if (lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
-                    preventSpawning(event, restriction);
+
+                var lightLevel = level.getLightEmission(pos);
+                if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
+                    if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel && lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
+                        preventSpawning(event, restriction);
 //                     return;
+                    }
+                } else if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
+                    if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel) {
+                        preventSpawning(event, restriction);
+//                     return;
+                    }
+                } else if (restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
+                    if (lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
+                        preventSpawning(event, restriction);
+//                     return;
+                    }
                 }
             }
         }

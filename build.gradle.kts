@@ -166,6 +166,12 @@ dependencies {
     implementation("curse.maven:sodium-394468:6382651")
 
     compileOnly("curse.maven:modernfix-790626:7509726")
+
+    implementation("curse.maven:geckolib-388172:7707149")
+    implementation("curse.maven:born-in-chaos-686437:7366499")
+
+    implementation("curse.maven:puzzles-lib-495476:7140307")
+    implementation("curse.maven:ender-zoology-857968:7021585")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

@@ -1,10 +1,8 @@
 package com.alessandro.astages.infrastructure.capability;
 
-import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStatus;
-import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.event.server.*;
 import com.alessandro.astages.api.foldersystem.AFolderPaths;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
@@ -16,11 +14,6 @@ import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.SyncServerStagesS2C;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.nio.file.Path;
@@ -29,40 +22,18 @@ import java.util.List;
 import java.util.Set;
 
 @NotNullMethodsReturn
-@EventBusSubscriber(modid = AStages.MODID)
 public class ServerStage {
+    public static final String SERVER_STAGES_FILE = "server.json";
+
     private static Set<String> CACHE = new HashSet<>();
 
-    @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent event) {
-        CACHE = AFileIOUtils.readHashSetOrDefault(getPermanentStagesFile(), String.class);
-    }
-
-    @SubscribeEvent
-    public static void onServerStopping(ServerStoppingEvent event) {
-        markAsDirty();
-        CACHE.clear();
-    }
-
-    @Info("Migration purpose only!")
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onServerStartingHighest(ServerStartingEvent event) {
-        var file = getPermanentStagesFile();
-        var stageList = AFileIOUtils.readList(file, String.class);
-
-        if (stageList == null) {
-            var oldList = getServerStagesFromData(event.getServer());
-            AFileIOUtils.writeFileContent(file, oldList);
-        }
-    }
-
-    private static Path getPermanentStagesFile() {
-        var file = AFolderPaths.getServerPermanentFolder().resolve("server.json");
+    public static Path getPermanentStagesFile() {
+        var file = AFolderPaths.getServerPermanentFolder().resolve(SERVER_STAGES_FILE);
         return AFileIOUtils.getOrCreateFile(file);
     }
 
     public static Path getTemporaryStagesFile() {
-        var file = AFolderPaths.getServerTemporaryFolder().resolve("server.json");
+        var file = AFolderPaths.getServerTemporaryFolder().resolve(SERVER_STAGES_FILE);
         return AFileIOUtils.getOrCreateFile(file);
     }
 
@@ -124,7 +95,15 @@ public class ServerStage {
         AFileIOUtils.writeFileContent(getPermanentStagesFile(), CACHE);
     }
 
+    public static void clearCache() {
+        CACHE.clear();
+    }
+
     public static List<String> getServerStagesFromData(MinecraftServer server) {
         return ServerStageWrapper.getStages(server);
+    }
+
+    public static void setCache(Set<String> cache) {
+        CACHE = cache;
     }
 }

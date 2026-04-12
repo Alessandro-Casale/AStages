@@ -50,7 +50,7 @@ public class AStagesPlayerArgument implements ArgumentType<String> {
             players.forEach(player -> suggestionList.add(player.getGameProfile().getName()));
         }
 
-        suggestionList.addAll(OfflinePlayerStage.USERNAME_UUID.keySet());
+        suggestionList.addAll(OfflinePlayerStage.getUsernameToUUIDMap().keySet());
 
         return SharedSuggestionProvider.suggest(suggestionList, builder);
     }

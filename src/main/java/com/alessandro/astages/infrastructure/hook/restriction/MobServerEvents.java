@@ -64,24 +64,19 @@ public class MobServerEvents {
             var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
 
             if (restriction != null) {
-                AStages.LOGGER.debug("Restriction: {}, {}, {}", restriction.getId(), restriction.get(Attributes.MOB_SPAWNING), restriction.getDisabledSpawnTypes());
-
                 if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
                     preventSpawning(event, restriction);
-                    AStages.LOGGER.debug("Mob Spawning");
                     return;
                 }
 
                 if (restriction.getDisabledSpawnTypes().contains(spawnType)) {
                     preventSpawning(event, restriction);
-                    AStages.LOGGER.debug("Spawn Type");
                     return;
                 }
 
                 if (!restriction.isValueNull(Attributes.DIMENSION)) {
                     if (restriction.get(Attributes.DIMENSION).equals(level.dimension().location())) {
                         preventSpawning(event, restriction);
-                        AStages.LOGGER.debug("Dimension");
                         return;
                     }
                 }
@@ -91,7 +86,6 @@ public class MobServerEvents {
                     var biomeRS = biome.location();
                     if (restriction.getRestrictedBiomes().contains(biomeRS)) {
                         preventSpawning(event, restriction);
-                        AStages.LOGGER.debug("Biome");
                         return;
                     }
                 }
@@ -100,19 +94,16 @@ public class MobServerEvents {
                 if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                     if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel && lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
                         preventSpawning(event, restriction);
-                        AStages.LOGGER.debug("Light1");
 //                     return;
                     }
                 } else if (!restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                     if (restriction.get(Attributes.MIN_LIGHT_LEVEL) < lightLevel) {
                         preventSpawning(event, restriction);
-                        AStages.LOGGER.debug("Light2");
 //                     return;
                     }
                 } else if (restriction.isValueNull(Attributes.MIN_LIGHT_LEVEL) && !restriction.isValueNull(Attributes.MAX_LIGHT_LEVEL)) {
                     if (lightLevel < restriction.get(Attributes.MAX_LIGHT_LEVEL)) {
                         preventSpawning(event, restriction);
-                        AStages.LOGGER.debug("Light3");
 //                     return;
                     }
                 }

@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @NotNullMethodsReturn
@@ -46,41 +45,6 @@ public class AStagesCommon {
         TICK_STRUCTURE_UPDATING = BUILDER.comment("Every how many ticks the updating of the structures in which the player is located is required")
             .define("Tick Structure Updating", 1);
 
-        ENABLE_DEV_LOGS = BUILDER.comment("Show logs related to dev things!")
-            .define("Enable Dev Logs", false);
-
-        SHOW_SPAWN_TYPES = BUILDER.comment("Show spawn types in logs for every entity type that is generated via FinalizeSpawnEvent")
-            .define("Enable Spawn Types Logs", false);
-
-        Predicate<Object> spawnTypeValidator = obj -> {
-            if (obj instanceof String s) {
-                try {
-                    MobSpawnType.valueOf(s.toUpperCase());
-                    return true;
-                } catch (IllegalArgumentException e) {
-                    return false;
-                }
-            }
-            return false;
-        };
-
-        WHITELIST_SPAWN_TYPES = BUILDER.comment("Whitelist spawn types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). " +
-                "Allowed values: " + Arrays.toString(MobSpawnType.values()))
-            .defineList("Whitelist Spawn Types", List.of(), () -> "NATURAL", spawnTypeValidator);
-
-        Predicate<Object> entityTypeValidator = obj -> {
-            if (obj instanceof String s) {
-                ResourceLocation rl = ResourceLocation.tryParse(s.toLowerCase());
-                if (rl != null) {
-                    return BuiltInRegistries.ENTITY_TYPE.containsKey(rl);
-                }
-            }
-            return false;
-        };
-
-        WHITELIST_ENTITY_TYPES = BUILDER.comment("Whitelist entity types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). (es: 'minecraft:zombie')")
-            .defineList("Whitelist Entity Types", List.of(), () -> "minecraft:pig", entityTypeValidator);
-
         ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when a stage is not associated to any restriction")
             .define("Enable Warning", true);
 
@@ -92,6 +56,23 @@ public class AStagesCommon {
 
         ENABLE_TEST_MODE = BUILDER.comment("Enable test-mode used by developers to check if all restrictions work as expected")
             .define("Enable Test Mode", false);
+
+        BUILDER.push("Dev");
+
+        ENABLE_DEV_LOGS = BUILDER.comment("Show logs related to dev things!")
+            .define("Enable Dev Logs", false);
+
+        SHOW_SPAWN_TYPES = BUILDER.comment("Show spawn types in logs for every entity type that is generated via FinalizeSpawnEvent")
+            .define("Enable Mob Related Logs", false);
+
+        WHITELIST_SPAWN_TYPES = BUILDER.comment("Whitelist spawn types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). " +
+                "Allowed values: " + Arrays.toString(MobSpawnType.values()))
+            .defineList("Whitelist Spawn Types", List.of(), () -> "NATURAL", ConfigUtils.SPAWN_TYPE_VALIDATOR);
+
+        WHITELIST_ENTITY_TYPES = BUILDER.comment("Whitelist entity types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). (es: 'minecraft:zombie')")
+            .defineList("Whitelist Entity Types", List.of(), () -> "minecraft:pig", ConfigUtils.ENTITY_TYPE_VALIDATOR);
+
+        BUILDER.pop();
 
         BUILDER.pop();
 

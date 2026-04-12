@@ -31,10 +31,10 @@ public class MobServerEvents {
      */
     @SubscribeEvent
     public static void onEntityJoin(FinalizeSpawnEvent event) {
-        if (event.getLevel().isClientSide()) {
-            return;
-        }
-
+//        if (event.getLevel().isClientSide()) {
+//            return;
+//        }
+//
 //        event.getEntity()
 //            .setData(AProvider.SPAWN_TYPE, Optional.of(event.getSpawnType()));
     }

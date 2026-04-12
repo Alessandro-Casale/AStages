@@ -1,6 +1,5 @@
 package com.alessandro.astages.infrastructure.capability;
 
-import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStatus;
@@ -16,74 +15,40 @@ import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.SyncPlayerStagesS2C;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.nio.file.Path;
 import java.util.*;
 
 @NotNullParamsAndMethodsReturn
-@EventBusSubscriber(modid = AStages.MODID)
+//@EventBusSubscriber(modid = AStages.MODID)
 public class OfflinePlayerStage {
-    public static final Map<UUID, Set<String>> CACHE = new HashMap<>();
+    public static final String UUID_TO_USERNAME_FILE = "uuid_to_username";
+    public static final String USERNAME_TO_UUID_FILE = "username_to_uuid";
+
+    private static final Map<UUID, Set<String>> CACHE = new HashMap<>();
 
     // Try using a Google BiMap
-    public static Map<UUID, String> UUID_USERNAME;
-    public static Map<String, UUID> USERNAME_UUID;
+    private static Map<UUID, String> UUID_USERNAME;
+    private static Map<String, UUID> USERNAME_UUID;
     // public static BiMap<String, UUID> USERNAME_UUID = HashBiMap.create();
 
-    @SubscribeEvent
-    public static void serverStarted(ServerStartingEvent event) {
-        UUID_USERNAME = AFileIOUtils.readMapOrDefault(getConfigFile("uuid_to_username"), UUID.class, String.class);
-        USERNAME_UUID = AFileIOUtils.readMapOrDefault(getConfigFile("username_to_uuid"), String.class, UUID.class);
-    }
-
-    @SubscribeEvent
-    public static void serverStopped(ServerStoppingEvent event) {
-        AFileIOUtils.writeFileContent(getConfigFile("uuid_to_username"), UUID_USERNAME);
-        AFileIOUtils.writeFileContent(getConfigFile("username_to_uuid"), USERNAME_UUID);
-    }
-
-    @Info("Migration purpose only!")
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        var playerUUID = event.getEntity().getUUID();
-        var playerName = event.getEntity().getGameProfile().getName();
+    public static void setPlayerNameToUUIDAssociation(String playerName, UUID playerUUID) {
         UUID_USERNAME.put(playerUUID, playerName);
         USERNAME_UUID.put(playerName, playerUUID);
-
-        var file = getPermanentStagesFile(event.getEntity());
-        var stageList = AFileIOUtils.readList(file, String.class);
-
-        if (stageList == null) {
-            var oldList = getPlayerStagesFromCapability(event.getEntity());
-            AFileIOUtils.writeFileContent(file, oldList);
-        }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        var player = event.getEntity();
-        markAsDirty(player);
-        CACHE.remove(player.getUUID()); // Clear CACHE
-    }
-
-    private static Path getConfigFile(String fileName) {
-        var file = AFolderPaths.getAStagesDataFolder().resolve(fileName + ".json");
+    public static Path getConfigFile(String fileName) {
+        var file = AFolderPaths.getAStagesDataFolder().resolve(fileName + AFileIOUtils.JSON_EXTENSION);
         return AFileIOUtils.getOrCreateFile(file);
     }
 
-    private static Path getPermanentStagesFile(Player player) {
+    public static Path getPermanentStagesFile(Player player) {
         return getPermanentStagesFile(player.getUUID());
     }
 
     private static Path getPermanentStagesFile(UUID uuid) {
-        var file = AFolderPaths.getPlayerPermanentFolder().resolve(uuid + ".json");
+        var file = AFolderPaths.getPlayerPermanentFolder().resolve(uuid + AFileIOUtils.JSON_EXTENSION);
         return AFileIOUtils.getOrCreateFile(file);
     }
 
@@ -92,7 +57,7 @@ public class OfflinePlayerStage {
     }
 
     public static Path getTemporaryStagesFile(UUID uuid) {
-        var file = AFolderPaths.getPlayerTemporaryFolder().resolve(uuid + ".json");
+        var file = AFolderPaths.getPlayerTemporaryFolder().resolve(uuid + AFileIOUtils.JSON_EXTENSION);
         return AFileIOUtils.getOrCreateFile(file);
     }
 
@@ -197,7 +162,27 @@ public class OfflinePlayerStage {
         AFileIOUtils.writeFileContent(getPermanentStagesFile(player), stages);
     }
 
+    public static void clearCache(Player player) {
+        CACHE.remove(player.getUUID());
+    }
+
     public static List<String> getPlayerStagesFromCapability(Player player) {
         return PlayerStageWrapper.getStages(player);
+    }
+
+    public static Map<UUID, String> getUUIDToUsernameMap() {
+        return UUID_USERNAME;
+    }
+
+    public static void setUUIDToUsernameMap(Map<UUID, String> map) {
+        UUID_USERNAME = map;
+    }
+
+    public static Map<String, UUID> getUsernameToUUIDMap() {
+        return USERNAME_UUID;
+    }
+
+    public static void setUsernameToUUIDMap(Map<String, UUID> map) {
+        USERNAME_UUID = map;
     }
 }

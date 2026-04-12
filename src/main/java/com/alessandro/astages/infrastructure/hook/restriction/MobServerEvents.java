@@ -44,7 +44,7 @@ public class MobServerEvents {
      * It runs on the Main Server thread, making it safe to perform proximity checks for players
      * and access game stages. We retrieve the SpawnType information stored earlier via data components.
      */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void checkMobSpawning(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) {
             return;
@@ -64,8 +64,6 @@ public class MobServerEvents {
             var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
 
             if (restriction != null) {
-                AStages.LOGGER.debug("Restriction: {}, {}, {}", restriction.getId(), restriction.get(Attributes.MOB_SPAWNING), restriction.getDisabledSpawnTypes());
-
                 if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
                     preventSpawning(event, restriction);
                     return;

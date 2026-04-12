@@ -172,6 +172,8 @@ dependencies {
 
     implementation("curse.maven:puzzles-lib-495476:7140307")
     implementation("curse.maven:ender-zoology-857968:7021585")
+
+    implementation("curse.maven:journeymap-32274:7911197")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

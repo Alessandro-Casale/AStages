@@ -2,6 +2,7 @@ package com.alessandro.astages.api.util;
 
 import com.alessandro.astages.api.nullability.NotNullParams;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.function.Consumer;
 
@@ -20,4 +21,8 @@ public class AServerUtils {
             server.run();
         }
     }
+
+    public static void forEachPlayer(MinecraftServer server, Consumer<ServerPlayer> consumer) {
+        server.getPlayerList().getPlayers().forEach(consumer);
+    };
 }

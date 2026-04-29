@@ -1,7 +1,6 @@
-package com.alessandro.astages.infrastructure.registry;
+package com.alessandro.astages.infrastructure.advancement;
 
 import com.alessandro.astages.AStages;
-import com.alessandro.astages.infrastructure.advancement.StageEarnTrigger;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;

@@ -80,6 +80,7 @@ public class OfflinePlayerStage {
 
     public static void addPlayerStage(UUID uuid, String stage) {
         CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).add(stage);
+        markAsDirty(uuid);
     }
 
     public static void addPlayerStages(Player player, Set<String> stages) {
@@ -88,6 +89,7 @@ public class OfflinePlayerStage {
 
     public static void addPlayerStages(UUID uuid, Set<String> stages) {
         CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).addAll(stages);
+        markAsDirty(uuid);
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -96,7 +98,9 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStage(UUID uuid, String stage) {
-        return CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
+        return removeStatus;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -105,7 +109,9 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStages(UUID uuid, Set<String> stages) {
-        return CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
+        return removeStatus;
     }
 
     @Info("Synchronization is required only if the player is 'physically' in the server!")
@@ -158,8 +164,12 @@ public class OfflinePlayerStage {
 
     // When saving, call this
     public static void markAsDirty(Player player) {
-        var stages = CACHE.get(player.getUUID());
-        AFileIOUtils.writeFileContent(getPermanentStagesFile(player), stages);
+        markAsDirty(player.getUUID());
+    }
+
+    public static void markAsDirty(UUID playerUUID) {
+        var stages = CACHE.get(playerUUID);
+        AFileIOUtils.writeFileContent(getPermanentStagesFile(playerUUID), stages);
     }
 
     public static void clearCache(Player player) {

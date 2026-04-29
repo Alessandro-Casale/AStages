@@ -5,11 +5,10 @@ import com.alessandro.astages.api.event.player.StageAddedPlayerEvent;
 import com.alessandro.astages.api.event.server.StageAddedServerEvent;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.util.AServerUtils;
-import com.alessandro.astages.infrastructure.registry.ACriteriaTriggers;
+import com.alessandro.astages.infrastructure.advancement.ACriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
@@ -27,7 +26,5 @@ public class AdvancementServerEvents {
         );
     }
 
-    public static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
-
-    }
+    // public static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) { }
 }

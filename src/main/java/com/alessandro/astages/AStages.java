@@ -19,6 +19,7 @@ import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.alessandro.astages.infrastructure.manager.ClientManagerScanner;
 import com.alessandro.astages.infrastructure.manager.ManagerScanner;
 import com.alessandro.astages.infrastructure.plugin.PluginScanner;
+import com.alessandro.astages.infrastructure.registry.ACriteriaTriggers;
 import com.alessandro.astages.internal.experimental.block.ModBlocks;
 import com.alessandro.astages.internal.experimental.item.ModItems;
 import com.alessandro.astages.internal.experimental.loot.AModifiers;
@@ -51,6 +52,7 @@ public class AStages {
         ModBlocks.BLOCKS.register(modEventBus);
         ACommandArguments.ARGUMENT_TYPES.register(modEventBus);
         AModifiers.MODIFIERS.register(modEventBus);
+        ACriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);
 
         Attributes.ATTRIBUTES.register(modEventBus);
         Attributes.Item.ATTRIBUTES.register(modEventBus);

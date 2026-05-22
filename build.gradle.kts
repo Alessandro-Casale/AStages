@@ -174,6 +174,9 @@ dependencies {
     implementation("curse.maven:ender-zoology-857968:7021585")
 
     implementation("curse.maven:journeymap-32274:7911197")
+
+    implementation("curse.maven:create-328085:7963363")
+    implementation("curse.maven:createnuclear-989797:7210665")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

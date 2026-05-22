@@ -1,7 +1,7 @@
 # This is an example mods.toml file. It contains the data relating to the loading mods.
 # There are several mandatory fields (#mandatory), and many more that are optional (#optional).
 # The overall format is standard TOML format, v0.5.0.
-# Note that there are a couple of TOML lists in this file.
+# Note that there are id couple of TOML lists in this file.
 # Find more information on toml format here:  https://github.com/toml-lang/toml
 # The name of the mod loader recipeType to load - for regular FML @Mod mods it should be javafml
 modLoader = "javafml" #mandatory
@@ -24,7 +24,7 @@ displayName = "${mod_name}" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
-# A file name (in the root of the mod JAR) containing a logo for display
+# A file name (in the root of the mod JAR) containing id logo for display
 #logoFile="astages.png" #optional
 # A text field displayed in the mod UI
 #credits="" #optional
@@ -39,19 +39,19 @@ description = '''${mod_description}'''
 config = "${mod_id}.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
-# If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
+# If this block is omitted, id fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
 # [[accessTransformers]]
 # file="META-INF/accesstransformer.cfg"
 
 # The coremods config file path is not configurable and is always loaded from META-INF/coremods.json
 
-# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+# A dependency - use the . to indicate dependency for id specific modid. Dependencies are optional.
 [[dependencies."${mod_id}"]] #optional
 # the modid of the dependency
 modId = "neoforge" #mandatory
 # The recipeType of the dependency. Can be one of "required", "optional", "incompatible" or "discouraged" (case insensitive).
 # 'required' requires the mod to exist, 'optional' does not
-# 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning
+# 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show id warning
 type = "required" #mandatory
 # Optional field describing why the dependency is required or why it is incompatible
 # reason="..."
@@ -67,7 +67,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
 type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
+# This version range declares id minimum of the current minecraft version up to but not including the next major version
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"

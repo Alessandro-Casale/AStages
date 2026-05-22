@@ -1,6 +1,7 @@
 package com.alessandro.astages.infrastructure.networking;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.infrastructure.networking.packet.structure.SyncRestrictedStructuresS2C;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -58,6 +59,9 @@ public class Networking {
 
         // DIMENSION
         registrar.playToClient(SyncDimensionIdsS2C.TYPE, SyncDimensionIdsS2C.STREAM_CODEC, SyncDimensionIdsS2C::handle);
+
+        // STRUCTURE
+        registrar.playToClient(SyncRestrictedStructuresS2C.TYPE, SyncRestrictedStructuresS2C.STREAM_CODEC, SyncRestrictedStructuresS2C::handle);
 
         // SERVER
         registrar.playToClient(SyncServerStagesS2C.TYPE, SyncServerStagesS2C.STREAM_CODEC, SyncServerStagesS2C::handle);

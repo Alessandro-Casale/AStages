@@ -1,10 +1,12 @@
 package com.alessandro.astages.engine.server.manager;
 
 import com.alessandro.astages.api.cache.server.ResourceLocationCache;
+import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.store.ARestrictionType;
+import com.alessandro.astages.engine.collision.StructureCollisionManager;
 import com.alessandro.astages.engine.server.restriction.AStructureRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.infrastructure.hook.restriction.StructureServerEvents;
@@ -29,6 +31,12 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceL
     public void reloadBeforeScripts() {
         super.reloadBeforeScripts();
         StructureServerEvents.playerIsInStructure.clear();
+        StructureCollisionManager.reloadBeforeScripts();
+    }
+
+    @UnderDevelopment("Check correct priority!")
+    public AStructureRestriction getRestriction(ResourceLocation structure) {
+        return structureCache.get(structure).first();
     }
 
     @Override

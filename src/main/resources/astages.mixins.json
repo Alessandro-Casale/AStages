@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "astages.refmap.json",
   "mixins": [
+    "structure.AEntity",
     "enchant.AEnchantmentMenu",
     "food.ALivingEntity",
     "integration.fastworkbench.AFastBenchUtil",

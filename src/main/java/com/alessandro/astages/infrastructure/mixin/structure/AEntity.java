@@ -1,28 +1,52 @@
 package com.alessandro.astages.infrastructure.mixin.structure;
 
-import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.ALoader;
+import com.alessandro.astages.api.event.world.EntityChangedChunkEvent;
+import com.alessandro.astages.engine.collision.StructureCollisionManager;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@UnderDevelopment
+import java.util.ArrayList;
+import java.util.List;
+
 @Mixin(Entity.class)
 public abstract class AEntity {
-//    @Inject(method = "collideBoundingBox", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getWorldBorder()Lnet/minecraft/world/level/border/WorldBorder;"), locals = LocalCapture.CAPTURE_FAILHARD)
-//    private static void astages$collideBoundingBox(Entity entity, Vec3 vec, AABB collisionBox, Level level, List<VoxelShape> potentialHits, CallbackInfoReturnable<Vec3> cir, ImmutableList.Builder<VoxelShape> builder) {
-//        if (entity instanceof ServerPlayer player && level instanceof ServerLevel serverLevel) {
-//            // var newPos = player.getOnPos().mutable().move(0, 2, 0).move(1, 0, 0);
-//            var structure = serverLevel.registryAccess().registryOrThrow(Registries.STRUCTURE).get(new ResourceLocation("minecraft:pillager_outpost"));
-//            var s = serverLevel.structureManager().getStructureWithPieceAt(player.blockPosition(), structure);
-//
-//            if (s.isValid()) {
-//                var bb = s.getBoundingBox();
-//                var newShape = Shapes.box(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
-//                builder.add(newShape);
-//                ARenderer.addBoundingBox(bb);
-//            }
-//        }
+    @Shadow public abstract ChunkPos chunkPosition();
 
-//        if (entity instanceof Player) { }
-//        builder.add(Shapes.box(-2315, 70, -2205, -2311, 71, -2200));
-//    }
+    @Shadow public abstract BlockPos blockPosition();
+
+    @ModifyExpressionValue(method = "collide", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntityCollisions(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"))
+    public List<VoxelShape> astages$collide(List<VoxelShape> original) {
+        var entity = (Entity) (Object) this;
+
+        if (entity instanceof Player player && !player.isSpectator()) {
+            List<VoxelShape> newCollisions = new ArrayList<>(original);
+            var level = player.level();
+
+            if (level instanceof ServerLevel serverLevel) {
+                newCollisions.addAll(StructureCollisionManager.SERVER_INSTANCE.getRestrictedShapesForChunk(serverLevel, chunkPosition(), player));
+            } else {
+                newCollisions.addAll(StructureCollisionManager.CLIENT_INSTANCE.getRestrictedShapesForChunks(level.dimension(), chunkPosition(), 1));
+            }
+
+            return newCollisions;
+        }
+
+        return original;
+    }
+
+    @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ChunkPos;<init>(Lnet/minecraft/core/BlockPos;)V"))
+    public void astages$onPlayerChangedChunk(double x, double y, double z, CallbackInfo ci) {
+        ALoader.EVENT_BUS.post(new EntityChangedChunkEvent((Entity) (Object) this, new ChunkPos(blockPosition())));
+    }
 }

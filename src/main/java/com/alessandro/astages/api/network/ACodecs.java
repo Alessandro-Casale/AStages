@@ -10,6 +10,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
@@ -23,18 +26,44 @@ public class ACodecs {
         ResourceLocation::toString
     );
 
+    public static final StreamCodec<ByteBuf, AABB> AABB_CODEC = StreamCodec.composite(
+        ByteBufCodecs.DOUBLE, aabb -> aabb.minX,
+        ByteBufCodecs.DOUBLE, aabb -> aabb.minY,
+        ByteBufCodecs.DOUBLE, aabb -> aabb.minZ,
+        ByteBufCodecs.DOUBLE, aabb -> aabb.maxX,
+        ByteBufCodecs.DOUBLE, aabb -> aabb.maxY,
+        ByteBufCodecs.DOUBLE, aabb -> aabb.maxZ,
+        AABB::new
+    );
+
+    public static final StreamCodec<ByteBuf, BoundingBox> BOUNDING_BOX_CODEC = StreamCodec.composite(
+        ByteBufCodecs.INT, BoundingBox::minX,
+        ByteBufCodecs.INT, BoundingBox::minY,
+        ByteBufCodecs.INT, BoundingBox::minZ,
+        ByteBufCodecs.INT, BoundingBox::maxX,
+        ByteBufCodecs.INT, BoundingBox::maxY,
+        ByteBufCodecs.INT, BoundingBox::maxZ,
+        BoundingBox::new
+    );
+
+    public static final StreamCodec<ByteBuf, ChunkPos> CHUNK_POS_CODEC = StreamCodec.composite(
+        ByteBufCodecs.INT, chunkPos -> chunkPos.x,
+        ByteBufCodecs.INT, chunkPos -> chunkPos.z,
+        ChunkPos::new
+    );
+
     @NotNullParams
     public static <T> StreamCodec<RegistryFriendlyByteBuf, T> nullableOr(StreamCodec<RegistryFriendlyByteBuf, T> inner) {
         return new StreamCodec<>() {
             @Override
             public @Nullable T decode(RegistryFriendlyByteBuf buf) {
-                boolean present = buf.readBoolean(); // flag per null
+                boolean present = buf.readBoolean();
                 return present ? inner.decode(buf) : null;
             }
 
             @Override
             public void encode(RegistryFriendlyByteBuf buf, @Nullable T value) {
-                buf.writeBoolean(value != null); // scrive flag
+                buf.writeBoolean(value != null);
                 if (value != null) {
                     inner.encode(buf, value);
                 }

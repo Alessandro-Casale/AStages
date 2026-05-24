@@ -7,6 +7,7 @@ import com.alessandro.astages.api.misc.Twin;
 import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -97,6 +98,24 @@ public class StructureCollision {
                         toReturn.add(twin.value());
                     }
                 }
+            }
+        }
+
+        return toReturn;
+    }
+
+    public Set<Twin<String, StructureStart>> getTwinsForBlockPos(ResourceKey<Level> dimension, BlockPos pos) {
+        var twins = CACHE.getTwinsFor(dimension, ChunkPos.asLong(pos));
+        var toReturn = new HashSet<Twin<String, StructureStart>>();
+
+        for (var twin : twins) {
+            var start = twin.value();
+            var bb = start.getBoundingBox();
+
+            // if (bb.intersectingChunks())
+
+            if (bb.isInside(pos.getX(), pos.getY(), pos.getZ())) {
+                toReturn.add(twin);
             }
         }
 

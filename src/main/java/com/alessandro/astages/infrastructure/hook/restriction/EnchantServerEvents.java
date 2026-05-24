@@ -41,7 +41,7 @@ public class EnchantServerEvents {
                         var parsedBook = removeAllRestrictedEnchantmentFromEnchantedBook(player, slotContent);
 
                         if (!parsedBook.isEmpty()) {
-                            inventory.setItem(CommonEventSettings.getSlotChanged(), parsedBook);
+                            inventory.setItem(i, parsedBook);
                         }
                     } else if (slotContent.isEnchanted()) {
                         removeAllRestrictedEnchantmentFromStack(player, slotContent);

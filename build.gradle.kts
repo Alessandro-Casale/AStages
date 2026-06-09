@@ -39,6 +39,10 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+}
+
 neoForge {
     version = project.property("neo_version") as String
 

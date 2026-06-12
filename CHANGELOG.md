@@ -1,8 +1,9 @@
-## [2.0.4] - 24-05-2026
+## [2.0.4] - 12-06-2026
 
 
-Bug Fixes
+New Features
 
-- NullPointerExecption in onPlayerTick when scanning all slots for enchanted books. ([#107](https://github.com/Alessandro-Casale/AStages/pull/107))
+- Limit player access for structures using new borders. ([#109](https://github.com/Alessandro-Casale/AStages/pull/109))
+- Meaningful arg names in KubeJS. ([#112](https://github.com/Alessandro-Casale/AStages/pull/112))
 
 

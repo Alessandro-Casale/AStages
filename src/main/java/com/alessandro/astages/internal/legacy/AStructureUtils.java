@@ -1,4 +1,4 @@
-package com.alessandro.astages.internal.experimental;
+package com.alessandro.astages.internal.legacy;
 
 import com.alessandro.astages.AStages;
 import net.minecraft.core.BlockPos;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@Deprecated(forRemoval=true)
 public class AStructureUtils {
     private static final int[][] delta = {
         { -1, -1 },

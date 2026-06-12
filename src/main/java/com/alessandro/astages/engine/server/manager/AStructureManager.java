@@ -9,7 +9,6 @@ import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.collision.StructureCollisionManager;
 import com.alessandro.astages.engine.server.restriction.AStructureRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
-import com.alessandro.astages.infrastructure.hook.restriction.StructureServerEvents;
 import net.minecraft.resources.ResourceLocation;
 
 @NotNullParams
@@ -30,7 +29,6 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceL
     @Override
     public void reloadBeforeScripts() {
         super.reloadBeforeScripts();
-        StructureServerEvents.playerIsInStructure.clear();
         StructureCollisionManager.reloadBeforeScripts();
     }
 

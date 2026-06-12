@@ -8,6 +8,7 @@ import com.alessandro.astages.api.event.AddStageEvent;
 import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.api.util.ARestrictionUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -42,6 +43,9 @@ public class DebugEvents {
             .restrictBiomeSpawn(AResourceLocation.parse("minecraft:plains"));
 
         ARestrictionUtils.addRestrictionForRecipe("astages:recipe1", "stage_recipe_1", RecipeType.SMITHING, List.of(AResourceLocation.fromNamespaceAndPath("minecraft", "netherite_sword_smithing")));
+
+        ARestrictionUtils.addRestrictionForStructure("astages:structure1", "stage_structure_1", List.of(AResourceLocation.parse("minecraft:village_plains")))
+            .set(Attributes.ENTERING, false);
     }
 
     @SubscribeEvent

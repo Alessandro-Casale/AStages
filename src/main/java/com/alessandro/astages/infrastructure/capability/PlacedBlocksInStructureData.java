@@ -14,12 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 
 @NotNullParamsAndMethodsReturn
-public class StructureData extends SavedData {
+public class PlacedBlocksInStructureData extends SavedData {
     private static final String STRUCTURE_ID = "astages_structure_data_";
     private final HashSet<BlockPos> placedByPlayerBlocks = new HashSet<>(); // StructureStart: Block Positions
 
-    public static StructureData create() {
-        return new StructureData();
+    public static PlacedBlocksInStructureData create() {
+        return new PlacedBlocksInStructureData();
     }
 
     public boolean isBlockPlacedByPlayer(BlockPos blockPos) {
@@ -36,7 +36,7 @@ public class StructureData extends SavedData {
         setDirty();
     }
 
-    public static StructureData load(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
+    public static PlacedBlocksInStructureData load(CompoundTag nbt, HolderLookup.Provider lookupProvider) {
         var newData = create();
 
         var listTag = (ListTag) nbt.get("structure_blocks");
@@ -60,11 +60,11 @@ public class StructureData extends SavedData {
         return nbt;
     }
 
-    public static StructureData getData(ServerLevel level, String structureId) {
-        return level.getDataStorage().computeIfAbsent(new Factory<>(StructureData::create, StructureData::load), STRUCTURE_ID + structureId.replace(':', '_'));
+    public static PlacedBlocksInStructureData getData(ServerLevel level, String structureId) {
+        return level.getDataStorage().computeIfAbsent(new Factory<>(PlacedBlocksInStructureData::create, PlacedBlocksInStructureData::load), STRUCTURE_ID + structureId.replace(':', '_'));
     }
 
-    public static StructureData getData(MinecraftServer server, String structureId) {
-        return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(StructureData::create, StructureData::load), STRUCTURE_ID + structureId.replace(':', '_'));
+    public static PlacedBlocksInStructureData getData(MinecraftServer server, String structureId) {
+        return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(PlacedBlocksInStructureData::create, PlacedBlocksInStructureData::load), STRUCTURE_ID + structureId.replace(':', '_'));
     }
 }

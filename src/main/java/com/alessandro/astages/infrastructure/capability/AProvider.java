@@ -17,8 +17,8 @@ public class AProvider {
         "player_stage", () -> AttachmentType.serializable(PlayerStage::new).build()
     );
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockStage>> BLOCK_STAGE = ATTACHMENT_TYPES.register(
-        "block_stage", () -> AttachmentType.serializable(BlockStage::new).build()
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockOwner>> BLOCK_STAGE = ATTACHMENT_TYPES.register(
+        "block_stage", () -> AttachmentType.serializable(BlockOwner::new).build()
     );
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Optional<MobSpawnType>>> SPAWN_TYPE = ATTACHMENT_TYPES.register(

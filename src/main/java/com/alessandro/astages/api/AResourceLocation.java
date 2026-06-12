@@ -38,4 +38,8 @@ public class AResourceLocation {
     public static ResourceLocation parse(String location) {
         return ResourceLocation.parse(location);
     }
+
+    public static ResourceLocation withMinecraftNamespace(String location) {
+        return ResourceLocation.withDefaultNamespace(location);
+    }
 }

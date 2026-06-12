@@ -11,13 +11,13 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.UUID;
 
 @NotNullParamsAndMethodsReturn
-public class BlockStage implements INBTSerializable<CompoundTag> {
+public class BlockOwner implements INBTSerializable<CompoundTag> {
     public static String OWNER_KEY = "owner";
     private UUID owner;
 
-    public BlockStage(IAttachmentHolder iAttachmentHolder) { }
+    public BlockOwner(IAttachmentHolder iAttachmentHolder) { }
 
-    public BlockStage(UUID owner) {
+    public BlockOwner(UUID owner) {
         this.owner = owner;
     }
 

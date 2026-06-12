@@ -89,12 +89,12 @@ public class AHolder {
 
     public AStageHolder getStages() {
         if (isPlayer && !isMultiple) {
-            return AStageHolder.initAndHold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.get(0)));
+            return AStageHolder.initAndHold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()));
         }
 
         if (isServer && isPlayer) { // Server stages is prioritized!
             return AStageHolder.init()
-                .hold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.get(0)))
+                .hold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()))
                 .hold(AStageType.SERVER, ServerStage.getServerStages());
         }
 
@@ -125,7 +125,7 @@ public class AHolder {
         }
 
         if (isPlayer && !isMultiple) {
-            forPlayer.accept(uuids.get(0));
+            forPlayer.accept(uuids.getFirst());
         }
 
         if (isPlayer && isMultiple) {

@@ -1,5 +1,6 @@
 package com.alessandro.astages.infrastructure.capability;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStatus;
@@ -16,6 +17,7 @@ import com.alessandro.astages.infrastructure.networking.packet.stages.SyncPlayer
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -28,7 +30,7 @@ public class OfflinePlayerStage {
 
     private static final Map<UUID, Set<String>> CACHE = new HashMap<>();
 
-    // Try using a Google BiMap
+    // Try using id Google BiMap
     private static Map<UUID, String> UUID_USERNAME;
     private static Map<String, UUID> USERNAME_UUID;
     // public static BiMap<String, UUID> USERNAME_UUID = HashBiMap.create();
@@ -61,17 +63,17 @@ public class OfflinePlayerStage {
         return AFileIOUtils.getOrCreateFile(file);
     }
 
-    public static Set<String> getPlayerStagesFromCache(Player player) {
+    public static @UnmodifiableView Set<String> getPlayerStagesFromCache(Player player) {
         return getPlayerStagesFromCache(player.getUUID());
     }
 
-    public static Set<String> getPlayerStagesFromCache(UUID uuid) {
+    public static @UnmodifiableView Set<String> getPlayerStagesFromCache(UUID uuid) {
         if (!CACHE.containsKey(uuid)) {
-            var stages = AFileIOUtils.readHashSetOrDefault(getPermanentStagesFile(uuid), String.class);
+            var stages = ASetUtils.synchronizedSet(AFileIOUtils.readHashSetOrDefault(getPermanentStagesFile(uuid), String.class));
             CACHE.put(uuid, stages);
         }
 
-        return CACHE.get(uuid);
+        return Collections.unmodifiableSet(CACHE.get(uuid));
     }
 
     public static void addPlayerStage(Player player, String stage) {
@@ -79,7 +81,7 @@ public class OfflinePlayerStage {
     }
 
     public static void addPlayerStage(UUID uuid, String stage) {
-        CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).add(stage);
+        CACHE.computeIfAbsent(uuid, k ->  ASetUtils.newSynchronizedSet()).add(stage);
         markAsDirty(uuid);
     }
 
@@ -88,7 +90,7 @@ public class OfflinePlayerStage {
     }
 
     public static void addPlayerStages(UUID uuid, Set<String> stages) {
-        CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).addAll(stages);
+        CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).addAll(stages);
         markAsDirty(uuid);
     }
 
@@ -98,7 +100,7 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStage(UUID uuid, String stage) {
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
         if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
         return removeStatus;
     }
@@ -109,7 +111,7 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStages(UUID uuid, Set<String> stages) {
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> new HashSet<>()).removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
         if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
         return removeStatus;
     }
@@ -170,6 +172,8 @@ public class OfflinePlayerStage {
     public static void markAsDirty(UUID playerUUID) {
         var stages = CACHE.get(playerUUID);
         AFileIOUtils.writeFileContent(getPermanentStagesFile(playerUUID), stages);
+
+        AStages.LOGGER.debug("Saving stages for {} -> {}", playerUUID, stages);
     }
 
     public static void clearCache(Player player) {

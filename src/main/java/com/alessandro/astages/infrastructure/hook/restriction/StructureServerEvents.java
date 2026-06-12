@@ -8,7 +8,7 @@ import com.alessandro.astages.api.util.AInventoryUtils;
 import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.infrastructure.capability.StructureData;
+import com.alessandro.astages.infrastructure.capability.PlacedBlocksInStructureData;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.alessandro.astages.internal.experimental.AStructureUtils;
 import net.minecraft.core.BlockPos;
@@ -120,9 +120,9 @@ public class StructureServerEvents {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
                     var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
-                    var blockPlacedByPlayer = StructureData.getData(player.getServer(), structure.toString()).isBlockPlacedByPlayer(event.getPos());
+                    var blockPlacedByPlayer = PlacedBlocksInStructureData.getData(player.getServer(), structure.toString()).isBlockPlacedByPlayer(event.getPos());
                     if (blockPlacedByPlayer) {
-                        StructureData.getData(player.getServer(), structure.toString()).remove(event.getPos());
+                        PlacedBlocksInStructureData.getData(player.getServer(), structure.toString()).remove(event.getPos());
                         continue;
                     }
 
@@ -195,7 +195,7 @@ public class StructureServerEvents {
                 for (var structure : playerIsInStructure.get(playerUUID)) {
                     var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structure);
 
-                    StructureData.getData(player.getServer(), structure.toString()).add(event.getPos());
+                    PlacedBlocksInStructureData.getData(player.getServer(), structure.toString()).add(event.getPos());
 
                     if (restriction != null && restriction.isDisabled(Attributes.BLOCK_PLACING)) {
                         if (!restriction.isBlockPlaceable(event.getPlacedBlock())) {

@@ -4,9 +4,9 @@ import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.implementation.AGrantable;
-import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.config.AConfigurablePreset;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.util.ATextUtils;
 import com.alessandro.astages.engine.AStageManager;
@@ -106,14 +106,52 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AC
         return stage.hashCode();
     }
 
-    public S setServerOnly(boolean serverOnly) {
-        set(StageAttributes.SERVER_ONLY, serverOnly);
-        return (S) this;
+    public S serverOnly() {
+        return set(StageAttributes.SERVER_ONLY, true);
     }
 
-    public S setPlayerOnly(boolean playerOnly) {
-        set(StageAttributes.PLAYER_ONLY, playerOnly);
-        return (S) this;
+    public S playerOnly() {
+        return set(StageAttributes.SERVER_ONLY, true);
+    }
+
+    public S titleOnAdd(Function<String, Component> title) {
+        return set(StageAttributes.TITLE_ADD, title);
+    }
+
+    public S subTitleOnAdd(Function<String, Component> subTitle) {
+        return set(StageAttributes.SUBTITLE_ADD, subTitle);
+    }
+
+    public S chatMessageOnAdd(Function<String, Component> chatMessage) {
+        return set(StageAttributes.CHAT_MESSAGE_ADD, chatMessage);
+    }
+
+    public S titleOnRemove(Function<String, Component> title) {
+        return set(StageAttributes.TITLE_REMOVE, title);
+    }
+
+    public S subTitleOnRemove(Function<String, Component> subTitle) {
+        return set(StageAttributes.SUBTITLE_REMOVE, subTitle);
+    }
+
+    public S chatMessageOnRemove(Function<String, Component> chatMessage) {
+        return set(StageAttributes.CHAT_MESSAGE_REMOVE, chatMessage);
+    }
+
+    public S fadeIn(int fadeIn) {
+        return set(StageAttributes.FADE_IN, fadeIn);
+    }
+
+    public S fadeOut(int fadeOut) {
+        return set(StageAttributes.FADE_OUT, fadeOut);
+    }
+
+    public S stay(int stay) {
+        return set(StageAttributes.STAY, stay);
+    }
+
+    public S icon(ItemStack stack) {
+        return set(StageAttributes.ICON, stack);
     }
 
     public S whenGranted(Consumer<GrantedEvent> consumer) {
@@ -126,81 +164,109 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AC
         get(StageAttributes.GRANTED_EVENT).accept(event);
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public S setServerOnly(boolean serverOnly) {
+        set(StageAttributes.SERVER_ONLY, serverOnly);
+        return (S) this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public S setPlayerOnly(boolean playerOnly) {
+        set(StageAttributes.PLAYER_ONLY, playerOnly);
+        return (S) this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddTitle(Function<String, Component> addTitle) {
         set(StageAttributes.TITLE_ADD, addTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveTitle(Function<String, Component> removeTitle) {
         set(StageAttributes.TITLE_REMOVE, removeTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddSubTitle(Function<String, Component> addSubTitle) {
         set(StageAttributes.SUBTITLE_ADD, addSubTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveSubTitle(Function<String, Component> removeSubTitle) {
         set(StageAttributes.SUBTITLE_REMOVE, removeSubTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddChatMessage(Function<String, Component> addChatMessage) {
         set(StageAttributes.CHAT_MESSAGE_ADD, addChatMessage);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveChatMessage(Function<String, Component> removeChatMessage) {
         set(StageAttributes.CHAT_MESSAGE_REMOVE, removeChatMessage);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddTitle(Component addTitle) {
         set(StageAttributes.TITLE_ADD, stage -> addTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveTitle(Component removeTitle) {
         set(StageAttributes.TITLE_REMOVE, stage -> removeTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddSubTitle(Component addSubTitle) {
         set(StageAttributes.SUBTITLE_ADD, stage -> addSubTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveSubTitle(Component removeSubTitle) {
         set(StageAttributes.SUBTITLE_REMOVE, stage -> removeSubTitle);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setAddChatMessage(Component addChatMessage) {
         set(StageAttributes.CHAT_MESSAGE_ADD, stage -> addChatMessage);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setRemoveChatMessage(Component removeChatMessage) {
         set(StageAttributes.CHAT_MESSAGE_REMOVE, stage -> removeChatMessage);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setFadeIn(int fadeIn) {
         set(StageAttributes.FADE_IN, fadeIn);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setFadeOut(int fadeOut) {
         set(StageAttributes.FADE_OUT, fadeOut);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setStay(int stay) {
         set(StageAttributes.STAY, stay);
         return (S) this;
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public S setIcon(ItemStack stack) {
         set(StageAttributes.ICON, stack);
         return (S) this;

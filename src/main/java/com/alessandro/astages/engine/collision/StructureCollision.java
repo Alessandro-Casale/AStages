@@ -4,9 +4,11 @@ import com.alessandro.astages.api.base.StructureCollisionCache;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.misc.Twin;
+import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -18,12 +20,10 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiPredicate;
 
+@NotNullParams
 public class StructureCollision {
     private final StructureCollisionCache<StructureStart> CACHE = new StructureCollisionCache<>();
 
@@ -74,14 +74,28 @@ public class StructureCollision {
 //        return toReturn;
 //    }
 
-    public List<Twin<String, BoundingBox>> getCacheForChunk(ResourceKey<Level> dimension, ChunkPos chunkPos) {
-        var aabbCache = new ArrayList<Twin<String, BoundingBox>>();
+    public List<StructureStart> getStructuresForBlockPos(ResourceKey<Level> dimension, BlockPos pos) {
+        var cache = new ArrayList<StructureStart>();
 
-        for (var twin : CACHE.getTwinsFor(dimension, chunkPos.toLong())) {
-            aabbCache.add(new Twin<>(twin.id(), twin.value().getBoundingBox()));
+        for (var twin : CACHE.getTwinsFor(dimension, ChunkPos.asLong(pos))) {
+            var bb = twin.value().getBoundingBox();
+
+            if (bb.isInside(pos.getX(), pos.getY(), pos.getZ())) {
+                cache.add(twin.value());
+            }
         }
 
-        return aabbCache;
+        return cache;
+    }
+
+    public List<Twin<String, BoundingBox>> getCacheForChunk(ResourceKey<Level> dimension, ChunkPos chunkPos) {
+        var cache = new ArrayList<Twin<String, BoundingBox>>();
+
+        for (var twin : CACHE.getTwinsFor(dimension, chunkPos.toLong())) {
+            cache.add(new Twin<>(twin.id(), twin.value().getBoundingBox()));
+        }
+
+        return cache;
     }
 
     // Remember to call buildServerCacheForChunkPos before!

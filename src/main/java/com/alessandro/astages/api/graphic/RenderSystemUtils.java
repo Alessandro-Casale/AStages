@@ -9,7 +9,7 @@ public class RenderSystemUtils {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
-        RenderSystem.enableCull(); // Evita di sovrapporre facce anteriori e posteriori
+        RenderSystem.enableCull(); // Avoid overlapping front and back faces
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, Textures.FORCEFIELD);
     }

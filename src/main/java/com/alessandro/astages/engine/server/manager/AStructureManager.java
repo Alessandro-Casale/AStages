@@ -34,7 +34,8 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceL
 
     @UnderDevelopment("Check correct priority!")
     public AStructureRestriction getRestriction(ResourceLocation structure) {
-        return structureCache.get(structure).first();
+        var cache = structureCache.get(structure);
+        return cache.isEmpty() ? null : cache.first();
     }
 
     @Override

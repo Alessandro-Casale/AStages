@@ -58,7 +58,7 @@ public class PlayerStagesEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         var player = event.getEntity();
         OfflinePlayerStage.markAsDirty(player);

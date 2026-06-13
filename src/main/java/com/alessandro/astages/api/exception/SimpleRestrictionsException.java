@@ -9,11 +9,11 @@ public class SimpleRestrictionsException extends RuntimeException {
     }
 
     public static SimpleRestrictionsException onWrite() {
-        return new SimpleRestrictionsException("Trying to write id restriction type not previously registered!");
+        return new SimpleRestrictionsException("Trying to write a restriction type not previously registered!");
     }
 
     public static SimpleRestrictionsException onRegisterConversionMethod() {
-        return new SimpleRestrictionsException("Trying to associate id restriction without an associated simple restriction!");
+        return new SimpleRestrictionsException("Trying to associate a restriction without an associated simple restriction!");
     }
 
     public static SimpleRestrictionsException onRegisterElaborationMethod() {
@@ -21,10 +21,10 @@ public class SimpleRestrictionsException extends RuntimeException {
     }
 
     public static SimpleRestrictionsException onRegisterAfterRemoveMethod() {
-        return new SimpleRestrictionsException("Trying to register id after-remove method without an associated simple restriction!");
+        return new SimpleRestrictionsException("Trying to register a after-remove method without an associated simple restriction!");
     }
 
     public static SimpleRestrictionsException onCommandAddedMethod() {
-        return new SimpleRestrictionsException("Trying to register id command without an associated simple restriction!");
+        return new SimpleRestrictionsException("Trying to register a command without an associated simple restriction!");
     }
 }

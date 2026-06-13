@@ -2,7 +2,7 @@ package com.alessandro.astages.api.feature;
 
 import com.alessandro.astages.api.develop.Info;
 
-@Info("Mark id restriction as dirty to tell the server to update all clients! NOT during SERVER LOADING!")
+@Info("Mark a restriction as dirty to tell the server to update all clients! NOT during SERVER LOADING!")
 public interface AMarkable {
     void markAsDirty();
 }

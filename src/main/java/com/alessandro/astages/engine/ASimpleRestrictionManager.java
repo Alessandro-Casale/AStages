@@ -135,7 +135,7 @@ public class ASimpleRestrictionManager {
         ID_TO_TYPE_CACHE = new HashMap<>();
         HAS_RESTRICTION_BEEN_MODIFIED = new HashMap<>();
 
-        // Issue: doesn't check if the folder has id registry associated.
+        // Issue: doesn't check if the folder has a registry associated.
         // The implementation below this block of code checks only for actual existing registries.
 //        var root = AStagesFolderSystem.getSimpleRestrictionsFolder().getValue();
 //        Files.list(root).forEach(directory -> {

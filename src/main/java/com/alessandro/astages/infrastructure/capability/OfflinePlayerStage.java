@@ -30,7 +30,7 @@ public class OfflinePlayerStage {
 
     private static final Map<UUID, Set<String>> CACHE = new HashMap<>();
 
-    // Try using id Google BiMap
+    // Try using a Google BiMap
     private static Map<UUID, String> UUID_USERNAME;
     private static Map<String, UUID> USERNAME_UUID;
     // public static BiMap<String, UUID> USERNAME_UUID = HashBiMap.create();

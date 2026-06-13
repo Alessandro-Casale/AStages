@@ -36,7 +36,7 @@ public class AStagesCommon {
     static {
         BUILDER.push("Configs for AStages Mod");
 
-        ENABLE_TITLE_AFTER_STAGE_ADDING = BUILDER.comment("Enable or disable if mod show id title for each stage add to id player")
+        ENABLE_TITLE_AFTER_STAGE_ADDING = BUILDER.comment("Enable or disable if mod show a title for each stage add to a player")
             .define("Enable Titles", true);
 
         TITLE_COLOR = BUILDER.comment("If previous setting is enabled, set the color of the title that appears")
@@ -45,7 +45,7 @@ public class AStagesCommon {
         TICK_STRUCTURE_UPDATING = BUILDER.comment("Every how many ticks the updating of the structures in which the player is located is required")
             .define("Tick Structure Updating", 1);
 
-        ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when id stage is not associated to any restriction")
+        ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when a stage is not associated to any restriction")
             .define("Enable Warning", true);
 
         SIMPLE_RESTRICTIONS_FOLDER = BUILDER.comment("Choose if simple restrictions must be read in world/server folder or config folder")

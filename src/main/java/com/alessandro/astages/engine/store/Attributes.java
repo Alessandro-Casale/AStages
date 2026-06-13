@@ -71,7 +71,7 @@ public class Attributes {
 
     public static final Attribute<ChatFormatting> CHAT_FORMATTING = Attribute.create("chat_formatting", AttributeTypes.CHAT_FORMATTING, ChatFormatting.GOLD);
 
-    // If the creation of subclasses is HORRIBLE, change the default value to null and request, when you add an attribute to the attribute store, to check if id new default value is set
+    // If the creation of subclasses is HORRIBLE, change the default value to null and request, when you add an attribute to the attribute store, to check if a new default value is set
     // ITEM
     public static class Item {
         public static final DeferredRegister<Attribute<?>> ATTRIBUTES = Attribute.setCurrentDeferredRegister(DeferredRegister.create(AStagesRegistries.Keys.ATTRIBUTES, AStages.MODID));

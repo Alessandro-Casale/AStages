@@ -28,7 +28,7 @@ jobs:
       - name: Get latest stable version tag
         id: latest_tag
         run: |
-          TAG=$(git tag --list 'v*' \
+          TAG=$(git tag --list 'v*-1.21.1' \
             | grep -Ev 'alpha|beta|rc' \
             | sort -V \
             | tail -n 1)

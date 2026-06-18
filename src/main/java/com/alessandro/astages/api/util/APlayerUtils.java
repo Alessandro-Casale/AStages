@@ -2,6 +2,7 @@ package com.alessandro.astages.api.util;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.infrastructure.capability.OfflinePlayerStage;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -63,5 +64,9 @@ public class APlayerUtils {
 
     public static boolean isRealPlayer(Player player) {
         return player instanceof ServerPlayer && !(player instanceof FakePlayer);
+    }
+
+    public static String getPlayerNameFromUUID(UUID uuid) {
+        return OfflinePlayerStage.getUUIDToUsernameMap().get(uuid);
     }
 }

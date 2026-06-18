@@ -23,6 +23,7 @@
   "chat.astages.timer.set_access": "Access set correctly for restriction %s with value %s!",
   "chat.astages.timer.set_timer": "Timers set correctly for restriction %s with value %s!",
   "config.jade.plugin_astages.block_component_provider": "AStages",
+  "config.jade.plugin_astages.block_entity_component_provider": "AStages",
   "message.astages.dimension.access.left": "You have %s access left!",
   "message.astages.dimension.access.zero": "You can no longer enter this dimension!",
   "message.astages.dimension.enter": "You can't visit this dimension!",

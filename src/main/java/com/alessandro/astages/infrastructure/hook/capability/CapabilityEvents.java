@@ -19,7 +19,7 @@ public class CapabilityEvents {
 
             var blockEntity = event.getLevel().getBlockEntity(pos);
             if (blockEntity != null) {
-                var data = blockEntity.getData(AProvider.BLOCK_STAGE);
+                var data = blockEntity.getData(AProvider.BLOCK_ENTITY_OWNER);
                 data.setOwner(player.getUUID());
             }
         }

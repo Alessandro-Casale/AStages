@@ -2,19 +2,20 @@ package com.alessandro.astages.internal.debug;
 
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.constant.ACompareCondition;
 import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.event.AddRestrictionEvent;
 import com.alessandro.astages.api.event.AddStageEvent;
 import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.api.util.ARestrictionUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
-import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
@@ -45,7 +46,10 @@ public class DebugEvents {
         ARestrictionUtils.addRestrictionForRecipe("astages:recipe1", "stage_recipe_1", RecipeType.SMITHING, List.of(AResourceLocation.fromNamespaceAndPath("minecraft", "netherite_sword_smithing")));
 
         ARestrictionUtils.addRestrictionForStructure("astages:structure1", "stage_structure_1", List.of(AResourceLocation.parse("minecraft:village_plains")))
-            .set(Attributes.ENTERING, false);
+            .setCanEnter(false);
+
+        ARestrictionUtils.addRestrictionForCrop("astages:crop1", "stage_crop_1", Blocks.WHEAT, ACompareCondition.LESS_EQUAL, 2);
+        ARestrictionUtils.addRestrictionForCrop("astages:crop2", "stage_crop_2", Blocks.WHEAT, ACompareCondition.GREAT, 2);
     }
 
     @SubscribeEvent

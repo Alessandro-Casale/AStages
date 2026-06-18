@@ -1,7 +1,7 @@
-package com.alessandro.astages.internal.experimental.block;
+package com.alessandro.astages.internal.legacy.block;
 
 import com.alessandro.astages.AStages;
-import com.alessandro.astages.internal.experimental.item.ModItems;
+import com.alessandro.astages.internal.legacy.item.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval=true)
 @SuppressWarnings("unused")
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, AStages.MODID);

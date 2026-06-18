@@ -7,6 +7,7 @@ import com.alessandro.astages.infrastructure.capability.AProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Contract;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -15,16 +16,16 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
 @NotNullParamsAndMethodsReturn
-public enum AStagesBlockComponentProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum AStagesBlockEntityComponentProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     INSTANCE;
 
-    private static final String OWNER_KEY = "farmer";
+    private static final String OWNER_KEY = "owner";
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains(OWNER_KEY)) {
             iTooltip.add(
-                Component.literal("Farmer: " + blockAccessor.getServerData().getString(OWNER_KEY))
+                Component.literal("Owner: " + blockAccessor.getServerData().getString(OWNER_KEY))
             );
         }
     }
@@ -32,20 +33,19 @@ public enum AStagesBlockComponentProvider implements IBlockComponentProvider, IS
     @Contract(pure = true)
     @Override
     public ResourceLocation getUid() {
-        return AResourceLocation.fromNamespaceAndPath("block_component_provider");
+        return AResourceLocation.fromNamespaceAndPath("block_entity_component_provider");
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        var blockPos = blockAccessor.getPosition();
-        var pos = blockPos.asLong();
+        BlockEntity blockEntity = blockAccessor.getBlockEntity();
 
-        var chunk = blockAccessor.getLevel().getChunkAt(blockPos);
-        if (chunk.hasData(AProvider.BLOCK_OWNER.get())) {
-            var ownerUUID = chunk.getData(AProvider.BLOCK_OWNER.get()).blockMap().get(pos);
+        var blockStage = blockEntity.getData(AProvider.BLOCK_ENTITY_OWNER);
+        if (blockAccessor.getPlayer().getServer() != null) {
+            var player = APlayerUtils.getPlayerFromUUID(blockAccessor.getPlayer().getServer(), blockStage.getOwner());
 
-            if (ownerUUID != null) {
-                compoundTag.putString(OWNER_KEY, APlayerUtils.getPlayerNameFromUUID(ownerUUID));
+            if (player != null) {
+                compoundTag.putString(OWNER_KEY, player.getName().getString());
             }
         }
     }

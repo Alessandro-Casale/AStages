@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ACrafterBlock {
     @Inject(method = "dispenseFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeHolder;value()Lnet/minecraft/world/item/crafting/Recipe;", ordinal = 0), cancellable = true)
     public void astages$dispenseFrom(BlockState state, @NotNull ServerLevel level, BlockPos pos, CallbackInfo ci, @Local @NotNull CrafterBlockEntity crafter, @Local RecipeHolder<CraftingRecipe> recipe) {
-        var uuid = crafter.getData(AProvider.BLOCK_STAGE).getOwner();
+        var uuid = crafter.getData(AProvider.BLOCK_ENTITY_OWNER).getOwner();
         var player = APlayerUtils.getPlayerFromUUID(level.getServer(), uuid);
 
         if (player != null) {

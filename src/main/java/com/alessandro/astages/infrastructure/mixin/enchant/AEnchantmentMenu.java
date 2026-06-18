@@ -38,7 +38,7 @@ public abstract class AEnchantmentMenu {
             var blockEntity = l.getBlockEntity(pos);
 
             if (blockEntity != null && l.getServer() != null) {
-                var data = blockEntity.getData(AProvider.BLOCK_STAGE);
+                var data = blockEntity.getData(AProvider.BLOCK_ENTITY_OWNER);
                 owner.set(APlayerUtils.getPlayerFromUUID(l.getServer(), data.getOwner()));
             }
         });

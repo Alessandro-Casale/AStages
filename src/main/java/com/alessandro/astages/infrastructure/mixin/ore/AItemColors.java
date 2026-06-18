@@ -27,7 +27,7 @@ public class AItemColors {
     @ModifyArg(method = "getColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/color/item/ItemColor;getColor(Lnet/minecraft/world/item/ItemStack;I)I"))
     public ItemStack astages$getColor(ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem) {
-            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), blockItem.getBlock().defaultBlockState()).getBlock().asItem().getDefaultInstance();
+            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), stack, blockItem);
         }
 
         return stack;

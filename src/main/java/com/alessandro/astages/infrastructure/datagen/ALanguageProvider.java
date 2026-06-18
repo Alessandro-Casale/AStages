@@ -75,10 +75,7 @@ public class ALanguageProvider extends LanguageProvider {
 
         // JADE INTEGRATION
         add("config.jade.plugin_astages.block_component_provider", "AStages");
-
-        // FTB QUESTS INTEGRATION
-        // add("astages.ftbquests.reward.group", "AStages Group");
-        // add("astages.ftbquests.reward.title", "AStages Title");
+        add("config.jade.plugin_astages.block_entity_component_provider", "AStages");
 
         // MOB
         add("message.astages.mob.jade_integration", "Unknown Entity!");

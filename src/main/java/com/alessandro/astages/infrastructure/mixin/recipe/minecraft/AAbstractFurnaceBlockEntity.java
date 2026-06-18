@@ -28,7 +28,7 @@ public class AAbstractFurnaceBlockEntity {
     private static void astages$serverTick(@NotNull Level level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, @Local RecipeHolder<?> recipe) {
         if (level.getServer() == null) { return; }
 
-        var blockStage = blockEntity.getData(AProvider.BLOCK_STAGE);
+        var blockStage = blockEntity.getData(AProvider.BLOCK_ENTITY_OWNER);
 
         UUID blockOwner = blockStage.getOwner();
         Player player = APlayerUtils.getPlayerFromUUID(level.getServer(), blockOwner);

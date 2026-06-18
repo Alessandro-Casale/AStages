@@ -2,6 +2,7 @@ package com.alessandro.astages.infrastructure.integration.jade;
 
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.infrastructure.integration.jade.component.AStagesBlockComponentProvider;
+import com.alessandro.astages.infrastructure.integration.jade.component.AStagesBlockEntityComponentProvider;
 import com.alessandro.astages.infrastructure.integration.jade.handler.JadeItemHandler;
 import com.alessandro.astages.infrastructure.integration.jade.handler.JadeMobHandler;
 import com.alessandro.astages.infrastructure.integration.jade.handler.JadeOreHandler;
@@ -17,11 +18,13 @@ import snownee.jade.api.WailaPlugin;
 public class JadePlugin implements IWailaPlugin {
     @Override
     public void register(IWailaCommonRegistration registration) {
-        registration.registerBlockDataProvider(AStagesBlockComponentProvider.INSTANCE, BlockEntity.class);
+        registration.registerBlockDataProvider(AStagesBlockEntityComponentProvider.INSTANCE, BlockEntity.class);
+        registration.registerBlockDataProvider(AStagesBlockComponentProvider.INSTANCE, Block.class);
     }
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
+        registration.registerBlockComponent(AStagesBlockEntityComponentProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(AStagesBlockComponentProvider.INSTANCE, Block.class);
 
         JadeOreHandler.registerClient(registration);

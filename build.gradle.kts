@@ -181,6 +181,10 @@ dependencies {
 
     implementation("curse.maven:create-328085:7963363")
     implementation("curse.maven:createnuclear-989797:7210665")
+
+    implementation("curse.maven:athena-841890:8061947")
+    implementation("curse.maven:experiencelib-1156551:7705470")
+    implementation("curse.maven:modular-machinery-reborn-1083840:8064444")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

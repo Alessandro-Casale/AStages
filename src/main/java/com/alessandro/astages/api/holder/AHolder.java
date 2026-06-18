@@ -60,13 +60,29 @@ public class AHolder {
             holder.addPlayer(player);
         } else {
             holder.setPlayer(false);
-
-            if (AStagesCommon.ENABLE_DEV_LOGS.get()) {
-                AStages.LOGGER.debug("Encountered null player, skipped adding it to holder!");
-            }
+            nullPlayerMessage();
         }
 
         return holder;
+    }
+
+    public static AHolder serverAndPlayer(@Nullable UUID player) {
+        var holder = new AHolder(true, true, false);
+
+        if (player != null) {
+            holder.addPlayer(player);
+        } else {
+            holder.setPlayer(false);
+            nullPlayerMessage();
+        }
+
+        return holder;
+    }
+
+    private static void nullPlayerMessage() {
+        if (AStagesCommon.ENABLE_DEV_LOGS.get()) {
+            AStages.LOGGER.debug("Encountered null player, skipped adding it to holder!");
+        }
     }
 
     private AHolder addPlayer(UUID uuid) {

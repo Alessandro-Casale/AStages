@@ -1,7 +1,8 @@
-package com.alessandro.astages.internal.experimental.block;
+package com.alessandro.astages.internal.legacy.block;
 
 import com.alessandro.astages.api.nullability.NotNullParams;
 
+@Deprecated(forRemoval=true)
 //@Mod.EventBusSubscriber(modid = AStages.MODID)
 @NotNullParams
 public class ServerEventHandler {

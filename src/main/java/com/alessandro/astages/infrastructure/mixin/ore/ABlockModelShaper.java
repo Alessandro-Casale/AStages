@@ -6,16 +6,12 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(BlockModelShaper.class)
 public class ABlockModelShaper {
-    @ModifyArg(method = "getBlockModel", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"), index = 0)
-    public Object astages$getBlockModel(Object key) {
-        if (key instanceof BlockState original) {
-            return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), original);
-        }
-
-        return key;
+    @ModifyVariable(method = "getBlockModel", at = @At("HEAD"), argsOnly = true)
+    public BlockState astage$getBlockModel(BlockState original) {
+        return AClientRestrictionManager.ORE_INSTANCE.getReplacement(AClientHolder.serverAndPlayer(), original);
     }
 }

@@ -31,6 +31,8 @@ public class ALanguageProvider extends LanguageProvider {
         add("chat.astages.timer.increase_access", "Access increased correctly for restriction %s by value %s!");
         add("chat.astages.timer.decrease_access", "Access decreased correctly for restriction %s by value %s!");
         add("chat.astages.timer.invalid_value_access", "Invalid value for restriction %s!");
+        add("message.astages.missing_model.kick", "Player will be disconnected! Missing models in client: %s");
+        add("message.astages.missing_model.warning", "Some models are available on client but not on server: %s");
 
         // SIMPLE
         add("chat.astages.simple.no_type_associated", "There is no simple restriction with id %s!");

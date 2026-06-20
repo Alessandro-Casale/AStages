@@ -5,9 +5,8 @@ import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.item.AClientItemPredicateRestriction;
 import com.alessandro.astages.engine.server.restriction.item.AItemPredicateRestriction;
-import com.alessandro.astages.api.network.ACodecs;
-import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import com.alessandro.astages.engine.store.Attributes;
+import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,7 +21,7 @@ public record SyncItemPredicateS2C(String id, String stage, ResourceLocation mod
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncItemPredicateS2C> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8, SyncItemPredicateS2C::id,
         ByteBufCodecs.STRING_UTF8, SyncItemPredicateS2C::stage,
-        ACodecs.RESOURCE_LOCATION, SyncItemPredicateS2C::modelId,
+        ResourceLocation.STREAM_CODEC, SyncItemPredicateS2C::modelId,
         ByteBufCodecs.BOOL, SyncItemPredicateS2C::renderItemName,
         ByteBufCodecs.BOOL, SyncItemPredicateS2C::hideTooltip,
         ByteBufCodecs.BOOL, SyncItemPredicateS2C::hideInJei,

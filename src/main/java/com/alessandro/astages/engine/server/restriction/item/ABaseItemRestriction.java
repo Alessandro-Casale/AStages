@@ -102,79 +102,171 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
         return associateLootRestriction(getId() + ALootRestriction.IDENTIFIER);
     }
 
-    @SuppressWarnings("unused")
+    public R pickupDelay(int value) {
+        return set(Attributes.PICK_UP_DELAY, value);
+    }
+
+    public R allowAttack() {
+        return set(Attributes.ATTACKING, true);
+    }
+
+    public R allowInventoryStorage() {
+        return set(Attributes.STORING_IN_INVENTORY, true);
+    }
+
+    public R allowEquip() {
+        return set(Attributes.EQUIPPING, true);
+    }
+
+    public R allowPickup() {
+        return set(Attributes.PICKING_UP, true);
+    }
+
+    public R showTooltip() {
+        return set(Attributes.HIDING_TOOLTIP, false);
+    }
+
+    public R showName() {
+        return set(Attributes.RENDERING_NAME, true);
+    }
+
+    public R showInJEI() {
+        return set(Attributes.HIDING_JEI, false);
+    }
+
+    public R allowPlacement() {
+        return set(Attributes.BLOCK_PLACING, true);
+    }
+
+    public R allowMining() {
+        return set(Attributes.BLOCK_BREAKING, true);
+    }
+
+    public R allowLeftClick() {
+        return set(Attributes.LEFT_CLICK_INTERACTIONS, true);
+    }
+
+    public R allowRightClick() {
+        return set(Attributes.RIGHT_CLICK_INTERACTIONS, true);
+    }
+
+    public R disableBlockInteraction() {
+        return set(Attributes.BLOCK_INTERACTIONS, false);
+    }
+
+    public R allowContainerStorage() {
+        return set(Attributes.STORING_IN_CONTAINERS, true);
+    }
+
+    public R hiddenName(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.HIDDEN_NAME, message);
+    }
+
+    public R dropMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.DROP_MESSAGE, message);
+    }
+
+    public R attackMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.ATTACK_MESSAGE, message);
+    }
+
+    public R pickupMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.PICKING_UP_MESSAGE, message);
+    }
+
+    public R useMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.USING_MESSAGE, message);
+    }
+
+    public R mineMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.MINING_MESSAGE, message);
+    }
+
+    public R placeMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.PLACING_MESSAGE, message);
+    }
+
+    public R jadeItemMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.JADE_ITEM_MESSAGE, message);
+    }
+
+    public R jadeBlockMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.JADE_BLOCK_MESSAGE, message);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPickUpDelay(int value) {
         set(Attributes.PICK_UP_DELAY, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanAttack(boolean value) {
         set(Attributes.ATTACKING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanBeStoredInInventory(boolean value) {
         set(Attributes.STORING_IN_INVENTORY, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanBeEquipped(boolean value) {
         set(Attributes.EQUIPPING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanPickedUp(boolean value) {
         set(Attributes.PICKING_UP, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setHideTooltip(boolean value) {
         set(Attributes.HIDING_TOOLTIP, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setRenderItemName(boolean value) {
         set(Attributes.RENDERING_NAME, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setHideInJEI(boolean value) {
         set(Attributes.HIDING_JEI, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanBePlaced(boolean value) {
         set(Attributes.BLOCK_PLACING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanBeDig(boolean value) {
         set(Attributes.BLOCK_BREAKING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanItemBeLeftClicked(boolean value) {
         set(Attributes.LEFT_CLICK_INTERACTIONS, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanItemBeRightClicked(boolean value) {
         set(Attributes.RIGHT_CLICK_INTERACTIONS, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanInteractWithBlock(boolean value) {
         set(Attributes.BLOCK_INTERACTIONS, value);
         return this;
@@ -186,61 +278,61 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
 //        return this;
 //    }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanBeStoredInContainers(boolean value) {
         set(Attributes.STORING_IN_CONTAINERS, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setHiddenName(Function<ItemStack, Component> message) {
         set(Attributes.Item.HIDDEN_NAME, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setDropMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.DROP_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setAttackMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.ATTACK_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPickupMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.PICKING_UP_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setUsageMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.USING_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setMineMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.MINING_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPlaceMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.PLACING_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setJadeItemMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.JADE_ITEM_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setJadeBlockMessage(Function<ItemStack, Component> message) {
         set(Attributes.Item.JADE_BLOCK_MESSAGE, message);
         return this;

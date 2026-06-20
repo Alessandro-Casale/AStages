@@ -2,10 +2,10 @@ package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -73,24 +73,33 @@ public class AScreenRestriction extends ARestriction<AScreenRestriction, MenuTyp
         return false;
     }
 
-    @SuppressWarnings("unused")
-    public AScreenRestriction setOpenMessage(Function<MenuType<?>, Component> message) {
-        set(Attributes.Screen.OPEN_MESSAGE, message);
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public AScreenRestriction setChecker(TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> checker) {
-        this.checker = checker;
-        set(Attributes.HAS_CHECKER, true);
-        return this;
-    }
-
     public List<MenuType<?>> getMenus() {
         return menus;
     }
 
     public TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> getChecker() {
         return checker;
+    }
+
+    public AScreenRestriction openMessage(Function<MenuType<?>, Component> message) {
+        return set(Attributes.Screen.OPEN_MESSAGE, message);
+    }
+
+    public AScreenRestriction checker(TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> checker) {
+        this.checker = checker;
+        return set(Attributes.HAS_CHECKER, true);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public AScreenRestriction setOpenMessage(Function<MenuType<?>, Component> message) {
+        set(Attributes.Screen.OPEN_MESSAGE, message);
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public AScreenRestriction setChecker(TriPredicate<BlockState, BlockEntity, AbstractContainerMenu> checker) {
+        this.checker = checker;
+        set(Attributes.HAS_CHECKER, true);
+        return this;
     }
 }

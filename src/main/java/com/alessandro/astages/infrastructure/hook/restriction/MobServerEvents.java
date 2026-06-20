@@ -74,11 +74,10 @@ public class MobServerEvents {
                     return;
                 }
 
-                if (!restriction.isValueNull(Attributes.DIMENSION)) {
-                    if (restriction.get(Attributes.DIMENSION).equals(level.dimension().location())) {
-                        preventSpawning(event, restriction);
-                        return;
-                    }
+                var dimensionRS = level.dimension().location();
+                if (restriction.getRestrictedDimensions().contains(dimensionRS)) {
+                    preventSpawning(event, restriction);
+                    return;
                 }
 
                 var biome = level.getBiome(pos).getKey();

@@ -32,13 +32,13 @@ public class DebugEvents {
 
         ARestrictionUtils.addRestrictionForItem("astages:item1", "stage_item_1", Items.ACACIA_BOAT);
         ARestrictionUtils.addRestrictionForItem("astages:item2", "stage_item_2", Items.ACACIA_PLANKS)
-            .setCanBeStoredInInventory(true)
-            .setCanPickedUp(true)
-            .setCanBeStoredInContainers(false);
+            .allowInventoryStorage()
+            .allowPickup()
+            .allowContainerStorage();
         ARestrictionUtils.addRestrictionForTag("astages:item3", "stage_item_3", AResourceLocation.fromTag("#forge:ingots/iron"));
 
         ARestrictionUtils.addRestrictionForMob("astages:mob1", "stage_mob_1", EntityType.BEE)
-            .setDimension(AResourceLocation.parse("minecraft:overworld"))
+            .restrictDimensionSpawn(AResourceLocation.parse("minecraft:overworld"))
             .restrictSpawnType(MobSpawnType.SPAWN_EGG)
             .restrictBiomeSpawn(AResourceLocation.parse("minecraft:plains"));
 

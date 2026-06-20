@@ -81,7 +81,7 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
 
     @Override
     public AItemModRestriction associateLootRestriction(String id) {
-        var restriction = new ALootRestriction(id, getStage()).applyForEveryLootTableAndDrop(true);
+        var restriction = new ALootRestriction(id, getStage()).applyEverywhere();
         for (var modId : modIds) { restriction.restrictMods(modId); }
         for (var tag : ignoredTags) { restriction.ignoredTags(tag); }
         for (var item : ignoredItems) { restriction.ignoredItems(item); }

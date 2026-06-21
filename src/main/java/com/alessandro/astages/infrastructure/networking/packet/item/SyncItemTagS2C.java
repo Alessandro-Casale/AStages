@@ -26,7 +26,7 @@ public record SyncItemTagS2C(String id, String stage, ResourceLocation tag, List
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncItemTagS2C> STREAM_CODEC = ACodecs.composite(
         ByteBufCodecs.STRING_UTF8, SyncItemTagS2C::id,
         ByteBufCodecs.STRING_UTF8, SyncItemTagS2C::stage,
-        ACodecs.RESOURCE_LOCATION, SyncItemTagS2C::tag,
+        ResourceLocation.STREAM_CODEC, SyncItemTagS2C::tag,
         ByteBufCodecs.registry(Registries.ITEM).apply(ByteBufCodecs.list()), SyncItemTagS2C::ignoredItems,
         ByteBufCodecs.BOOL, SyncItemTagS2C::renderItemName,
         ByteBufCodecs.BOOL, SyncItemTagS2C::hideTooltip,

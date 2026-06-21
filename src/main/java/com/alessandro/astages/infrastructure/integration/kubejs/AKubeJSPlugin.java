@@ -1,12 +1,8 @@
 package com.alessandro.astages.infrastructure.integration.kubejs;
 
 import com.alessandro.astages.AStages;
-import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.time.ATime;
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.engine.AStageManager;
-import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.restriction.*;
 import com.alessandro.astages.engine.server.restriction.item.*;
 import com.alessandro.astages.engine.server.restriction.recipe.ABaseRecipeRestriction;
@@ -18,14 +14,13 @@ import com.alessandro.astages.engine.store.StageAttributes;
 import com.alessandro.astages.infrastructure.integration.Mods;
 import com.alessandro.astages.infrastructure.integration.kubejs.bridge.KubeJSEventBridge;
 import com.alessandro.astages.infrastructure.integration.kubejs.bridge.KubeJSStageEvents;
+import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSClientModelUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSClientUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSModelUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSServerUtils;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
-import dev.latvian.mods.kubejs.script.ScriptManager;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 
 @NotNullParams
@@ -33,26 +28,6 @@ public class AKubeJSPlugin implements KubeJSPlugin {
     static {
         if (Mods.KUBEJS.isLoaded()) {
             KubeJSEventBridge.init();
-        }
-    }
-
-    @Override
-    public void beforeScriptsLoaded(ScriptManager manager) {
-        if (manager.scriptType == ScriptType.SERVER) {
-            AStageManager.reloadBeforeScripts();
-            ARestrictionManager.reloadBeforeScripts();
-            AStageManager.addStagesViaJavaCode(AEventPhase.BEFORE_JS);
-            RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.BEFORE_JS);
-        }
-    }
-
-    @Override
-    public void afterScriptsLoaded(ScriptManager manager) {
-        if (manager.scriptType == ScriptType.SERVER) {
-            AStageManager.addStagesViaJavaCode(AEventPhase.AFTER_JS);
-            RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.AFTER_JS);
-            AStageManager.reloadAfterScripts();
-            ARestrictionManager.reloadAfterScripts();
         }
     }
 
@@ -67,13 +42,14 @@ public class AKubeJSPlugin implements KubeJSPlugin {
 
         if (bindings.type().isServer() || bindings.type().isStartup()) {
             bindings.add("AStages", KubeJSServerUtils.class);
+            bindings.add("AModels", KubeJSModelUtils.class);
         }
 
         if (bindings.type().isClient()) {
             bindings.add("AStagesClient", KubeJSClientUtils.class);
+            bindings.add("AModels", KubeJSClientModelUtils.class);
         }
 
-        bindings.add("AModels", KubeJSModelUtils.class);
         bindings.add("ATime", ATime.class);
         bindings.add("ARestrictionTypes", ARestrictionTypes.class);
 

@@ -7,6 +7,8 @@ import com.alessandro.astages.api.constant.ASyncOperation;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
+import com.alessandro.astages.api.reload.ClientReloadContext;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
 import com.alessandro.astages.api.util.AStagesUtils;
@@ -55,6 +57,13 @@ public class AInternalPlugin implements AStagesPlugin {
             RestrictionSyncService.clientSynchronization(player);
             CommonEventSettings.allInventoryChanged();
         }
+    }
+
+    @Override
+    public void onClientReload(ClientReloadPhase phase, ClientReloadContext context) {
+//        if (phase == ClientReloadPhase.PLAYER_CONNECTED) {
+//            Networking.sendToServer(new SendClientModelsC2S());
+//        }
     }
 
     @Override

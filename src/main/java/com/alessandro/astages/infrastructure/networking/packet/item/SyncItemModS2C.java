@@ -29,7 +29,7 @@ public record SyncItemModS2C(String id, String stage, List<String> modIds, List<
         ByteBufCodecs.STRING_UTF8, SyncItemModS2C::stage,
         ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), SyncItemModS2C::modIds,
         ByteBufCodecs.registry(Registries.ITEM).apply(ByteBufCodecs.list()), SyncItemModS2C::ignoredItems,
-        ACodecs.RESOURCE_LOCATION.apply(ByteBufCodecs.list()), SyncItemModS2C::ignoredTags,
+        ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), SyncItemModS2C::ignoredTags,
         ByteBufCodecs.BOOL, SyncItemModS2C::renderItemName,
         ByteBufCodecs.BOOL, SyncItemModS2C::hideTooltip,
         ByteBufCodecs.BOOL, SyncItemModS2C::hideInJei,

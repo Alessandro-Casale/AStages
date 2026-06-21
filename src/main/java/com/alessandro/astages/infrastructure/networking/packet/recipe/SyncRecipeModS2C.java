@@ -3,11 +3,10 @@ package com.alessandro.astages.infrastructure.networking.packet.recipe;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.api.wrapper.RecipeModWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.recipe.AClientRecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
-import com.alessandro.astages.api.wrapper.RecipeModWrapper;
-import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,7 +28,7 @@ public record SyncRecipeModS2C(String id, String stage, int priority, String mod
         ByteBufCodecs.STRING_UTF8, SyncRecipeModS2C::stage,
         ByteBufCodecs.INT, SyncRecipeModS2C::priority,
         ByteBufCodecs.STRING_UTF8, SyncRecipeModS2C::modId,
-        ACodecs.RESOURCE_LOCATION.apply(ByteBufCodecs.list()), SyncRecipeModS2C::ignoredRecipeIds,
+        ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), SyncRecipeModS2C::ignoredRecipeIds,
         SyncRecipeModS2C::new
     );
 

@@ -1,25 +1,26 @@
 package com.alessandro.astages.infrastructure.networking;
 
 import com.alessandro.astages.AStages;
-import com.alessandro.astages.infrastructure.networking.packet.structure.SyncRestrictedStructuresS2C;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.infrastructure.networking.configuration.ModelCheckConfigTask;
 import com.alessandro.astages.infrastructure.networking.packet.dimension.SyncDimensionIdsS2C;
 import com.alessandro.astages.infrastructure.networking.packet.item.*;
 import com.alessandro.astages.infrastructure.networking.packet.mob.SyncMobS2C;
 import com.alessandro.astages.infrastructure.networking.packet.ore.SyncOreS2C;
 import com.alessandro.astages.infrastructure.networking.packet.recipe.SyncRecipeModS2C;
 import com.alessandro.astages.infrastructure.networking.packet.recipe.SyncRecipeS2C;
-import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
-import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRestrictionDeleteS2C;
+import com.alessandro.astages.infrastructure.networking.packet.reload.*;
 import com.alessandro.astages.infrastructure.networking.packet.simple.SyncSimpleIdsS2C;
 import com.alessandro.astages.infrastructure.networking.packet.stages.*;
+import com.alessandro.astages.infrastructure.networking.packet.structure.SyncRestrictedStructuresS2C;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -72,6 +73,13 @@ public class Networking {
         // RELOADING
         registrar.playToClient(RequestReloadS2C.TYPE, RequestReloadS2C.STREAM_CODEC, RequestReloadS2C::handle);
         registrar.playToClient(RequestRestrictionDeleteS2C.TYPE, RequestRestrictionDeleteS2C.STREAM_CODEC, RequestRestrictionDeleteS2C::handle);
+        registrar.configurationToClient(SendServerModelsS2C.TYPE, SendServerModelsS2C.STREAM_CODEC, SendServerModelsS2C::run);
+        registrar.configurationToServer(SendServerModelsAckC2S.TYPE, SendServerModelsAckC2S.STREAM_CODEC, SendServerModelsAckC2S::run);
+    }
+
+    @SubscribeEvent
+    public static void register(RegisterConfigurationTasksEvent event) {
+        event.register(new ModelCheckConfigTask());
     }
 
     @Info("Send to server!")

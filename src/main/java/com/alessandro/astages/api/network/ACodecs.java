@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 @NotNullParamsAndMethodsReturn
 public class ACodecs {
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static final StreamCodec<ByteBuf, ResourceLocation> RESOURCE_LOCATION = ByteBufCodecs.STRING_UTF8.map(
         // String -> ResourceLocation
         ResourceLocation::parse,

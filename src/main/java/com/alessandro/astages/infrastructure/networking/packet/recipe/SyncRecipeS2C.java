@@ -3,11 +3,10 @@ package com.alessandro.astages.infrastructure.networking.packet.recipe;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.recipe.AClientRecipeRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
-import com.alessandro.astages.api.wrapper.RecipeWrapper;
-import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,7 +30,7 @@ public record SyncRecipeS2C(String id, String stage, int priority, RecipeType<?>
         ByteBufCodecs.STRING_UTF8, SyncRecipeS2C::stage,
         ByteBufCodecs.INT, SyncRecipeS2C::priority,
         ByteBufCodecs.fromCodecWithRegistries(BuiltInRegistries.RECIPE_TYPE.byNameCodec()), SyncRecipeS2C::recipeType,
-        ACodecs.RESOURCE_LOCATION.apply(ByteBufCodecs.list()), SyncRecipeS2C::recipes,
+        ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), SyncRecipeS2C::recipes,
         SyncRecipeS2C::new
     );
 

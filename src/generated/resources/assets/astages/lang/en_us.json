@@ -34,6 +34,8 @@
   "message.astages.item.pickup": "You couldn't pick up the %s.",
   "message.astages.item.place": "You couldn't place the %s.",
   "message.astages.item.use": "You don't know how to use the %s.",
+  "message.astages.missing_model.kick": "Player will be disconnected! Missing models in client: %s",
+  "message.astages.missing_model.warning": "Some models are available on client but not on server: %s",
   "message.astages.mob.attack": "You can't attack an unknown Entity!",
   "message.astages.mob.interaction": "You can't interact with an unknown Entity!",
   "message.astages.mob.jade_integration": "Unknown Entity!",

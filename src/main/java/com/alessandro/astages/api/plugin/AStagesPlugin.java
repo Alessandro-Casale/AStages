@@ -5,6 +5,8 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.plugin.container.AttributeContainer;
 import com.alessandro.astages.api.plugin.container.FolderContainer;
 import com.alessandro.astages.api.plugin.container.SimpleRestrictionsContainer;
+import com.alessandro.astages.api.reload.ClientReloadContext;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 @NotNullParamsAndMethodsReturn
 public interface AStagesPlugin {
     default void onReload(McReloadPhase phase, ReloadContext context) { }
+    default void onClientReload(ClientReloadPhase phase, ClientReloadContext context) { }
     default void clientSynchronization(@Nullable ServerPlayer player) { }
     default void clearClientOnLogin() { }
     default void attachAttributes(AttributeContainer container) { }

@@ -15,6 +15,7 @@ import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParams
@@ -78,6 +79,12 @@ public class AClientOreManager extends AClientManager<AClientOreRestriction, Ore
         var restriction = getRestriction(holder, item);
 
         return restriction != null ? restriction.getReplacement().getBlock().asItem() : item;
+    }
+
+    public ItemStack getReplacement(AClientHolder holder, ItemStack original, BlockItem check) {
+        var restriction = getRestriction(holder, check.getBlock().defaultBlockState());
+
+        return restriction != null ? restriction.getReplacement().getBlock().asItem().getDefaultInstance() : original;
     }
 
     @Override

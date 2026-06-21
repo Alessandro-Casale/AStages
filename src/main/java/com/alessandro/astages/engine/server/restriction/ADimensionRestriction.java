@@ -81,30 +81,12 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
         return nbtAccess + restrictionId;
     }
 
-    @SuppressWarnings("unused")
-    public ADimensionRestriction setBidirectional(boolean value) {
-        set(Attributes.BIDIRECTIONAL, value);
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ADimensionRestriction setMaxStayTimer(ATime timer) {
-        maxStayTimer = timer;
-        return this;
-    }
-
     public @Nullable Integer getMaxStayTimer() {
         if (maxStayTimer == null) {
             return null;
         }
 
         return maxStayTimer.getTicks();
-    }
-
-    @SuppressWarnings("unused")
-    public ADimensionRestriction setMaxAccess(int value) {
-        set(Attributes.MAX_ACCESS, value);
-        return this;
     }
 
     public String getNbtId() {
@@ -115,25 +97,72 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
         return nbtAccess + this.getId();
     }
 
-    @SuppressWarnings("unused")
+    public ADimensionRestriction allowBidirectional() {
+        return set(Attributes.BIDIRECTIONAL, true);
+    }
+
+    public ADimensionRestriction maxStayTime(ATime timer) {
+        maxStayTimer = timer;
+        return this;
+    }
+
+    public ADimensionRestriction maxAccess(int value) {
+        return set(Attributes.MAX_ACCESS, value);
+    }
+
+    public ADimensionRestriction timerFormatting(ChatFormatting value) {
+        return set(Attributes.CHAT_FORMATTING, value);
+    }
+
+    public ADimensionRestriction enterMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Dimension.ENTER_MESSAGE, message);
+    }
+
+    public ADimensionRestriction leaveMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Dimension.LEAVE_MESSAGE, message);
+    }
+
+    public ADimensionRestriction expiredMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Dimension.EXPIRED_MESSAGE, message);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ADimensionRestriction setBidirectional(boolean value) {
+        set(Attributes.BIDIRECTIONAL, value);
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ADimensionRestriction setMaxStayTimer(ATime timer) {
+        maxStayTimer = timer;
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ADimensionRestriction setMaxAccess(int value) {
+        set(Attributes.MAX_ACCESS, value);
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ADimensionRestriction setTimerFormatting(ChatFormatting value) {
         set(Attributes.CHAT_FORMATTING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ADimensionRestriction setDimensionMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Dimension.ENTER_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ADimensionRestriction setLeaveDimensionMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Dimension.LEAVE_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public ADimensionRestriction setExpiredDimensionMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Dimension.EXPIRED_MESSAGE, message);
         return this;

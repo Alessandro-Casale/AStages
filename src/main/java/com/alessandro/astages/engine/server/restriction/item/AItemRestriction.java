@@ -76,7 +76,7 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
 
     @Override
     public AItemRestriction associateLootRestriction(String id) {
-        var restriction = new ALootRestriction(id, getStage()).applyForEveryLootTableAndDrop(true);
+        var restriction = new ALootRestriction(id, getStage()).applyEverywhere();
         for (var item : items) { restriction.restrictItems(item); }
         ARestrictionManager.LOOT_INSTANCE.addRestriction(restriction);
 

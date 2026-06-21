@@ -123,122 +123,212 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
         return allowedTargetableEntities.contains(entityType);
     }
 
-    @SuppressWarnings("unused")
+    public AStructureRestriction allowAttack() {
+        return set(Attributes.ATTACKING, true);
+    }
+
+    public AStructureRestriction denyEnter() {
+        return set(Attributes.ENTERING, false);
+    }
+
+    public AStructureRestriction allowInteractions() {
+        return set(Attributes.GENERIC_INTERACTIONS, true);
+    }
+
+    public AStructureRestriction allowPlacement() {
+        return set(Attributes.BLOCK_PLACING, true);
+    }
+
+    public AStructureRestriction allowBreaking() {
+        return set(Attributes.BLOCK_BREAKING, true);
+    }
+
+    public AStructureRestriction explosionsAffectBlocks() {
+        return set(Attributes.EXPLOSIONS_AFFECT_BLOCKS, true);
+    }
+
+    public AStructureRestriction explosionsAffectEntities() {
+        return set(Attributes.EXPLOSIONS_AFFECT_ENTITIES, true);
+    }
+
+    public AStructureRestriction allowBreakableStates(BlockState... states) {
+        if (allowedBreakableStates == null) { allowedBreakableStates = new ArrayList<>(); }
+        allowedBreakableStates.addAll(List.of(states));
+        return this;
+    }
+
+    public AStructureRestriction allowPlaceableStates(BlockState... states) {
+        if (allowedPlaceableStates == null) { allowedPlaceableStates = new ArrayList<>(); }
+        allowedPlaceableStates.addAll(List.of(states));
+        return this;
+    }
+
+    public AStructureRestriction allowInteractableStates(BlockState... states) {
+        if (allowedInteractableStates == null) { allowedInteractableStates = new ArrayList<>(); }
+        allowedInteractableStates.addAll(List.of(states));
+        return this;
+    }
+
+    public AStructureRestriction allowBreakableBlocks(Block... blocks) {
+        if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new ArrayList<>(); }
+        allowedBreakableBlocks.addAll(List.of(blocks));
+        return this;
+    }
+
+    public AStructureRestriction allowPlaceableBlocks(Block... blocks) {
+        if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new ArrayList<>(); }
+        allowedPlaceableBlocks.addAll(List.of(blocks));
+        return this;
+    }
+
+    public AStructureRestriction allowInteractableBlocks(Block... blocks) {
+        if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new ArrayList<>(); }
+        allowedInteractableBlocks.addAll(List.of(blocks));
+        return this;
+    }
+
+    public AStructureRestriction allowTargetableEntities(EntityType<?>... entities) {
+        if (allowedTargetableEntities == null) { allowedTargetableEntities = new ArrayList<>(); }
+        allowedTargetableEntities.addAll(List.of(entities));
+        return this;
+    }
+
+    public AStructureRestriction attackMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Structure.ATTACK_MESSAGE, message);
+    }
+
+    public AStructureRestriction interactMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Structure.INTERACT_MESSAGE, message);
+    }
+
+    public AStructureRestriction enterMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Structure.ENTER_MESSAGE, message);
+    }
+
+    public AStructureRestriction placeMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Structure.PLACING_MESSAGE, message);
+    }
+
+    public AStructureRestriction breakMessage(Function<ResourceLocation, Component> message) {
+        return set(Attributes.Structure.MINING_MESSAGE, message);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setCanAttackEntities(boolean value) {
         set(Attributes.ATTACKING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setCanEnter(boolean value) {
         set(Attributes.ENTERING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setCanInteract(boolean value) {
         set(Attributes.GENERIC_INTERACTIONS, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setCanBlockBePlaced(boolean value) {
         set(Attributes.BLOCK_PLACING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setCanBlockBeBroken(boolean value) {
         set(Attributes.BLOCK_BREAKING, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setMakeExplosionsAffectBlocks(boolean value) {
         set(Attributes.EXPLOSIONS_AFFECT_BLOCKS, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setMakeExplosionsAffectEntities(boolean value) {
         set(Attributes.EXPLOSIONS_AFFECT_ENTITIES, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedBreakableStates(BlockState... states) {
         if (allowedBreakableStates == null) { allowedBreakableStates = new ArrayList<>(); }
         allowedBreakableStates.addAll(List.of(states));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedPlaceableStates(BlockState... states) {
         if (allowedPlaceableStates == null) { allowedPlaceableStates = new ArrayList<>(); }
         allowedPlaceableStates.addAll(List.of(states));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedInteractableStates(BlockState... states) {
         if (allowedInteractableStates == null) { allowedInteractableStates = new ArrayList<>(); }
         allowedInteractableStates.addAll(List.of(states));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedBreakableBlocks(Block... blocks) {
         if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new ArrayList<>(); }
         allowedBreakableBlocks.addAll(List.of(blocks));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedPlaceableBlocks(Block... blocks) {
         if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new ArrayList<>(); }
         allowedPlaceableBlocks.addAll(List.of(blocks));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedInteractableBlocks(Block... blocks) {
         if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new ArrayList<>(); }
         allowedInteractableBlocks.addAll(List.of(blocks));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedTargetableEntities(EntityType<?>... entities) {
         if (allowedTargetableEntities == null) { allowedTargetableEntities = new ArrayList<>(); }
         allowedTargetableEntities.addAll(List.of(entities));
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setAttackMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Structure.ATTACK_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setInteractMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Structure.INTERACT_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setEnterMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Structure.ENTER_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setPlaceMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Structure.PLACING_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setBreakMessage(Function<ResourceLocation, Component> message) {
         set(Attributes.Structure.MINING_MESSAGE, message);
         return this;

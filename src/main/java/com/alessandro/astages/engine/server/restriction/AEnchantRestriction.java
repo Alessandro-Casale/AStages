@@ -61,19 +61,31 @@ public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Encha
         };
     }
 
-    @SuppressWarnings("unused")
+    public AEnchantRestriction allowAnvil() {
+        return set(Attributes.ANVIL, true);
+    }
+
+    public AEnchantRestriction allowEnchantingTable() {
+        return set(Attributes.ENCHANTING_TABLE, true);
+    }
+
+    public AEnchantRestriction allowInventoryStorage() {
+        return set(Attributes.STORING_IN_INVENTORY, true);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AEnchantRestriction setCanBeUsedInAnvil(boolean value) {
         set(Attributes.ANVIL, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AEnchantRestriction setCanBeUsedInEnchantingTable(boolean value) {
         set(Attributes.ENCHANTING_TABLE, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AEnchantRestriction setCanBeStoredInInventory(boolean value) {
         set(Attributes.STORING_IN_INVENTORY, value);
         return this;

@@ -35,7 +35,7 @@ public class Attributes {
     public static final Attribute<Boolean> TAMABLE = Attribute.create("tamable", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> BREEDABLE = Attribute.create("breedable", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> MOUNTABLE = Attribute.create("mountable", AttributeTypes.BOOLEAN, false);
-    public static final Attribute<Boolean> ENTERING = Attribute.create("entering", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> ENTERING = Attribute.create("entering", AttributeTypes.BOOLEAN, true);
     public static final Attribute<Boolean> GENERIC_INTERACTIONS = Attribute.create("generic_interactions", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> EXPLOSIONS_AFFECT_BLOCKS = Attribute.create("explosion_affect_blocks", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> EXPLOSIONS_AFFECT_ENTITIES = Attribute.create("explosion_affect_entities", AttributeTypes.BOOLEAN, false);

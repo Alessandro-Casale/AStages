@@ -55,37 +55,61 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
         return pets.contains(pet);
     }
 
-    @SuppressWarnings("unused")
+    public APetRestriction allowTaming() {
+        return set(Attributes.TAMABLE, true);
+    }
+
+    public APetRestriction allowBreeding() {
+        return set(Attributes.BREEDABLE, true);
+    }
+
+    public APetRestriction allowMounting() {
+        return set(Attributes.MOUNTABLE, true);
+    }
+
+    public APetRestriction tameMessage(Function<Entity, Component> message) {
+        return set(Attributes.Pet.TAME_MESSAGE, message);
+    }
+
+    public APetRestriction breedMessage(Function<Entity, Component> message) {
+        return set(Attributes.Pet.BREED_MESSAGE, message);
+    }
+
+    public APetRestriction mountMessage(Function<Entity, Component> message) {
+        return set(Attributes.Pet.MOUNT_MESSAGE, message);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setTamable(boolean value) {
         set(Attributes.TAMABLE, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setBreedable(boolean value) {
         set(Attributes.BREEDABLE, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setMountable(boolean value) {
         set(Attributes.MOUNTABLE, value);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setTameMessage(Function<Entity, Component> message) {
         set(Attributes.Pet.TAME_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setBreedMessage(Function<Entity, Component> message) {
         set(Attributes.Pet.BREED_MESSAGE, message);
         return this;
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setMountMessage(Function<Entity, Component> message) {
         set(Attributes.Pet.MOUNT_MESSAGE, message);
         return this;

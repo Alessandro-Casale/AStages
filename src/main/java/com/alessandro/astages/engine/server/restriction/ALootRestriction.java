@@ -1,7 +1,6 @@
 package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.constant.AFilter;
-import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.exception.UnsupportedMethodException;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -9,7 +8,6 @@ import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
-import com.google.errorprone.annotations.DoNotCall;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -104,42 +102,17 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         return this;
     }
 
-    @SuppressWarnings("unused")
-    public ALootRestriction setReplacer(Function<ItemStack, ItemStack> replacer) {
-        this.replacer = replacer;
-        set(Attributes.HAS_REPLACER, true);
-        return this;
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    public ALootRestriction setEntityFilter(AFilter filter) {
-        entityFilter = filter;
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ALootRestriction setLootTableFilter(AFilter filter) {
-        lootTableFilter = filter;
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ALootRestriction applyForEveryLootTableAndDrop(boolean value) {
-        set(Attributes.APPLY_EVERYWHERE, value);
-        return this;
-    }
-
     @Override
     public boolean isRestricted(ItemStack stack) {
         if (stack.isEmpty()) { return false; }
 
         if (!ignoredItems.isEmpty() &&
-                ignoredItems.stream().anyMatch(stack::is)) {
+            ignoredItems.stream().anyMatch(stack::is)) {
             return false;
         }
 
         if (!ignoredTags.isEmpty() &&
-                ignoredTags.stream().anyMatch(ignoredTag -> stack.getTags().anyMatch(tag -> tag.location().equals(ignoredTag)))) {
+            ignoredTags.stream().anyMatch(ignoredTag -> stack.getTags().anyMatch(tag -> tag.location().equals(ignoredTag)))) {
             return false;
         }
 
@@ -147,18 +120,18 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (registry != null) {
             if (!restrictedMods.isEmpty() &&
-                    restrictedMods.stream().anyMatch(modId -> modId.equals(registry.getNamespace()))) {
+                restrictedMods.stream().anyMatch(modId -> modId.equals(registry.getNamespace()))) {
                 return true;
             }
         }
 
         if  (!restrictedItems.isEmpty() &&
-                restrictedItems.stream().anyMatch(stack::is)) {
+            restrictedItems.stream().anyMatch(stack::is)) {
             return true;
         }
 
         if (!restrictedTags.isEmpty() &&
-                restrictedTags.stream().anyMatch(tag -> stack.getTags().anyMatch(t -> t.location().equals(tag)))) {
+            restrictedTags.stream().anyMatch(tag -> stack.getTags().anyMatch(t -> t.location().equals(tag)))) {
             return true;
         }
 
@@ -187,5 +160,49 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
 
     public Function<ItemStack, ItemStack> getReplacer() {
         return replacer;
+    }
+
+    public ALootRestriction replacer(Function<ItemStack, ItemStack> replacer) {
+        this.replacer = replacer;
+        return set(Attributes.HAS_REPLACER, true);
+    }
+
+    public ALootRestriction entityFilter(AFilter filter) {
+        entityFilter = filter;
+        return this;
+    }
+
+    public ALootRestriction lootTableFilter(AFilter filter) {
+        lootTableFilter = filter;
+        return this;
+    }
+
+    public ALootRestriction applyEverywhere() {
+        return set(Attributes.APPLY_EVERYWHERE, true);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ALootRestriction setReplacer(Function<ItemStack, ItemStack> replacer) {
+        this.replacer = replacer;
+        set(Attributes.HAS_REPLACER, true);
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ALootRestriction setEntityFilter(AFilter filter) {
+        entityFilter = filter;
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ALootRestriction setLootTableFilter(AFilter filter) {
+        lootTableFilter = filter;
+        return this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public ALootRestriction applyForEveryLootTableAndDrop(boolean value) {
+        set(Attributes.APPLY_EVERYWHERE, value);
+        return this;
     }
 }

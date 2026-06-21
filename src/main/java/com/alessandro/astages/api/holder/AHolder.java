@@ -88,27 +88,21 @@ public class AHolder {
     }
 
     public AStageHolder getStages() {
-        if (isPlayer && !isMultiple) {
-            return AStageHolder.initAndHold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()));
-        }
+        var holder = AStageHolder.init();
 
-        if (isServer && isPlayer) { // Server stages is prioritized!
-            return AStageHolder.init()
-                .hold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()))
-                .hold(AStageType.SERVER, ServerStage.getServerStages());
+        if (isPlayer && !isMultiple) {
+            holder.hold(AStageType.PLAYER, OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()));
+        } else if (isPlayer) {
+            var stageSet = new HashSet<String>();
+            for (UUID uuid : uuids) { stageSet.addAll(OfflinePlayerStage.getPlayerStagesFromCache(uuid)); }
+            holder.hold(AStageType.PLAYER, stageSet);
         }
 
         if (isServer) {
-            return AStageHolder.initAndHold(AStageType.SERVER, ServerStage.getServerStages());
+            holder.hold(AStageType.SERVER, ServerStage.getServerStages());
         }
 
-        if (isPlayer) {
-            var stageSet = new HashSet<String>();
-            uuids.forEach(uuid -> stageSet.addAll(OfflinePlayerStage.getPlayerStagesFromCache(uuid)));
-            return AStageHolder.initAndHold(AStageType.PLAYER, stageSet);
-        }
-
-        return AStageHolder.init();
+        return holder;
     }
 
     public void perform(Consumer<UUID> forPlayer, Consumer<MinecraftServer> forServer) {

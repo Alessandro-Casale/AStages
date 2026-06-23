@@ -1,9 +1,8 @@
-package com.alessandro.astages.infrastructure.command.argument;
+package com.alessandro.astages.internal.legacy;
 
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.util.AStagesClientUtils;
-import com.alessandro.astages.engine.client.ClientMiscStorage;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -18,13 +17,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated(forRemoval = true)
 @NotNullParamsAndMethodsReturn
-public class AStagesAddArgument implements ArgumentType<String> {
+public class AStagesServerRemoveArgument implements ArgumentType<String> {
     private static final Collection<String> EXAMPLES = Arrays.asList("test_stage_1", "test_stage_2");
 
     @Contract(value = " -> new", pure = true)
-    public static AStagesAddArgument stages() {
-        return new AStagesAddArgument();
+    public static AStagesServerRemoveArgument stages() {
+        return new AStagesServerRemoveArgument();
     }
 
     public static String getStage(CommandContext<CommandSourceStack> context, String name) {
@@ -38,10 +38,7 @@ public class AStagesAddArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        var toReturn = ClientMiscStorage.ALL_STAGES;
-        AStagesClientUtils.getStages(AClientHolder.player()).forEach(toReturn::remove);
-
-        return SharedSuggestionProvider.suggest(toReturn.stream().sorted(), builder);
+        return SharedSuggestionProvider.suggest(AStagesClientUtils.getStages(AClientHolder.server()), builder);
     }
 
     @Override

@@ -8,6 +8,10 @@ public class UnsupportedMethodException extends UnsupportedOperationException {
         super(buildMessage(suggestedCall));
     }
 
+    public UnsupportedMethodException() {
+        super(buildMessage());
+    }
+
     public static UnsupportedMethodException useInstead(String suggestedCall) {
         return new UnsupportedMethodException(suggestedCall);
     }
@@ -21,6 +25,16 @@ public class UnsupportedMethodException extends UnsupportedOperationException {
 
         return "Method " + simpleClass + "#" + method + "() is not supported.\n" +
             "Use " + suggestedCall + " instead.";
+    }
+
+    private static String buildMessage() {
+        StackTraceElement caller = findCaller();
+
+        String className = caller.getClassName();
+        String simpleClass = className.substring(className.lastIndexOf('.') + 1);
+        String method = caller.getMethodName();
+
+        return "Method " + simpleClass + "#" + method + "() is not supported.";
     }
 
     private static StackTraceElement findCaller() {

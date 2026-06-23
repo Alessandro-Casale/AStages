@@ -2,7 +2,6 @@ package com.alessandro.astages.infrastructure.command.argument;
 
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.api.util.ACommandUtils;
 import com.alessandro.astages.api.util.AStagesClientUtils;
 import com.alessandro.astages.engine.client.ClientMiscStorage;
 import com.mojang.brigadier.StringReader;
@@ -34,7 +33,7 @@ public class AStagesAddArgument implements ArgumentType<String> {
 
     @Override
     public String parse(StringReader stringReader) throws CommandSyntaxException {
-        return ACommandUtils.parseGenericString(stringReader);
+        return stringReader.readString();
     }
 
     @Override

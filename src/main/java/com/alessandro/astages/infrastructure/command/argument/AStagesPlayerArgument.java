@@ -2,7 +2,6 @@ package com.alessandro.astages.infrastructure.command.argument;
 
 import com.alessandro.astages.api.develop.NotYetImplemented;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.api.util.ACommandUtils;
 import com.alessandro.astages.infrastructure.capability.OfflinePlayerStage;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -34,7 +33,7 @@ public class AStagesPlayerArgument implements ArgumentType<String> {
 
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
-        return ACommandUtils.parseGenericString(reader);
+        return reader.readString();
     }
 
     @NotYetImplemented("Add entity selector support")

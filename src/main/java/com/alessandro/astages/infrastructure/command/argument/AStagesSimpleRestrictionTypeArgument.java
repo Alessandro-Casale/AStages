@@ -4,7 +4,6 @@ import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.develop.ToDo;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.store.ASimpleRestrictionType;
-import com.alessandro.astages.api.util.ACommandUtils;
 import com.alessandro.astages.infrastructure.registry.AStagesRegistries;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -39,7 +38,7 @@ public class AStagesSimpleRestrictionTypeArgument implements ArgumentType<ASimpl
     @SuppressWarnings("ConstantConditions")
     @Override
     public ASimpleRestrictionType parse(StringReader stringReader) throws CommandSyntaxException {
-        var typeString = ACommandUtils.parseGenericString(stringReader); // stringReader.readUnquotedString();
+        var typeString = stringReader.readString();
         ResourceLocation associatedResourceLocation;
 
         if (!typeString.contains(":")) {

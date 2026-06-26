@@ -8,6 +8,7 @@ import com.alessandro.astages.engine.store.Attributes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 @NotNullParams
@@ -24,6 +25,13 @@ public class ItemClientEvents {
                 event.getToolTip().clear();
                 event.getToolTip().add(properties.hiddenName());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onTooltipRender(RenderTooltipEvent.GatherComponents event) {
+        if (!AClientRestrictionManager.ITEM_INSTANCE.isTooltipReadyForStack(event.getItemStack())) {
+            event.setCanceled(true);
         }
     }
 }

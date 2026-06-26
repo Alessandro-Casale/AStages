@@ -1,6 +1,7 @@
 package com.alessandro.astages.api.holder;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.restriction.ARestriction;
 import org.jetbrains.annotations.Contract;
@@ -13,7 +14,7 @@ public class ARestrictionHolder<T extends ARestriction<?, ?, ?>> {
     private final T restriction;
     private boolean lastCondition;
 
-    private ARestrictionHolder(T restriction) {
+    private ARestrictionHolder(@Nullable T restriction) {
         this.restriction = restriction;
         this.lastCondition = true;
     }
@@ -56,6 +57,22 @@ public class ARestrictionHolder<T extends ARestriction<?, ?, ?>> {
 
     public ARestrictionHolder<T> whenEnabled(Attribute<Boolean> attribute) {
         lastCondition = restriction.isEnabled(attribute);
+        return this;
+    }
+
+    public ARestrictionHolder<T> whenRestrictionIsNull(Runnable runnable) {
+        if (restriction == null) {
+            runnable.run();
+        }
+
+        return this;
+    }
+
+    public ARestrictionHolder<T> whenRestrictionIsNotNull(Consumer<T> consumer) {
+        if (restriction != null) {
+            consumer.accept(restriction);
+        }
+
         return this;
     }
 }

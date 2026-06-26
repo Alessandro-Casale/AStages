@@ -4,6 +4,7 @@ import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeStagesEvent;
+import com.alessandro.astages.api.hash.CustomItemStackKey;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
@@ -55,6 +56,10 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
 
     public Set<String> getStagesForResourceLocation(ResourceLocation resourceLocation) {
         return evaluator.evaluateStages(resourceLocation);
+    }
+
+    public boolean isTooltipReadyForStack(ItemStack stack) {
+        return registry.isPropertyPresent(CustomItemStackKey.build(stack));
     }
 
     public void addRestriction(AClientItemRestriction restriction) {

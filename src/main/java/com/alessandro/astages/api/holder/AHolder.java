@@ -131,4 +131,17 @@ public class AHolder {
         isPlayer = player;
         return this;
     }
+
+
+    public boolean holdOnlyOneType() {
+        return getStages().holdOnlyOneType();
+    }
+
+    public @Nullable AStageType getHeldType() {
+        return getStages().getHeldType();
+    }
+
+    public UUID getPlayer() {
+        return uuids.getFirst();
+    }
 }

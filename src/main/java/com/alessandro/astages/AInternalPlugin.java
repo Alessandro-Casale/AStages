@@ -47,7 +47,7 @@ public class AInternalPlugin implements AStagesPlugin {
             var player = context.player();
 
             var playerStages = AStagesUtils.getStages(AHolder.player(player));
-            AStagesUtils.synchronizeWithClient(AHolder.player(player), player, AOperation.LOGIN, playerStages, true);
+            AStagesUtils.synchronizeWithClient(AHolder.player(player), player, AOperation.LOGIN, playerStages);
 
             RestrictionSyncService.clearClientOnLogin(player);
             AStageManager.clientSynchronization(player);

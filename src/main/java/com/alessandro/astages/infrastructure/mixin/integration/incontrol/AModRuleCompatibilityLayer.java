@@ -37,7 +37,7 @@ public class AModRuleCompatibilityLayer {
     public void addGameStage(Player player, String stage) {
         if (player == null) { return; }
 
-        AStagesUtils.addStage(AHolder.player(player), stage, false);
+        AStagesUtils.addStage(AHolder.player(player), stage, true, true, true);
     }
 
     /**
@@ -48,6 +48,6 @@ public class AModRuleCompatibilityLayer {
     public void removeGameStage(Player player, String stage) {
         if (player == null) { return; }
 
-        AStagesUtils.removeStage(AHolder.player(player), stage, false);
+        AStagesUtils.removeStage(AHolder.player(player), stage, true, true, true);
     }
 }

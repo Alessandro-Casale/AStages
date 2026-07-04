@@ -5,11 +5,13 @@ import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStatus;
 import com.alessandro.astages.api.event.server.*;
 import com.alessandro.astages.api.foldersystem.AFolderPaths;
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.util.AFileIOUtils;
 import com.alessandro.astages.api.util.ASetUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.api.util.ATitleUtils;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.SyncServerStagesS2C;
 import net.minecraft.server.MinecraftServer;
@@ -59,11 +61,11 @@ public class ServerStage {
         return CACHE.removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
     }
 
-    public static void synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, String stage) {
-        synchronizeWithClient(player, operation, ASetUtils.singleton(stage));
+    public static boolean synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, String stage) {
+        return synchronizeWithClient(player, operation, ASetUtils.singleton(stage));
     }
 
-    public static void synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, Set<String> stages) {
+    public static boolean synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, Set<String> stages) {
         AStagesUtils.checkServerStages(operation, stages);
 
         var server = ServerLifecycleHooks.getCurrentServer();
@@ -88,6 +90,18 @@ public class ServerStage {
                 case REMOVE_ALL -> addServerStages(stages);
             }
         }
+
+        return !event.isCanceled();
+    }
+
+    public static void displayStageAlert(MinecraftServer server, AOperation operation, String stage, AStatus status, boolean eventCancelled, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        displayStageAlert(server, operation, ASetUtils.singleton(stage), status, eventCancelled, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void displayStageAlert(MinecraftServer ignoredServer, AOperation operation, Set<String> stages, AStatus status, boolean eventCancelled, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        if (eventCancelled) { return; }
+
+        ATitleUtils.displayStageAlert(AHolder.server(), operation, stages, status, showTitle, displayChatMessage, displayActionBarMessage);
     }
 
     // When saving, call this

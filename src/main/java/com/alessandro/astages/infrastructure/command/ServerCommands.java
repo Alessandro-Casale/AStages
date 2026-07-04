@@ -1,10 +1,10 @@
 package com.alessandro.astages.infrastructure.command;
 
-import com.alessandro.astages.api.command.AStagesSuggestions;
+import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.infrastructure.command.argument.AStagesServerRemoveArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.ChatFormatting;
@@ -17,11 +17,11 @@ import net.minecraft.server.level.ServerPlayer;
 public class ServerCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2)).then(Commands.literal("server")
-            .then(Commands.literal("add").then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.SERVER_ADD)
+            .then(Commands.literal("add").then(Commands.argument("stage", StringArgumentType.string())
                 .executes(context -> addServerStageCommand(StringArgumentType.getString(context, "stage")))
             ))
-            .then(Commands.literal("remove").then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.SERVER_REMOVE)
-                .executes(context -> removeServerStageCommand(StringArgumentType.getString(context, "stage")))
+            .then(Commands.literal("remove").then(Commands.argument("stage", AStagesServerRemoveArgument.stages())
+                .executes(context -> removeServerStageCommand(AStagesServerRemoveArgument.getStage(context, "stage")))
             ))
             .then(Commands.literal("remove_all")
                 .executes(context -> removeAllServerStageCommand())
@@ -33,17 +33,17 @@ public class ServerCommands {
     }
 
     private static int addServerStageCommand(String stageToAdd) {
-        AStagesUtils.addStage(AHolder.server(), stageToAdd, false);
+        AStagesUtils.addStage(AHolder.server(), stageToAdd, true, true, true);
         return 1;
     }
 
     private static int removeServerStageCommand(String stageToRemove) {
-        AStagesUtils.removeStage(AHolder.server(), stageToRemove, false);
+        AStagesUtils.removeStage(AHolder.server(), stageToRemove, true, true, true);
         return 1;
     }
 
     private static int removeAllServerStageCommand() {
-        AStagesUtils.removeAllStages(AHolder.server(), false);
+        AStagesUtils.removeAllStages(AHolder.server(), true, true, true);
         return 1;
     }
 
@@ -52,11 +52,11 @@ public class ServerCommands {
 
         if (executor != null) {
             if (serverStage.isEmpty()) {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.server.no_stages").withStyle(ChatFormatting.RED));
+                executor.sendSystemMessage(Component.translatable("message.astages.server.info.no_stages").withStyle(ChatFormatting.RED));
             } else {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.server.has_stages").withStyle(ChatFormatting.GREEN));
+                executor.sendSystemMessage(Component.translatable("message.astages.server.info.has_stages").withStyle(ChatFormatting.GREEN));
                 for (var stage : serverStage) {
-                    executor.sendSystemMessage(Component.translatable("chat.astages.info.server.list_item", stage));
+                    executor.sendSystemMessage(Component.translatable("message.astages.server.info.list_item", stage));
                 }
             }
         }

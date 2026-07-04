@@ -94,7 +94,7 @@ public class StageServerEvents {
                     }
 
                     listIterator.remove();
-                    AStagesUtils.removeStage(AHolder.server(), stage.getStage(), true);
+                    AStagesUtils.removeStage(AHolder.server(), stage.getStage(), true, true, true);
                 }
             }
         });

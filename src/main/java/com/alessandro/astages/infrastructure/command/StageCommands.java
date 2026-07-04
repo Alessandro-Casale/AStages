@@ -1,18 +1,16 @@
 package com.alessandro.astages.infrastructure.command;
 
-import com.alessandro.astages.api.command.AStagesSuggestions;
 import com.alessandro.astages.api.constant.AStageSource;
-import com.alessandro.astages.api.constant.AStatus;
-import com.alessandro.astages.api.develop.NotYetImplemented;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.infrastructure.command.argument.AStagesAddArgument;
+import com.alessandro.astages.infrastructure.command.argument.AStagesRemoveArgument;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.RequestClientStagesS2C;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -27,55 +25,25 @@ import java.util.Collection;
 @NotNullParams
 public class StageCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-//        dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2))
-//            .then(Commands.literal("add").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers()).then(Commands.argument("stage", AStagesAddArgument.stages())
-//                .executes(context -> addStage(context, AStagesPlayerArgument.getPlayer(context, "player"), AStagesAddArgument.getStage(context, "stage"), true, false))
-//            )))
-//            .then(Commands.literal("add").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers()).then(Commands.argument("stage", AStagesAddArgument.stages()).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-//                .executes(context -> addStage(context, AStagesPlayerArgument.getPlayer(context, "player"), AStagesAddArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-//            )))))
-//            .then(Commands.literal("remove").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers()).then(Commands.argument("stage", AStagesRemoveArgument.stages())
-//                .executes(context -> removeStage(context, AStagesPlayerArgument.getPlayer(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), false, true))
-//            )))
-//            .then(Commands.literal("remove").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers()).then(Commands.argument("stage", AStagesRemoveArgument.stages()).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-//                .executes(context -> removeStage(context, AStagesPlayerArgument.getPlayer(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-//            )))))
-//            .then(Commands.literal("remove_all").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers())
-//                .executes(context -> removeAllStages(context, AStagesPlayerArgument.getPlayer(context, "player"), false, true))
-//            ))
-//            .then(Commands.literal("remove_all").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers()).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-//                .executes(context -> removeAllStages(context, AStagesPlayerArgument.getPlayer(context, "player"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-//            ))))
-//            .then(Commands.literal("info")
-//                .executes(context -> info(context, context.getSource().getPlayer(), context.getSource().getPlayer()))
-//            )
-//            .then(Commands.literal("info").then(Commands.argument("player", AStagesPlayerArgument.onlineAndOfflinePlayers())
-//                .executes(context -> info(context, AStagesPlayerArgument.getPlayer(context, "player"), context.getSource().getPlayer()))
-//            ))
-//            .then(Commands.literal("client_info")
-//                .executes(context -> clientInfo(context.getSource().getPlayer()))
-//            )
-//        );
-
         dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2))
-            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_ADD)
-                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), true, false))
+            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesAddArgument.stages())
+                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), AStagesAddArgument.getStage(context, "stage"), true, true, true))
             )))
-            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_ADD).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-            )))))
-            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_REMOVE)
-                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), false, true))
+            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesAddArgument.stages()).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
+                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), AStagesAddArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
+            ))))))
+            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesRemoveArgument.stages())
+                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), true, true, true))
             )))
-            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_REMOVE).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-            )))))
+            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesRemoveArgument.stages()).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
+                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
+            ))))))
             .then(Commands.literal("remove_all").then(Commands.argument("player", EntityArgument.players())
-                .executes(context -> removeAllStages(context, EntityArgument.getPlayers(context, "player"), false, true))
+                .executes(context -> removeAllStages(context, EntityArgument.getPlayers(context, "player"), true, true, true))
             ))
-            .then(Commands.literal("remove_all").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("silentChat", BoolArgumentType.bool()).then(Commands.argument("silentTitle", BoolArgumentType.bool())
-                .executes(context -> removeAllStages(context, EntityArgument.getPlayers(context, "player"), BoolArgumentType.getBool(context, "silentChat"), BoolArgumentType.getBool(context, "silentTitle")))
-            ))))
+            .then(Commands.literal("remove_all").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
+                .executes(context -> removeAllStages(context, EntityArgument.getPlayers(context, "player"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
+            )))))
             .then(Commands.literal("info")
                 .executes(context -> info(context, context.getSource().getPlayer(), context.getSource().getPlayer()))
             )
@@ -91,81 +59,25 @@ public class StageCommands {
         );
     }
 
-    //private static int addStage(CommandContext<CommandSourceStack> context, String username, String stageToAdd, boolean silentChat, boolean silentTitle) {
-    private static int addStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToAdd, boolean silentChat, boolean silentTitle) {
-//        var uuid = OfflinePlayerStage.USERNAME_UUID.get(username);
-//        AStagesUtils.addStage(AHolder.player(uuid), stageToAdd, silentTitle);
-//
-//        var player = APlayerUtils.getPlayerFromCommand(context, uuid);
-//        if (player != null && !silentChat) {
-//            player.sendSystemMessage(Component.translatable("chat.astages.add", stageToAdd).withStyle(ChatFormatting.GREEN));
-//        }
-
+    private static int addStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToAdd, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         for (var player : players) {
-            AStagesUtils.addStage(AHolder.player(player), stageToAdd, silentTitle);
-
-            if (!silentChat) {
-                player.sendSystemMessage(Component.translatable("chat.astages.add", stageToAdd).withStyle(ChatFormatting.GREEN));
-            }
+            AStagesUtils.addStage(AHolder.player(player), stageToAdd, showTitle, displayChatMessage, displayActionBarMessage);
         }
 
         return 1;
     }
 
-    //private static int removeStage(CommandContext<CommandSourceStack> context, String username, String stageToRemove, boolean silentChat, boolean silentTitle) {
-    private static int removeStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToRemove, boolean silentChat, boolean silentTitle) {
-//        var uuid = OfflinePlayerStage.USERNAME_UUID.get(username);
-//        var result = AStagesUtils.removeStage(AHolder.player(uuid), stageToRemove, silentTitle);
-//
-//        var player = APlayerUtils.getPlayerFromCommand(context, uuid);
-//        if (player != null && !silentChat) {
-//            if (result == AStatus.SUCCESS) {
-//                player.sendSystemMessage(Component.translatable("chat.astages.remove", stageToRemove).withStyle(ChatFormatting.GREEN));
-//            } else {
-//                player.sendSystemMessage(Component.translatable("chat.astages.not_present", stageToRemove).withStyle(ChatFormatting.RED));
-//            }
-//        }
-
+    private static int removeStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToRemove, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         for (var player : players) {
-            var result = AStagesUtils.removeStage(AHolder.player(player), stageToRemove, silentTitle);
-
-            if (!silentChat) {
-                if (result == AStatus.SUCCESS) {
-                    player.sendSystemMessage(Component.translatable("chat.astages.remove", stageToRemove).withStyle(ChatFormatting.GREEN));
-                } else {
-                    player.sendSystemMessage(Component.translatable("chat.astages.not_present", stageToRemove).withStyle(ChatFormatting.RED));
-                }
-            }
+            AStagesUtils.removeStage(AHolder.player(player), stageToRemove, showTitle, displayChatMessage, displayActionBarMessage);
         }
 
         return 1;
     }
 
-    @NotYetImplemented("Not present message for remove_all action!")
-    // private static int removeAllStages(CommandContext<CommandSourceStack> context, String username, boolean silentChat, boolean silentTitle) {
-    private static int removeAllStages(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, boolean silentChat, boolean silentTitle) {
-//        var uuid = OfflinePlayerStage.USERNAME_UUID.get(username);
-//        var result = AStagesUtils.removeAllStages(AHolder.player(uuid), silentTitle);
-//
-//        var player = APlayerUtils.getPlayerFromCommand(context, uuid);
-//        if (player != null && !silentChat) {
-//            if (result == AStatus.SUCCESS) {
-//                player.sendSystemMessage(Component.translatable("chat.astages.remove_all").withStyle(ChatFormatting.GREEN));
-//            } else {
-//                player.sendSystemMessage(Component.translatable("chat.astages.not_present").withStyle(ChatFormatting.RED));
-//            }
-//        }
-
+    private static int removeAllStages(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         for (var player : players) {
-            var result = AStagesUtils.removeAllStages(AHolder.player(player), silentTitle);
-
-            if (!silentChat) {
-                if (result == AStatus.SUCCESS) {
-                    player.sendSystemMessage(Component.translatable("chat.astages.remove_all").withStyle(ChatFormatting.GREEN));
-                } else {
-                    player.sendSystemMessage(Component.translatable("chat.astages.not_present").withStyle(ChatFormatting.RED));
-                }
-            }
+            AStagesUtils.removeAllStages(AHolder.player(player), showTitle, displayChatMessage, displayActionBarMessage);
         }
 
         return 1;
@@ -181,20 +93,20 @@ public class StageCommands {
 
         if (executor != null) {
             if (stages.isEmpty()) {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.no_stages", username).withStyle(ChatFormatting.RED));
+                executor.sendSystemMessage(Component.translatable("message.astages.player.info.no_stages", username).withStyle(ChatFormatting.RED));
             } else {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.has_stages", username).withStyle(ChatFormatting.GREEN));
+                executor.sendSystemMessage(Component.translatable("message.astages.player.info.has_stages", username).withStyle(ChatFormatting.GREEN));
                 for (var stage : stages) {
-                    executor.sendSystemMessage(Component.translatable("chat.astages.info.list_item", stage));
+                    executor.sendSystemMessage(Component.translatable("message.astages.player.list_item", stage));
                 }
             }
         } else if (server != null) {
             if (stages.isEmpty()) {
-                server.sendSystemMessage(Component.translatable("chat.astages.info.no_stages", username).withStyle(ChatFormatting.RED));
+                server.sendSystemMessage(Component.translatable("message.astages.player.info.no_stages", username).withStyle(ChatFormatting.RED));
             } else {
-                server.sendSystemMessage(Component.translatable("chat.astages.info.has_stages", username).withStyle(ChatFormatting.GREEN));
+                server.sendSystemMessage(Component.translatable("message.astages.player.info.has_stages", username).withStyle(ChatFormatting.GREEN));
                 for (var stage : stages) {
-                    server.sendSystemMessage(Component.translatable("chat.astages.info.list_item", stage));
+                    server.sendSystemMessage(Component.translatable("message.astages.player.list_item", stage));
                 }
             }
         }

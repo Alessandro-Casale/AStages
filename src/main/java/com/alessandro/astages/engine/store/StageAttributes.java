@@ -5,8 +5,6 @@ import com.alessandro.astages.api.stage.event.ExpiredEvent;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.event.TickEvent;
 import com.alessandro.astages.api.store.Attribute;
-import com.alessandro.astages.api.util.ATextUtils;
-import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.alessandro.astages.infrastructure.registry.AStagesRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -21,12 +19,14 @@ public class StageAttributes {
     public static final Attribute<Boolean> PLAYER_ONLY = Attribute.create("stages_player_only", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> SERVER_ONLY = Attribute.create("stages_server_only", AttributeTypes.BOOLEAN, false);
 
-    public static final Attribute<Function<String, Component>> TITLE_ADD = Attribute.create("stages_title_add", AttributeTypes.STRING_TO_COMPONENT, stageKey -> Component.translatable("title.astages.add", ATextUtils.stageToDescription(stageKey)).withStyle(AStagesCommon.TITLE_COLOR.get()));
+    public static final Attribute<Function<String, Component>> TITLE_ADD = Attribute.create("stages_title_add", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> TITLE_REMOVE = Attribute.create("stages_title_remove", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> SUBTITLE_ADD = Attribute.create("stages_subtitle_add", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> SUBTITLE_REMOVE = Attribute.create("stages_subtitle_remove", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> CHAT_MESSAGE_ADD = Attribute.create("stages_chat_message_add", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> CHAT_MESSAGE_REMOVE = Attribute.create("stages_chat_message_remove", AttributeTypes.STRING_TO_COMPONENT, null);
+    public static final Attribute<Function<String, Component>> ACTION_BAR_MESSAGE_ADD = Attribute.create("stages_action_bar_message_add", AttributeTypes.STRING_TO_COMPONENT, null);
+    public static final Attribute<Function<String, Component>> ACTION_BAR_MESSAGE_REMOVE = Attribute.create("stages_action_bar_message_remove", AttributeTypes.STRING_TO_COMPONENT, null);
 
     public static final Attribute<Integer> FADE_IN = Attribute.create("stages_fade_in", AttributeTypes.INTEGER, 20);
     public static final Attribute<Integer> FADE_OUT = Attribute.create("stages_fade_out", AttributeTypes.INTEGER, 20);

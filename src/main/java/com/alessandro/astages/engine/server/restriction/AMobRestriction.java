@@ -121,13 +121,13 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         return set(Attributes.MAX_LIGHT_LEVEL, value);
     }
 
-    public AMobRestriction restrictBiomeSpawn(ResourceLocation... biome) {
-        restrictedBiomes.addAll(List.of(biome));
+    public AMobRestriction restrictBiomeSpawn(ResourceLocation... biomes) {
+        restrictedBiomes.addAll(List.of(biomes));
         return this;
     }
 
-    public AMobRestriction restrictDimensionSpawn(ResourceLocation... dimension) {
-        restrictedDimensions.addAll(List.of(dimension));
+    public AMobRestriction restrictDimensionSpawn(ResourceLocation... dimensions) {
+        restrictedDimensions.addAll(List.of(dimensions));
         return this;
     }
 

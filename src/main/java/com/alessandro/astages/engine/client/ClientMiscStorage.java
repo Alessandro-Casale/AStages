@@ -10,6 +10,10 @@ public class ClientMiscStorage {
 
     @Info("For automatic command completion")
     public static final Set<String> ALL_STAGES = new HashSet<>();
+//    @Info("For automatic command completion")
+//    public static final Set<String> STAGES_FOR_PLAYER = new HashSet<>();
+//    @Info("For automatic command completion")
+//    public static final Set<String> STAGES_FOR_SERVER = new HashSet<>();
     @Info("For automatic command completion")
     public static final Set<String> DIMENSION_IDS = new HashSet<>();
     @Info("For automatic command completion")

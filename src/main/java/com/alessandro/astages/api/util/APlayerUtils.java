@@ -33,11 +33,11 @@ public class APlayerUtils {
         return context.getSource().getServer().getPlayerList().getPlayer(uuid);
     }
 
-    public static @Nullable Player getPlayerFromUUID(UUID uuid) {
+    public static @Nullable ServerPlayer getPlayerFromUUID(UUID uuid) {
         return getPlayerFromUUID(ServerLifecycleHooks.getCurrentServer(), uuid);
     }
 
-    public static @Nullable Player getPlayerFromUUID(MinecraftServer server, UUID uuid) {
+    public static @Nullable ServerPlayer getPlayerFromUUID(MinecraftServer server, UUID uuid) {
         return server.getPlayerList().getPlayer(uuid);
     }
 

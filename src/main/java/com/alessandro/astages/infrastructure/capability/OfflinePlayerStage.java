@@ -7,11 +7,9 @@ import com.alessandro.astages.api.constant.AStatus;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.event.player.*;
 import com.alessandro.astages.api.foldersystem.AFolderPaths;
+import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.api.util.AFileIOUtils;
-import com.alessandro.astages.api.util.ASetUtils;
-import com.alessandro.astages.api.util.AStagesUtils;
-import com.alessandro.astages.api.util.ATitleUtils;
+import com.alessandro.astages.api.util.*;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.SyncPlayerStagesS2C;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,7 +79,7 @@ public class OfflinePlayerStage {
     }
 
     public static void addPlayerStage(UUID uuid, String stage) {
-        CACHE.computeIfAbsent(uuid, k ->  ASetUtils.newSynchronizedSet()).add(stage);
+        CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).add(stage);
         markAsDirty(uuid);
     }
 
@@ -117,22 +115,24 @@ public class OfflinePlayerStage {
     }
 
     @Info("Synchronization is required only if the player is 'physically' in the server!")
-    public static void synchronizeWithClient(UUID uuid, AOperation operation, String stage, boolean silentTitle) {
+    public static boolean synchronizeWithClient(UUID uuid, AOperation operation, String stage) {
         var player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-        if (player != null) { synchronizeWithClient(player, operation, stage, silentTitle); }
+        if (player != null) { return synchronizeWithClient(player, operation, stage); }
+        return false;
     }
 
-    public static void synchronizeWithClient(Player player, AOperation operation, String stage, boolean silentTitle) {
-        synchronizeWithClient(player, operation, ASetUtils.singleton(stage), silentTitle);
+    public static boolean synchronizeWithClient(Player player, AOperation operation, String stage) {
+        return synchronizeWithClient(player, operation, ASetUtils.singleton(stage));
     }
 
     @Info("Synchronization is required only if the player is 'physically' in the server!")
-    public static void synchronizeWithClient(UUID uuid, AOperation operation, Set<String> stages, boolean silentTitle) {
+    public static boolean synchronizeWithClient(UUID uuid, AOperation operation, Set<String> stages) {
         var player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-        if (player != null) { synchronizeWithClient(player, operation, stages, silentTitle); }
+        if (player != null) { return synchronizeWithClient(player, operation, stages); }
+        return false;
     }
 
-    public static void synchronizeWithClient(Player player, AOperation operation, Set<String> stages, boolean silentTitle) {
+    public static boolean synchronizeWithClient(Player player, AOperation operation, Set<String> stages) {
         AStagesUtils.checkPlayerStages(player, operation, stages);
 
         var event = new StageSyncedPlayerEvent(player, operation, stages);
@@ -140,12 +140,6 @@ public class OfflinePlayerStage {
 
         if (!event.isCanceled()) {
             Networking.sendToPlayer((ServerPlayer) player, new SyncPlayerStagesS2C(stages, operation));
-
-            if (!silentTitle) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    stages.forEach(stage -> ATitleUtils.showTitles(serverPlayer, operation, stage));
-                }
-            }
 
             switch (operation) {
                 case ADD -> ALoader.EVENT_BUS.post(new StageAddedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));
@@ -162,6 +156,18 @@ public class OfflinePlayerStage {
                 case REMOVE_ALL -> addPlayerStages(player, stages);
             }
         }
+
+        return !event.isCanceled();
+    }
+
+    public static void displayStageAlert(UUID playerUUID, AOperation operation, String stage, AStatus status, boolean eventCancelled, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        displayStageAlert(playerUUID, operation, ASetUtils.singleton(stage), status, eventCancelled, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void displayStageAlert(UUID playerUUID, AOperation operation, Set<String> stages, AStatus status, boolean eventCancelled, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        if (eventCancelled) { return; }
+
+        ATitleUtils.displayStageAlert(AHolder.player(playerUUID), operation, stages, status, showTitle, displayChatMessage, displayActionBarMessage);
     }
 
     // When saving, call this

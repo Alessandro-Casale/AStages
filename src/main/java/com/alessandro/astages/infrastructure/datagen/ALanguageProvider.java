@@ -11,18 +11,27 @@ public class ALanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        // GENERAL
-        add("title.astages.add", "%s unlocked!");
-        add("chat.astages.add", "Stage %s added successfully!");
-        add("chat.astages.remove", "Stage %s removed successfully!");
-        add("chat.astages.not_present", "Stages %s is not present in your stages");
-        add("chat.astages.remove_all", "All stages removed successfully!");
-        add("chat.astages.info.no_stages", "No stages unlocked for player %s!");
-        add("chat.astages.info.has_stages", "Stages unlocked by %s:");
-        add("chat.astages.info.list_item", " - %s");
-        add("chat.astages.info.server.no_stages", "No stages unlocked for current server!");
-        add("chat.astages.info.server.has_stages", "Stages unlocked in this server:");
-        add("chat.astages.info.server.list_item", " - %s");
+        // PLAYER STAGES
+        add("message.astages.player.add", "%s unlocked!");
+        add("message.astages.player.remove", "Stage %s removed!");
+        add("message.astages.player.not_present", "Stages %s is not present in your stages!");
+        add("message.astages.player.add_all", "All stages unlocked successfully:");
+        add("message.astages.player.remove_all", "All stages removed successfully:");
+        add("message.astages.player.info.no_stages", "No stages unlocked for player %s!");
+        add("message.astages.player.info.has_stages", "Stages unlocked by %s:");
+        add("message.astages.player.list_item", " - %s");
+
+        // SERVER STAGES
+        add("message.astages.server.add", "Server stage %s unlocked!");
+        add("message.astages.server.remove", "Server stage %s removed!");
+        add("message.astages.server.not_present", "Stage %s is not present in server stages!");
+        add("message.astages.server.add_all", "All server stages unlocked successfully:");
+        add("message.astages.server.remove_all", "All server stages removed successfully:");
+        add("message.astages.server.info.no_stages", "No stages unlocked for current server!");
+        add("message.astages.server.info.has_stages", "Stages unlocked in this server:");
+        add("message.astages.server.list_item", " - %s");
+
+        // TIMER & ACCESS
         add("chat.astages.timer.reset_all", "Timers and access reset correctly for restriction %s!");
         add("chat.astages.timer.reset_timer", "Timers reset correctly for restriction %s!");
         add("chat.astages.timer.reset_access", "Access reset correctly for restriction %s!");
@@ -31,6 +40,8 @@ public class ALanguageProvider extends LanguageProvider {
         add("chat.astages.timer.increase_access", "Access increased correctly for restriction %s by value %s!");
         add("chat.astages.timer.decrease_access", "Access decreased correctly for restriction %s by value %s!");
         add("chat.astages.timer.invalid_value_access", "Invalid value for restriction %s!");
+
+        // MODEL
         add("message.astages.missing_model.kick", "Player will be disconnected! Missing models in client: %s");
         add("message.astages.missing_model.warning", "Some models are available on client but not on server: %s");
 
@@ -75,13 +86,6 @@ public class ALanguageProvider extends LanguageProvider {
         add("message.astages.structure.place", "You can't place in %s!");
         add("message.astages.structure.break", "You can't break in %s!");
 
-        // JADE INTEGRATION
-        add("config.jade.plugin_astages.block_component_provider", "AStages");
-
-        // FTB QUESTS INTEGRATION
-        // add("astages.ftbquests.reward.group", "AStages Group");
-        // add("astages.ftbquests.reward.title", "AStages Title");
-
         // MOB
         add("message.astages.mob.jade_integration", "Unknown Entity!");
         add("message.astages.mob.interaction", "You can't interact with an unknown Entity!");
@@ -90,5 +94,8 @@ public class ALanguageProvider extends LanguageProvider {
         // REGION
         add("message.astages.region.interact", "You can't interact in this region!");
         add("message.astages.region.command", "Command disabled in this region!");
+
+        // JADE INTEGRATION
+        add("config.jade.plugin_astages.block_component_provider", "AStages");
     }
 }

@@ -1,7 +1,6 @@
 package com.alessandro.astages.infrastructure.config;
 
-import com.alessandro.astages.api.constant.ASimpleLocation;
-import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.api.config.SimpleLocation;
 import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;

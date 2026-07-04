@@ -8,7 +8,6 @@ import com.alessandro.astages.api.event.player.*;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.util.ASetUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
-import com.alessandro.astages.api.util.ATitleUtils;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.SyncPlayerStagesS2C;
 import net.minecraft.core.HolderLookup;
@@ -51,11 +50,11 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
         if (!event.isCanceled()) {
             Networking.sendToPlayer((ServerPlayer) player, new SyncPlayerStagesS2C(stages, operation));
 
-            if (!silentTitle) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    stages.forEach(stage -> ATitleUtils.showTitles(serverPlayer, operation, stage));
-                }
-            }
+//            if (!silentTitle) {
+//                if (player instanceof ServerPlayer serverPlayer) {
+//                    stages.forEach(stage -> ATitleUtils.displayStageAlert(serverPlayer, operation, stages));
+//                }
+//            }
 
             switch (operation) {
                 case ADD -> ALoader.EVENT_BUS.post(new StageAddedPlayerEvent(player, ASetUtils.getOnlyElement(stages)));

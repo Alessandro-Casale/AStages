@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -53,7 +52,6 @@ public class AStagesUtils {
         return stage;
     }
 
-
     public static Set<String> getStages(AHolder holder) {
         return holder.getStages().getAllStages();
     }
@@ -70,105 +68,117 @@ public class AStagesUtils {
         return holder.getForType(type).contains(stage);
     }
 
-    public static boolean hasAtLeastOneStage(AHolder holder, List<String> stages) {
+    public static boolean hasAtLeastOneStage(AHolder holder, Set<String> stages) {
         return getStages(holder).stream().anyMatch(stages::contains);
     }
 
-    public static boolean hasAllStages(AHolder holder, List<String> stages) {
+    public static boolean hasAllStages(AHolder holder, Set<String> stages) {
         return getStages(holder).containsAll(stages);
     }
 
-    public static void addStage(AHolder holder, String stage, boolean silentTitle) {
+    public static void addStage(AHolder holder, String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         holder.perform(
             player -> {
                 OfflinePlayerStage.addPlayerStage(player, stage);
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD, stage, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD, stage);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD, stage, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStage(stage);
-                ServerStage.synchronizeWithClient(null, AOperation.ADD, stage);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD, stage);
+                ServerStage.displayStageAlert(server, AOperation.ADD, stage, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
 
-    public static void addStages(AHolder holder, Set<String> stages, boolean silentTitle) {
+    public static void addStages(AHolder holder, Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         holder.perform(
             player -> {
                 OfflinePlayerStage.addPlayerStages(player, stages);
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStages(stages);
-                ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
+                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
 
-    public static void addAllStages(AHolder holder, boolean silentTitle) {
+    public static void addAllStages(AHolder holder, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         var stages = MiscStorage.ALL_STAGES;
 
         holder.perform(
             player -> {
                 OfflinePlayerStage.addPlayerStages(player, stages);
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStages(stages);
-                ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
+                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
 
-    public static AStatus removeStage(AHolder holder, String stage, boolean silentTitle) {
+    public static AStatus removeStage(AHolder holder, String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         AtomicReference<AStatus> toReturn = new AtomicReference<>(AStatus.NOT_PRESENT);
 
         holder.perform(
             player -> {
                 toReturn.set(OfflinePlayerStage.removePlayerStage(player, stage));
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE, stage, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE, stage);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.REMOVE, stage, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 toReturn.set(ServerStage.removeServerStage(stage));
-                ServerStage.synchronizeWithClient(null, AOperation.REMOVE, stage);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.REMOVE, stage);
+                ServerStage.displayStageAlert(server, AOperation.REMOVE, stage, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
 
         return toReturn.get();
     }
 
-    public static AStatus removeStages(AHolder holder, Set<String> stages, boolean silentTitle) {
+    public static AStatus removeStages(AHolder holder, Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         AtomicReference<AStatus> toReturn = new AtomicReference<>(AStatus.NOT_PRESENT);
 
         holder.perform(
             player -> {
                 toReturn.set(OfflinePlayerStage.removePlayerStages(player, stages));
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 toReturn.set(ServerStage.removeServerStages(stages));
-                ServerStage.synchronizeWithClient(null, AOperation.REMOVE_ALL, stages);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.REMOVE_ALL, stages);
+                ServerStage.displayStageAlert(server, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
 
         return toReturn.get();
     }
 
-    public static AStatus removeAllStages(AHolder holder, boolean silentTitle) {
+    public static AStatus removeAllStages(AHolder holder, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
         AtomicReference<AStatus> toReturn = new AtomicReference<>(AStatus.NOT_PRESENT);
 
         holder.perform(
             player -> {
                 var stages = OfflinePlayerStage.getPlayerStagesFromCache(player);
                 toReturn.set(OfflinePlayerStage.removePlayerStages(player, stages));
-                OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages, silentTitle);
+                var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 var stages = ServerStage.getServerStages();
                 toReturn.set(ServerStage.removeServerStages(stages));
-                ServerStage.synchronizeWithClient(null, AOperation.REMOVE_ALL, stages);
+                var isSynced = ServerStage.synchronizeWithClient(null, AOperation.REMOVE_ALL, stages);
+                ServerStage.displayStageAlert(server, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
 
         return toReturn.get();
     }
 
-    public static void synchronizeWithClient(AHolder holder, ServerPlayer toPlayer, AOperation operation, Set<String> stages, boolean silentTitle) {
+    public static void synchronizeWithClient(AHolder holder, ServerPlayer toPlayer, AOperation operation, Set<String> stages) {
         holder.perform(
-            player -> OfflinePlayerStage.synchronizeWithClient(player, operation, stages, silentTitle),
+            player -> OfflinePlayerStage.synchronizeWithClient(player, operation, stages),
             server -> ServerStage.synchronizeWithClient(toPlayer, operation, stages)
         );
     }

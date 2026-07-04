@@ -2,9 +2,14 @@ package com.alessandro.astages.api.holder;
 
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.util.ASetUtils;
 import org.jetbrains.annotations.Contract;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @NotNullMethodsReturn
 public class AStageHolder {
@@ -32,5 +37,13 @@ public class AStageHolder {
         var toReturn = new HashSet<String>();
         stages.forEach((type, stages) -> toReturn.addAll(stages));
         return toReturn;
+    }
+
+    public boolean holdOnlyOneType() {
+        return stages.size() == 1;
+    }
+
+    public @Nullable AStageType getHeldType() {
+        return holdOnlyOneType() ? ASetUtils.getOnlyElement(stages.keySet()) : null;
     }
 }

@@ -1,8 +1,8 @@
 package com.alessandro.astages.infrastructure.folder;
 
+import com.alessandro.astages.api.config.SimpleLocation;
 import com.alessandro.astages.api.util.AFileIOUtils;
 import com.alessandro.astages.api.util.ARegistryUtils;
-import com.alessandro.astages.api.constant.ASimpleLocation;
 import com.alessandro.astages.api.foldersystem.AFolderPaths;
 import com.alessandro.astages.api.foldersystem.AFolderResources;
 import com.alessandro.astages.api.foldersystem.base.ADirectoryResource;
@@ -30,7 +30,7 @@ public class AStagesFolderSystem {
                 playerDir.subFolder(AFolderResources.TEMPORARY_STAGES_DIR, AFolderPaths.referenceForPlayerTemporaryFolder());
             });
 
-        if (AStagesCommon.SIMPLE_RESTRICTIONS_FOLDER.get() == ASimpleLocation.SERVER_FOLDER) {
+        if (AStagesCommon.SIMPLE_RESTRICTIONS_FOLDER.get() == SimpleLocation.SERVER_FOLDER) {
             attachSimpleRestrictionFolders(root);
         }
 
@@ -50,7 +50,7 @@ public class AStagesFolderSystem {
     public static void buildConfigPaths() {
         var root = AFolder.root(AFolderResources.ASTAGES_DATA_DIR);
 
-        if (AStagesCommon.SIMPLE_RESTRICTIONS_FOLDER.get() == ASimpleLocation.CONFIG_FOLDER) {
+        if (AStagesCommon.SIMPLE_RESTRICTIONS_FOLDER.get() == SimpleLocation.CONFIG_FOLDER) {
             attachSimpleRestrictionFolders(root);
         }
 

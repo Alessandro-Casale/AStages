@@ -44,7 +44,7 @@ public class Attributes {
     public static final Attribute<Boolean> ANVIL = Attribute.create("anvil", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> ENCHANTING_TABLE = Attribute.create("enchanting_table", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> BLOCK_INTERACTIONS = Attribute.create("block_restrictions", AttributeTypes.BOOLEAN, true);
-    public static final Attribute<Boolean> MOB_SPAWNING = Attribute.create("mob_spawning", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> MOB_SPAWNING = Attribute.create("mob_spawning", AttributeTypes.BOOLEAN, true);
     public static final Attribute<Boolean> SPAWN_WITH_DIFFERENT_EQUIPMENT = Attribute.create("spawn_with_different_equipment", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> ALLOW_ACCESS = Attribute.create("allow_access", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> PERFORM_COMMANDS = Attribute.create("perform_commands", AttributeTypes.BOOLEAN, true);

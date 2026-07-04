@@ -135,7 +135,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         return set(Attributes.REPLACE, value);
     }
 
-    public AMobRestriction disableSpawning() {
+    public AMobRestriction disableOverallSpawning() {
         return set(Attributes.MOB_SPAWNING, false);
     }
 

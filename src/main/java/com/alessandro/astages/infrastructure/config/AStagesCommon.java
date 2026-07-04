@@ -2,6 +2,7 @@ package com.alessandro.astages.infrastructure.config;
 
 import com.alessandro.astages.api.constant.ASimpleLocation;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -16,63 +17,175 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@NotNullMethodsReturn
 public class AStagesCommon {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
-    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_TITLE_AFTER_STAGE_ADDING;
-    public static final ModConfigSpec.EnumValue<ChatFormatting> TITLE_COLOR;
-    public static final ModConfigSpec.ConfigValue<Integer> TICK_STRUCTURE_UPDATING;
-    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_DEV_LOGS;
+    // --- NOTIFICATIONS ---
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_STAGE_WARNING;
-    public static final ModConfigSpec.EnumValue<ASimpleLocation> SIMPLE_RESTRICTIONS_FOLDER;
+
+    // --- STAGE ADDITION NOTIFICATIONS ---
+    public static final ModConfigSpec.EnumValue<DisplayType> STAGE_ADD_DISPLAY_TYPE;
+    public static final ModConfigSpec.EnumValue<ChatFormatting> STAGE_ADD_COLOR;
+    public static final ModConfigSpec.IntValue STAGE_ADD_FADE_IN_TICKS;
+    public static final ModConfigSpec.IntValue STAGE_ADD_STAY_TICKS;
+    public static final ModConfigSpec.IntValue STAGE_ADD_FADE_OUT_TICKS;
+
+    // --- STAGE REMOVAL NOTIFICATIONS ---
+    public static final ModConfigSpec.EnumValue<DisplayType> STAGE_REMOVE_DISPLAY_TYPE;
+    public static final ModConfigSpec.EnumValue<ChatFormatting> STAGE_REMOVE_COLOR;
+    public static final ModConfigSpec.IntValue STAGE_REMOVE_FADE_IN_TICKS;
+    public static final ModConfigSpec.IntValue STAGE_REMOVE_STAY_TICKS;
+    public static final ModConfigSpec.IntValue STAGE_REMOVE_FADE_OUT_TICKS;
+
+    // --- FILE MANAGEMENT ---
+    public static final ModConfigSpec.EnumValue<SimpleLocation> SIMPLE_RESTRICTIONS_FOLDER;
     public static final ModConfigSpec.IntValue SIMPLE_RESTRICTIONS_RELOADABLE;
+    public static final ModConfigSpec.ConfigValue<Boolean> PRETTY_PRINT_SIMPLE_RESTRICTIONS;
+
+    // --- MECHANICS ---
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_ADD_ALL_OPERATION;
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_REMOVE_ALL_OPERATION;
+//    public static final ModConfigSpec.EnumValue<RestrictedItemBehavior> RESTRICTED_ITEM_BEHAVIOR;
+//    public static final ModConfigSpec.IntValue MESSAGE_COOLDOWN_TICKS;
+
+    // --- DEVELOPER ---
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_TEST_MODE;
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_DEV_LOGS;
     public static final ModConfigSpec.ConfigValue<Boolean> SHOW_SPAWN_TYPES;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELIST_SPAWN_TYPES;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELIST_ENTITY_TYPES;
 
     static {
-        BUILDER.push("Configs for AStages Mod");
+        // =========================================
+        //             NOTIFICATIONS
+        // =========================================
+        BUILDER.push("Notifications");
 
-        ENABLE_TITLE_AFTER_STAGE_ADDING = BUILDER.comment("Enable or disable if mod show a title for each stage add to a player")
-            .define("Enable Titles", true);
+        ENABLE_STAGE_WARNING = BUILDER
+            .comment("Show a chat warning to admins when a stage is not associated with any restriction.")
+            .define("Enable Missing Stage Warning", true);
 
-        TITLE_COLOR = BUILDER.comment("If previous setting is enabled, set the color of the title that appears")
-            .defineEnum("Title color", ChatFormatting.RED);
+        BUILDER.push("Stage Addition Visuals");
 
-        TICK_STRUCTURE_UPDATING = BUILDER.comment("Every how many ticks the updating of the structures in which the player is located is required")
-            .define("Tick Structure Updating", 1);
+        STAGE_ADD_DISPLAY_TYPE = BUILDER
+            .comment("How the notification is shown when a player gains a stage. Options: TITLE, ACTION_BAR, CHAT")
+            .defineEnum("Display Type", DisplayType.TITLE);
 
-        ENABLE_STAGE_WARNING = BUILDER.comment("Show warning when a stage is not associated to any restriction")
-            .define("Enable Warning", true);
+        STAGE_ADD_COLOR = BUILDER
+            .comment("The color of the text when a stage is added")
+            .defineEnum("Text Color", ChatFormatting.GREEN);
 
-        SIMPLE_RESTRICTIONS_FOLDER = BUILDER.comment("Choose if simple restrictions must be read in world/server folder or config folder")
-            .defineEnum("Read Simple Restrictions", ASimpleLocation.CONFIG_FOLDER);
+        STAGE_ADD_FADE_IN_TICKS = BUILDER
+            .comment("Animation fade-in time in ticks for the title notification")
+            .defineInRange("Fade In Ticks", StageAttributes.FADE_IN.getDefaultValue(), 0, 72000);
 
-        SIMPLE_RESTRICTIONS_RELOADABLE = BUILDER.comment("Set how many times simple restrictions file is re-written")
-            .defineInRange("Update file After X Additions", 5, 1, Integer.MAX_VALUE);
+        STAGE_ADD_STAY_TICKS = BUILDER
+            .comment("How long the title notification stays on screen in ticks")
+            .defineInRange("Stay Ticks", StageAttributes.STAY.getDefaultValue(), 0, 72000);
 
-        ENABLE_TEST_MODE = BUILDER.comment("Enable test-mode used by developers to check if all restrictions work as expected")
-            .define("Enable Test Mode", false);
-
-        BUILDER.push("Dev");
-
-        ENABLE_DEV_LOGS = BUILDER.comment("Show logs related to dev things!")
-            .define("Enable Dev Logs", false);
-
-        SHOW_SPAWN_TYPES = BUILDER.comment("Show spawn types in logs for every entity type that is generated via FinalizeSpawnEvent")
-            .define("Enable Mob Related Logs", false);
-
-        WHITELIST_SPAWN_TYPES = BUILDER.comment("Whitelist spawn types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). " +
-                "Allowed values: " + Arrays.toString(MobSpawnType.values()))
-            .defineList("Whitelist Spawn Types", List.of(), () -> "NATURAL", ConfigUtils.SPAWN_TYPE_VALIDATOR);
-
-        WHITELIST_ENTITY_TYPES = BUILDER.comment("Whitelist entity types showed in logs if `Enable Spawn Types Logs` is true (if empty, all types will be logged). (es: 'minecraft:zombie')")
-            .defineList("Whitelist Entity Types", List.of(), () -> "minecraft:pig", ConfigUtils.ENTITY_TYPE_VALIDATOR);
+        STAGE_ADD_FADE_OUT_TICKS = BUILDER
+            .comment("Animation fade-out time in ticks for the title notification")
+            .defineInRange("Fade Out Ticks", StageAttributes.FADE_OUT.getDefaultValue(), 0, 72000);
 
         BUILDER.pop();
+
+        BUILDER.push("Stage Removal Visuals");
+
+        STAGE_REMOVE_DISPLAY_TYPE = BUILDER
+            .comment("How the notification is shown when a player loses a stage.")
+            .defineEnum("Display Type", DisplayType.CHAT);
+
+        STAGE_REMOVE_COLOR = BUILDER
+            .comment("The color of the text when a stage is removed")
+            .defineEnum("Text Color", ChatFormatting.RED);
+
+        STAGE_REMOVE_FADE_IN_TICKS = BUILDER
+            .comment("Animation fade-in time in ticks for the title notification")
+            .defineInRange("Fade In Ticks", 20, 0, 72000);
+
+        STAGE_REMOVE_STAY_TICKS = BUILDER
+            .comment("How long the title notification stays on screen in ticks")
+            .defineInRange("Stay Ticks", 60, 0, 72000);
+
+        STAGE_REMOVE_FADE_OUT_TICKS = BUILDER
+            .comment("Animation fade-out time in ticks for the title notification")
+            .defineInRange("Fade Out Ticks", 20, 0, 72000);
+
+        BUILDER.pop();
+
+        BUILDER.pop();
+
+        // =========================================
+        //            FILE MANAGEMENT
+        // =========================================
+        BUILDER.push("File Management");
+
+        SIMPLE_RESTRICTIONS_FOLDER = BUILDER
+            .comment("Choose if simple restrictions must be read from the world/server folder or the global config folder.")
+            .defineEnum("Read Simple Restrictions", SimpleLocation.CONFIG_FOLDER);
+
+        SIMPLE_RESTRICTIONS_RELOADABLE = BUILDER
+            .comment("Set how many times the simple restrictions file is rewritten after additions before forcing a save.")
+            .defineInRange("Update File After X Additions", 5, 1, Integer.MAX_VALUE);
+
+        PRETTY_PRINT_SIMPLE_RESTRICTIONS = BUILDER.comment("If true, the simple restrictions JSON file will be formatted with clean spacing. If false, it will be saved on a single line (saves space).")
+            .define("Pretty Print Simple Restrictions", true);
+
+        BUILDER.pop();
+
+        // =========================================
+        //               MECHANICS
+        // =========================================
+        BUILDER.push("Mechanics");
+
+        ENABLE_ADD_ALL_OPERATION = BUILDER.comment(
+                "If true, execute stage addition operations (adding multiple stages at once via code) will show an alert. ",
+                "If false, alerts will not be shown."
+            )
+            .define("Enable Add All Operation Stage Alert", true);
+
+        ENABLE_REMOVE_ALL_OPERATION = BUILDER.comment(
+                "If true, bulk stage removal operations (removing multiple stages at once via code) will show an alert. ",
+                "If false, alerts will not be shown."
+            )
+            .define("Enable Remove All Operation Stage Alert", true);
+
+//        RESTRICTED_ITEM_BEHAVIOR = BUILDER
+//            .comment("What happens when a player somehow gets a restricted item they haven't unlocked yet. Options: DROP (drops it on ground), DELETE (removes it), INVENTORY_LOCK (keeps it but makes it un-interactable)")
+//            .defineEnum("Restricted Item Behavior", RestrictedItemBehavior.DROP);
+
+//        MESSAGE_COOLDOWN_TICKS = BUILDER
+//            .comment("The cooldown (in ticks) before a player can see the action-blocked message again. Prevents chat/actionbar spam when right-clicking rapidly.")
+//            .defineInRange("Message Cooldown Ticks", 20, 0, 1200);
+
+        BUILDER.pop();
+
+        // =========================================
+        //               DEVELOPER
+        // =========================================
+        BUILDER.push("Developer");
+
+        ENABLE_TEST_MODE = BUILDER
+            .comment("Enable test-mode used by developers to check if all restrictions work as expected.")
+            .define("Enable Test Mode", false);
+
+        ENABLE_DEV_LOGS = BUILDER
+            .comment("Show detailed backend logs related to development and parsing.")
+            .define("Enable Dev Logs", false);
+
+        SHOW_SPAWN_TYPES = BUILDER
+            .comment("Log the spawn types for every entity generated via FinalizeSpawnEvent.")
+            .define("Enable Mob Spawn Logs", false);
+
+        WHITELIST_SPAWN_TYPES = BUILDER
+            .comment("Whitelist spawn types shown in logs if `Enable Mob Spawn Logs` is true.",
+                "If empty, all types will be logged. Allowed values: " + Arrays.toString(MobSpawnType.values()))
+            .defineList("Whitelist Spawn Types", List.of(), () -> "NATURAL", ConfigUtils.SPAWN_TYPE_VALIDATOR);
+
+        WHITELIST_ENTITY_TYPES = BUILDER
+            .comment("Whitelist entity types shown in logs (e.g., 'minecraft:zombie'). If empty, all entities are logged.")
+            .defineList("Whitelist Entity Types", List.of(), () -> "minecraft:zombie", ConfigUtils.ENTITY_TYPE_VALIDATOR);
 
         BUILDER.pop();
 

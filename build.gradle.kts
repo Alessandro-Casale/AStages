@@ -183,6 +183,8 @@ dependencies {
     implementation("curse.maven:createnuclear-989797:7210665")
 
     implementation("curse.maven:modernfix-790626:8255560")
+
+    implementation("curse.maven:better-modlist-neoforge-1089803:7711471")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

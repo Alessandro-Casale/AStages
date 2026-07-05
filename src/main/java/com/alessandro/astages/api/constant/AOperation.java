@@ -9,9 +9,7 @@ public enum AOperation {
     ADD_ALL(true, false, true, 1),
     REMOVE(false, true, false, 2),
     REMOVE_ALL(false, false, false, 3),
-    // Prefer -1, but an error of non-continuous values is thrown at runtime!
-    @Deprecated(forRemoval = true) GET(false, false, false, 4),
-    LOGIN(false, false, false, 5);
+    LOGIN(false, false, false, 4);
 
     private final boolean needToBeChecked;
     private final boolean supportOnlyOneStage;

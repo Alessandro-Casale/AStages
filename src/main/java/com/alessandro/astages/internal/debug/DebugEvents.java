@@ -82,6 +82,12 @@ public class DebugEvents {
                 }
             })
             .whenExpired(e -> e.getPlayer());
+
+        AStagesUtils.customizeStage("stage_server_only")
+            .serverOnly();
+
+        AStagesUtils.customizeStage("stage_player_only")
+            .playerOnly();
     }
 
     @SubscribeEvent

@@ -19,10 +19,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -81,11 +81,11 @@ public class AStagesUtils {
             player -> {
                 OfflinePlayerStage.addPlayerStage(player, stage);
                 var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD, stage);
-                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD, stage, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD, stage, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStage(stage);
                 var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD, stage);
-                ServerStage.displayStageAlert(server, AOperation.ADD, stage, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                ServerStage.displayStageAlert(server, AOperation.ADD, stage, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
@@ -95,11 +95,11 @@ public class AStagesUtils {
             player -> {
                 OfflinePlayerStage.addPlayerStages(player, stages);
                 var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages);
-                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStages(stages);
                 var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
-                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
@@ -111,11 +111,11 @@ public class AStagesUtils {
             player -> {
                 OfflinePlayerStage.addPlayerStages(player, stages);
                 var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.ADD_ALL, stages);
-                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                OfflinePlayerStage.displayStageAlert(player, AOperation.ADD_ALL, stages, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
                 ServerStage.addServerStages(stages);
                 var isSynced = ServerStage.synchronizeWithClient(null, AOperation.ADD_ALL, stages);
-                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESS, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
+                ServerStage.displayStageAlert(server, AOperation.ADD_ALL, stages, AStatus.SUCCESSFUL, !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }
         );
     }
@@ -183,26 +183,33 @@ public class AStagesUtils {
         );
     }
 
+    public static void checkPlayerStage(UUID player, AOperation operation, String stage) {
+        checkPlayerStages(player, operation, ASetUtils.singleton(stage));
+    }
 
-    public static void checkPlayerStages(@Nullable Player player, AOperation operation, Set<String> stages) {
-        checkStages(player, stage -> {
+    public static void checkPlayerStages(UUID player, AOperation operation, Set<String> stages) {
+        checkStages(APlayerUtils.getPlayerFromUUID(player), stage -> {
             if (AStageManager.GENERIC_INSTANCE.isServerOnly(stage)) {
-                throw new IllegalArgumentException("Trying to add stage " + stage + " that is marked as available in server only!");
+                throw new IllegalArgumentException(Component.translatable("message.astages.check.server_only", stage).getString());
             }
         }, operation, stages);
+    }
+
+    public static void checkServerStage(AOperation operation, String stage) {
+        checkServerStages(operation, ASetUtils.singleton(stage));
     }
 
     public static void checkServerStages(AOperation operation, Set<String> stages) {
         checkStages(ServerLifecycleHooks.getCurrentServer(), stage -> {
             if (AStageManager.GENERIC_INSTANCE.isPlayerOnly(stage)) {
-                throw new IllegalArgumentException("Trying to add stage " + stage + " that is marked as available in player only!");
+                throw new IllegalArgumentException(Component.translatable("message.astages.check.player_only", stage).getString());
             }
         }, operation, stages);
     }
 
     public static void checkStages(@Nullable CommandSource chatSource, Consumer<String> checker, AOperation operation, Set<String> stages) {
         if (operation.supportOnlyOneStage() && stages.size() != 1) {
-            throw new IllegalArgumentException("Trying to perform an action that supports single stage, using multiple ones!");
+            throw new IllegalArgumentException(Component.translatable("message.astages.check.unsupported_multiple_stage_action").getString());
         }
 
         if (operation.needToBeChecked()) {
@@ -215,7 +222,7 @@ public class AStagesUtils {
             if (chatSource != null && operation.handleStageRecognization()) {
                 for (var stage : stages) {
                     if (!MiscStorage.ALL_STAGES.contains(stage)) {
-                        chatSource.sendSystemMessage(Component.literal("⚠ Warning: stage " + stage + " not recognized!").withStyle(ChatFormatting.GOLD));
+                        chatSource.sendSystemMessage(Component.translatable("message.astages.warning.unknown_stage", stage).withStyle(ChatFormatting.GOLD));
                     }
                 }
             }

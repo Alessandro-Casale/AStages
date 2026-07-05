@@ -10,10 +10,10 @@ public class ClientMiscStorage {
 
     @Info("For automatic command completion")
     public static final Set<String> ALL_STAGES = new HashSet<>();
-//    @Info("For automatic command completion")
-//    public static final Set<String> STAGES_FOR_PLAYER = new HashSet<>();
-//    @Info("For automatic command completion")
-//    public static final Set<String> STAGES_FOR_SERVER = new HashSet<>();
+    @Info("For automatic command completion")
+    public static final Set<String> STAGES_ONLY_FOR_PLAYER = new HashSet<>();
+    @Info("For automatic command completion")
+    public static final Set<String> STAGES_ONLY_FOR_SERVER = new HashSet<>();
     @Info("For automatic command completion")
     public static final Set<String> DIMENSION_IDS = new HashSet<>();
     @Info("For automatic command completion")
@@ -22,6 +22,8 @@ public class ClientMiscStorage {
     public static void clearAll() {
         ORE_STAGES.clear();
         ALL_STAGES.clear();
+        STAGES_ONLY_FOR_PLAYER.clear();
+        STAGES_ONLY_FOR_SERVER.clear();
         DIMENSION_IDS.clear();
         SIMPLE_IDS.clear();
     }

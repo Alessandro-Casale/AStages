@@ -53,12 +53,12 @@ public class ServerStage {
 
     @SuppressWarnings("UnusedReturnValue")
     public static AStatus removeServerStage(String stage) {
-        return CACHE.remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        return CACHE.remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public static AStatus removeServerStages(Set<String> stages) {
-        return CACHE.removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        return CACHE.removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
     }
 
     public static boolean synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, String stage) {

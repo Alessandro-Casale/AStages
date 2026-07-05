@@ -98,8 +98,8 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStage(UUID uuid, String stage) {
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
-        if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(uuid); }
         return removeStatus;
     }
 
@@ -109,8 +109,8 @@ public class OfflinePlayerStage {
     }
 
     public static AStatus removePlayerStages(UUID uuid, Set<String> stages) {
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
-        if (removeStatus == AStatus.SUCCESS) { markAsDirty(uuid); }
+        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(uuid); }
         return removeStatus;
     }
 

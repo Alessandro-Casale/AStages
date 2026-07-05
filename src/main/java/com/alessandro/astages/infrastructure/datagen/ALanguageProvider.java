@@ -31,6 +31,12 @@ public class ALanguageProvider extends LanguageProvider {
         add("message.astages.server.info.has_stages", "Stages unlocked in this server:");
         add("message.astages.server.list_item", " - %s");
 
+        // CHECK STAGES
+        add("message.astages.check.player_only", "Trying to add stage %s to the server that is marked as available in player scope only!");
+        add("message.astages.check.server_only", "Trying to add stage %s to the player that is marked as available in server scope only!");
+        add("message.astages.check.unsupported_multiple_stage_action", "Trying to perform an action that supports single stage, using multiple ones!");
+        add("message.astages.warning.unknown_stage", "⚠ Warning: stage %s not recognized!");
+
         // TIMER & ACCESS
         add("chat.astages.timer.reset_all", "Timers and access reset correctly for restriction %s!");
         add("chat.astages.timer.reset_timer", "Timers reset correctly for restriction %s!");

@@ -56,7 +56,7 @@ public class ServerCommands {
             } else {
                 executor.sendSystemMessage(Component.translatable("message.astages.server.info.has_stages").withStyle(ChatFormatting.GREEN));
                 for (var stage : serverStage) {
-                    executor.sendSystemMessage(Component.translatable("message.astages.server.info.list_item", stage));
+                    executor.sendSystemMessage(Component.translatable("message.astages.server.list_item", stage));
                 }
             }
         }

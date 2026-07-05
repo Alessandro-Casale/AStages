@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +26,7 @@ import java.util.Set;
 public class ServerStage {
     public static final String SERVER_STAGES_FILE = "server.json";
 
-    private static Set<String> CACHE = new HashSet<>();
+    private static Set<String> CACHE = ASetUtils.newSynchronizedSet();
 
     public static Path getPermanentStagesFile() {
         var file = AFolderPaths.getServerPermanentFolder().resolve(SERVER_STAGES_FILE);
@@ -44,21 +43,35 @@ public class ServerStage {
     }
 
     public static void addServerStage(String stage) {
+        AStagesUtils.checkServerStage(AOperation.ADD, stage);
+
         CACHE.add(stage);
+        markAsDirty();
     }
 
     public static void addServerStages(Set<String> stages) {
+        AStagesUtils.checkServerStages(AOperation.ADD_ALL, stages);
+
         CACHE.addAll(stages);
+        markAsDirty();
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public static AStatus removeServerStage(String stage) {
-        return CACHE.remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        AStagesUtils.checkServerStage(AOperation.REMOVE, stage);
+
+        var removeStatus = CACHE.remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(); }
+        return removeStatus;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public static AStatus removeServerStages(Set<String> stages) {
-        return CACHE.removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        AStagesUtils.checkServerStages(AOperation.REMOVE_ALL, stages);
+
+        var removeStatus = CACHE.removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(); }
+        return removeStatus;
     }
 
     public static boolean synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, String stage) {
@@ -66,8 +79,6 @@ public class ServerStage {
     }
 
     public static boolean synchronizeWithClient(@Nullable ServerPlayer player, AOperation operation, Set<String> stages) {
-        AStagesUtils.checkServerStages(operation, stages);
-
         var server = ServerLifecycleHooks.getCurrentServer();
         var event = new StageSyncedServerEvent(ServerLifecycleHooks.getCurrentServer(), operation, stages);
         ALoader.EVENT_BUS.post(event);

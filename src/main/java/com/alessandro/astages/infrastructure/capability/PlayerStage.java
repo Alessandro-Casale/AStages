@@ -42,7 +42,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
     }
 
     public void setChangedFor(Player player, AOperation operation, Set<String> stages, boolean silentTitle) {
-        AStagesUtils.checkPlayerStages(player, operation, stages);
+        // AStagesUtils.checkPlayerStages(player, operation, stages);
 
         StageSyncedPlayerEvent event = new StageSyncedPlayerEvent(player, operation, stages);
         ALoader.EVENT_BUS.post(event);

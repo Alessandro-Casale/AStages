@@ -59,20 +59,20 @@ public record ReplyClientStagesC2S(AStageSource requester, AStageSource askedFor
             if (playerChecked == null) { return; }
 
             if (stages.isEmpty()) {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.no_stages", playerChecked.getName()).withStyle(ChatFormatting.RED));
+                executor.sendSystemMessage(Component.translatable("message.astages.player.info.no_stages", playerChecked.getName()).withStyle(ChatFormatting.RED));
             } else {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.has_stages", playerChecked.getName()).withStyle(ChatFormatting.GREEN));
+                executor.sendSystemMessage(Component.translatable("message.astages.player.info.has_stages", playerChecked.getName()).withStyle(ChatFormatting.GREEN));
                 for (var stage : stages) {
-                    executor.sendSystemMessage(Component.translatable("chat.astages.info.list_item", stage));
+                    executor.sendSystemMessage(Component.translatable("message.astages.player.list_item", stage));
                 }
             }
         } else if (askedFor == AStageSource.SERVER) {
             if (stages.isEmpty()) {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.server.no_stages").withStyle(ChatFormatting.RED));
+                executor.sendSystemMessage(Component.translatable("message.astages.server.info.no_stages").withStyle(ChatFormatting.RED));
             } else {
-                executor.sendSystemMessage(Component.translatable("chat.astages.info.server.has_stages").withStyle(ChatFormatting.GREEN));
+                executor.sendSystemMessage(Component.translatable("message.astages.server.info.has_stages").withStyle(ChatFormatting.GREEN));
                 for (var stage : stages) {
-                    executor.sendSystemMessage(Component.translatable("chat.astages.info.server.list_item", stage));
+                    executor.sendSystemMessage(Component.translatable("message.astages.server.list_item", stage));
                 }
             }
         }

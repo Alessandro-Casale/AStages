@@ -10,6 +10,7 @@ import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.util.ATextUtils;
 import com.alessandro.astages.engine.AStageManager;
+import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -63,6 +64,14 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AC
         checkAttribute(attribute);
         attributes.setAttribute(attribute, value);
 
+        if (attribute == StageAttributes.PLAYER_ONLY) {
+            MiscStorage.STAGES_ONLY_FOR_PLAYER.add(getStage());
+            MiscStorage.STAGES_ONLY_FOR_SERVER.remove(getStage());
+        } else if (attribute == StageAttributes.SERVER_ONLY) {
+            MiscStorage.STAGES_ONLY_FOR_PLAYER.remove(getStage());
+            MiscStorage.STAGES_ONLY_FOR_SERVER.add(getStage());
+        }
+
         return (S) this;
     }
 
@@ -72,6 +81,7 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AC
             .addAttribute(StageAttributes.PLAYER_ONLY)
             .addAttribute(StageAttributes.SERVER_ONLY)
 
+            .addAttribute(StageAttributes.SHOW_DEFAULT)
             .addAttribute(StageAttributes.TITLE_ADD, true)
             .addAttribute(StageAttributes.TITLE_REMOVE, true)
             .addAttribute(StageAttributes.SUBTITLE_ADD, true)
@@ -113,31 +123,47 @@ public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AC
     }
 
     public S playerOnly() {
-        return set(StageAttributes.SERVER_ONLY, true);
+        return set(StageAttributes.PLAYER_ONLY, true);
     }
 
     public S titleOnAdd(Function<String, Component> title) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.TITLE_ADD, title);
     }
 
     public S subTitleOnAdd(Function<String, Component> subTitle) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.SUBTITLE_ADD, subTitle);
     }
 
     public S chatMessageOnAdd(Function<String, Component> chatMessage) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.CHAT_MESSAGE_ADD, chatMessage);
     }
 
+    public S actionBarMessageOnAdd(Function<String, Component> actionBarMessage) {
+        set(StageAttributes.SHOW_DEFAULT, false);
+        return set(StageAttributes.ACTION_BAR_MESSAGE_ADD, actionBarMessage);
+    }
+
     public S titleOnRemove(Function<String, Component> title) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.TITLE_REMOVE, title);
     }
 
     public S subTitleOnRemove(Function<String, Component> subTitle) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.SUBTITLE_REMOVE, subTitle);
     }
 
     public S chatMessageOnRemove(Function<String, Component> chatMessage) {
+        set(StageAttributes.SHOW_DEFAULT, false);
         return set(StageAttributes.CHAT_MESSAGE_REMOVE, chatMessage);
+    }
+
+    public S actionBarMessageOnRemove(Function<String, Component> actionBarMessage) {
+        set(StageAttributes.SHOW_DEFAULT, false);
+        return set(StageAttributes.ACTION_BAR_MESSAGE_REMOVE, actionBarMessage);
     }
 
     public S fadeIn(int fadeIn) {

@@ -93,7 +93,7 @@ public class PlayerStage implements INBTSerializable<CompoundTag> {
     }
 
     public AStatus removeStage(String stage) {
-        return stages.remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        return stages.remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
     }
 
     public void copyFrom(PlayerStage source) {

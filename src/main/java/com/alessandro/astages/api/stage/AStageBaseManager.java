@@ -1,6 +1,7 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.engine.server.MiscStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class AStageBaseManager<T> {
 
     public void addStageInternal(String key, T stage) {
         STAGES.put(key, stage);
+        MiscStorage.ALL_STAGES.add(key);
     }
 
     public Map<String, T> getStages() {

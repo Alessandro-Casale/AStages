@@ -54,13 +54,13 @@ public class ServerStageData extends SavedData {
     }
 
     public AStatus removeServerStage(String stage) {
-        var toReturn = serverStages.remove(stage) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var toReturn = serverStages.remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
         setDirty();
         return toReturn;
     }
 
     public AStatus removeServerStages(Set<String> stages) {
-        var toReturn = serverStages.removeAll(stages) ? AStatus.SUCCESS : AStatus.NOT_PRESENT;
+        var toReturn = serverStages.removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
         setDirty();
         return toReturn;
     }

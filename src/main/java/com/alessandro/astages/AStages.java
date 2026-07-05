@@ -12,17 +12,15 @@ import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.engine.store.ASimpleRestrictionTypes;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.engine.store.StageAttributes;
+import com.alessandro.astages.infrastructure.advancement.ACriteriaTriggers;
 import com.alessandro.astages.infrastructure.capability.AProvider;
 import com.alessandro.astages.infrastructure.command.argument.ACommandArguments;
 import com.alessandro.astages.infrastructure.config.AStagesClient;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
+import com.alessandro.astages.infrastructure.loot.modifier.AModifiers;
 import com.alessandro.astages.infrastructure.manager.ClientManagerScanner;
 import com.alessandro.astages.infrastructure.manager.ManagerScanner;
 import com.alessandro.astages.infrastructure.plugin.PluginScanner;
-import com.alessandro.astages.infrastructure.advancement.ACriteriaTriggers;
-import com.alessandro.astages.internal.experimental.block.ModBlocks;
-import com.alessandro.astages.internal.experimental.item.ModItems;
-import com.alessandro.astages.internal.experimental.loot.AModifiers;
 import com.google.common.base.Stopwatch;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
@@ -48,8 +46,6 @@ public class AStages {
 
     public AStages(IEventBus modEventBus, ModContainer modContainer) {
         AProvider.ATTACHMENT_TYPES.register(modEventBus);
-        ModItems.ITEMS.register(modEventBus);
-        ModBlocks.BLOCKS.register(modEventBus);
         ACommandArguments.ARGUMENT_TYPES.register(modEventBus);
         AModifiers.MODIFIERS.register(modEventBus);
         ACriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);

@@ -1,5 +1,6 @@
 package com.alessandro.astages.infrastructure.config;
 
+import com.alessandro.astages.api.config.DisplayType;
 import com.alessandro.astages.api.config.SimpleLocation;
 import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.ChatFormatting;
@@ -45,6 +46,7 @@ public class AStagesCommon {
     // --- MECHANICS ---
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_ADD_ALL_OPERATION;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_REMOVE_ALL_OPERATION;
+    public static final ModConfigSpec.ConfigValue<Boolean> FORCE_LAST_LOOT_MODIFIER;
 //    public static final ModConfigSpec.EnumValue<RestrictedItemBehavior> RESTRICTED_ITEM_BEHAVIOR;
 //    public static final ModConfigSpec.IntValue MESSAGE_COOLDOWN_TICKS;
 
@@ -128,7 +130,8 @@ public class AStagesCommon {
             .comment("Set how many times the simple restrictions file is rewritten after additions before forcing a save.")
             .defineInRange("Update File After X Additions", 5, 1, Integer.MAX_VALUE);
 
-        PRETTY_PRINT_SIMPLE_RESTRICTIONS = BUILDER.comment("If true, the simple restrictions JSON file will be formatted with clean spacing. If false, it will be saved on a single line (saves space).")
+        PRETTY_PRINT_SIMPLE_RESTRICTIONS = BUILDER
+            .comment("If true, the simple restrictions JSON file will be formatted with clean spacing. If false, it will be saved on a single line (saves space).")
             .define("Pretty Print Simple Restrictions", true);
 
         BUILDER.pop();
@@ -138,17 +141,26 @@ public class AStagesCommon {
         // =========================================
         BUILDER.push("Mechanics");
 
-        ENABLE_ADD_ALL_OPERATION = BUILDER.comment(
+        ENABLE_ADD_ALL_OPERATION = BUILDER
+            .comment(
                 "If true, execute stage addition operations (adding multiple stages at once via code) will show an alert. ",
                 "If false, alerts will not be shown."
             )
             .define("Enable Add All Operation Stage Alert", true);
 
-        ENABLE_REMOVE_ALL_OPERATION = BUILDER.comment(
+        ENABLE_REMOVE_ALL_OPERATION = BUILDER
+            .comment(
                 "If true, bulk stage removal operations (removing multiple stages at once via code) will show an alert. ",
                 "If false, alerts will not be shown."
             )
             .define("Enable Remove All Operation Stage Alert", true);
+
+        FORCE_LAST_LOOT_MODIFIER = BUILDER
+            .comment(
+                "If true, uses an injection Mixin to force AStages' loot restrictions to run as the absolute last check, after all other mods have finished.",
+                "If false, relies on Forge's standard Global Loot Modifier registry order (JSON)."
+            )
+            .define("Force Last Loot Modifier Execution", false);
 
 //        RESTRICTED_ITEM_BEHAVIOR = BUILDER
 //            .comment("What happens when a player somehow gets a restricted item they haven't unlocked yet. Options: DROP (drops it on ground), DELETE (removes it), INVENTORY_LOCK (keeps it but makes it un-interactable)")

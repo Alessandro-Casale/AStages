@@ -35,6 +35,7 @@ public record SendServerModelsS2C(Set<ResourceLocation> serverModels) implements
     public void run(IPayloadContext context) {
         var clientModels = AClientModelManager.MODELS.getModels();
 
+        // TODO: try replacing with Sets.difference()
         var missingModels = new HashSet<>(serverModels);
         missingModels.removeAll(clientModels);
 

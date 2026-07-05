@@ -1,6 +1,6 @@
 package com.alessandro.astages.api.util;
 
-import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.alert.StageAlert;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.constant.AStatus;
@@ -8,7 +8,6 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.stage.BaseStage;
-import com.alessandro.astages.api.alert.StageAlert;
 import com.alessandro.astages.engine.store.StageAttributes;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import net.minecraft.network.chat.Component;
@@ -18,8 +17,6 @@ import java.util.Set;
 @NotNullParams
 public class ATitleUtils {
     public static void displayStageAlert(AHolder holder, AOperation operation, Set<String> stageKeys, AStatus status, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
-        AStages.LOGGER.debug("{}: {}", operation, stageKeys);
-
         switch (operation) {
             case ADD ->
                 AAlertUtils.genericAlert(
@@ -76,7 +73,7 @@ public class ATitleUtils {
     }
 
     public static void addStageAlert(StageAlert builder, AHolder holder, AStageType heldType, String stageKey, AStatus status, @Nullable BaseStage<?> customConfig) {
-        if (customConfig != null) {
+        if (customConfig != null && customConfig.isDisabled(StageAttributes.SHOW_DEFAULT)) {
             builder.configureTitle(customConfig.getMessageOrNull(StageAttributes.TITLE_ADD, stageKey));
             builder.configureSubtitle(customConfig.getMessageOrNull(StageAttributes.SUBTITLE_ADD, stageKey));
             builder.configureChatMessage(customConfig.getMessageOrNull(StageAttributes.CHAT_MESSAGE_ADD, stageKey));
@@ -109,7 +106,7 @@ public class ATitleUtils {
     }
 
     public static void addAllStagesAlert(StageAlert builder, AHolder holder, AStageType heldType, String stageKey, AStatus status, @Nullable BaseStage<?> customConfig) {
-        if (customConfig != null) {
+        if (customConfig != null && customConfig.isDisabled(StageAttributes.SHOW_DEFAULT)) {
             builder.configureChatMessage(customConfig.getMessageOrNull(StageAttributes.CHAT_MESSAGE_ADD, stageKey));
         } else {
             var component = Component.translatable("message.astages." + AStageType.getDescriptionIdFor(heldType) + ".list_item", stageKey).withStyle(AStagesCommon.STAGE_ADD_COLOR.get());
@@ -118,7 +115,7 @@ public class ATitleUtils {
     }
 
     public static void removeStageAlert(StageAlert builder, AHolder holder, AStageType heldType, String stageKey, AStatus status, @Nullable BaseStage<?> customConfig) {
-        if (customConfig != null) {
+        if (customConfig != null && customConfig.isDisabled(StageAttributes.SHOW_DEFAULT)) {
             builder.configureTitle(customConfig.getMessageOrNull(StageAttributes.TITLE_REMOVE, stageKey));
             builder.configureSubtitle(customConfig.getMessageOrNull(StageAttributes.SUBTITLE_REMOVE, stageKey));
             builder.configureChatMessage(customConfig.getMessageOrNull(StageAttributes.CHAT_MESSAGE_REMOVE, stageKey));
@@ -155,7 +152,7 @@ public class ATitleUtils {
     }
 
     public static void removeAllStagesAlert(StageAlert builder, AHolder holder, AStageType heldType, String stageKey, AStatus status, @Nullable BaseStage<?> customConfig) {
-        if (customConfig != null) {
+        if (customConfig != null && customConfig.isDisabled(StageAttributes.SHOW_DEFAULT)) {
             builder.configureChatMessage(customConfig.getMessageOrNull(StageAttributes.CHAT_MESSAGE_REMOVE, stageKey));
         } else {
             var component = Component.translatable("message.astages." + AStageType.getDescriptionIdFor(heldType) + ".list_item", stageKey).withStyle(AStagesCommon.STAGE_REMOVE_COLOR.get());

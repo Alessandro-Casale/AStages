@@ -45,7 +45,9 @@ public class APlayerUtils {
         return getNearestPlayer(level, new Vec3(pos.getX(), pos.getY(), pos.getZ()));
     }
 
-    public static @Nullable Player getNearestPlayer(Level level, Vec3 pos) {
+    public static @Nullable Player getNearestPlayer(Level level, @Nullable Vec3 pos) {
+        if (pos == null) { return null; }
+
         var players = level.players();
         var minDistance = Double.MAX_VALUE;
         Player toReturn = null;

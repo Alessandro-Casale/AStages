@@ -46,6 +46,23 @@ public class DebugEvents {
 
         ARestrictionUtils.addRestrictionForStructure("astages:structure1", "stage_structure_1", List.of(AResourceLocation.parse("minecraft:village_plains")))
             .set(Attributes.ENTERING, false);
+
+        // TODO: Priority and restriction application is completely messed up, I think!
+//        ARestrictionUtils.addRestrictionForLoot("astages:loot1", "stage_loot_1")
+//            .applyEverywhere()
+//            .restrictItems(Items.BONE)
+//            .replacer(stack -> {
+//                if (stack.is(Items.BONE)) {
+//                    return Items.EMERALD.getDefaultInstance();
+//                }
+//
+//                return stack;
+//            });
+//
+//        ARestrictionUtils.addRestrictionForLoot("astages:loot2", "stage_loot_2")
+//            .lootTableFilter(AFilter.PARTIAL)
+//            .restrictForLootTables(AResourceLocation.parse("minecraft:chests/simple_dungeon"))
+//            .restrictItems(Items.ROTTEN_FLESH);
     }
 
     @SubscribeEvent

@@ -1,6 +1,7 @@
 package com.alessandro.astages.infrastructure.integration.kubejs;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.constant.AFilter;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.engine.server.restriction.*;
@@ -51,6 +52,7 @@ public class AKubeJSPlugin implements KubeJSPlugin {
         }
 
         bindings.add("ATime", ATime.class);
+        bindings.add("AFilter", AFilter.class);
         bindings.add("ARestrictionTypes", ARestrictionTypes.class);
 
         bindings.add("Attributes", Attributes.class);

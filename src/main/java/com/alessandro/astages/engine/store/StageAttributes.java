@@ -18,6 +18,7 @@ public class StageAttributes {
 
     public static final Attribute<Boolean> PLAYER_ONLY = Attribute.create("stages_player_only", AttributeTypes.BOOLEAN, false);
     public static final Attribute<Boolean> SERVER_ONLY = Attribute.create("stages_server_only", AttributeTypes.BOOLEAN, false);
+    public static final Attribute<Boolean> SHOW_DEFAULT = Attribute.create("stages_show_default", AttributeTypes.BOOLEAN, true);
 
     public static final Attribute<Function<String, Component>> TITLE_ADD = Attribute.create("stages_title_add", AttributeTypes.STRING_TO_COMPONENT, null);
     public static final Attribute<Function<String, Component>> TITLE_REMOVE = Attribute.create("stages_title_remove", AttributeTypes.STRING_TO_COMPONENT, null);

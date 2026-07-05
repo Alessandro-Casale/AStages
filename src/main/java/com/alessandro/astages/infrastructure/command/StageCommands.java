@@ -1,16 +1,16 @@
 package com.alessandro.astages.infrastructure.command;
 
+import com.alessandro.astages.api.command.AStagesSuggestions;
 import com.alessandro.astages.api.constant.AStageSource;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.util.AStagesUtils;
-import com.alessandro.astages.infrastructure.command.argument.AStagesAddArgument;
-import com.alessandro.astages.infrastructure.command.argument.AStagesRemoveArgument;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.stages.RequestClientStagesS2C;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -26,17 +26,17 @@ import java.util.Collection;
 public class StageCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("astages").requires(c -> c.hasPermission(2))
-            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesAddArgument.stages())
-                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), AStagesAddArgument.getStage(context, "stage"), true, true, true))
+            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_ADD)
+                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), true, true, true))
             )))
-            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesAddArgument.stages()).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
-                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), AStagesAddArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
+            .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_ADD).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
+                .executes(context -> addStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
             ))))))
-            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesRemoveArgument.stages())
-                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), true, true, true))
+            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_REMOVE)
+                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), true, true, true))
             )))
-            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", AStagesRemoveArgument.stages()).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
-                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), AStagesRemoveArgument.getStage(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
+            .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("stage", StringArgumentType.string()).suggests(AStagesSuggestions.PLAYER_REMOVE).then(Commands.argument("showTitle", BoolArgumentType.bool()).then(Commands.argument("displayChatMessage", BoolArgumentType.bool()).then(Commands.argument("displayActionBarMessage", BoolArgumentType.bool())
+                .executes(context -> removeStage(context, EntityArgument.getPlayers(context, "player"), StringArgumentType.getString(context, "stage"), BoolArgumentType.getBool(context, "showTitle"), BoolArgumentType.getBool(context, "displayChatMessage"), BoolArgumentType.getBool(context, "displayActionBarMessage")))
             ))))))
             .then(Commands.literal("remove_all").then(Commands.argument("player", EntityArgument.players())
                 .executes(context -> removeAllStages(context, EntityArgument.getPlayers(context, "player"), true, true, true))

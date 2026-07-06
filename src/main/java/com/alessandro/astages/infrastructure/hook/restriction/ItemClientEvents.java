@@ -5,6 +5,7 @@ import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,17 +22,29 @@ public class ItemClientEvents {
             var restriction = AClientRestrictionManager.ITEM_INSTANCE.getRestriction(AClientHolder.serverAndPlayer(), stack);
             var properties = AClientRestrictionManager.ITEM_INSTANCE.getProperties(AClientHolder.serverAndPlayer(), stack);
 
-            if (restriction != null && properties != null && restriction.isEnabled(Attributes.HIDING_TOOLTIP)) {
+            if (restriction != null && restriction.isEnabled(Attributes.HIDING_TOOLTIP)) {
                 event.getToolTip().clear();
-                event.getToolTip().add(properties.hiddenName());
+
+                if (properties != null) {
+                    event.getToolTip().add(properties.hiddenName());
+                } else {
+                    event.getToolTip().addFirst(Component.literal("%[ASTAGES_FROM_ITEMTOOLTIPEVENT]%"));
+                }
             }
         }
     }
 
     @SubscribeEvent
     public static void onTooltipRender(RenderTooltipEvent.GatherComponents event) {
-        if (!AClientRestrictionManager.ITEM_INSTANCE.isTooltipReadyForStack(event.getItemStack())) {
-            event.setCanceled(true);
+        for (var either : event.getTooltipElements()) {
+            var component = either.left().orElse(null);
+
+            if (component != null) {
+                if (component.getString().equals("%A%[ASTAGES_FROM_ITEMTOOLTIPEVENT]%%")) {
+                    event.setCanceled(true);
+                    break;
+                }
+            }
         }
     }
 }

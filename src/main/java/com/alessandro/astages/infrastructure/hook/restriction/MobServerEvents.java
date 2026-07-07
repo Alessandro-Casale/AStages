@@ -7,7 +7,6 @@ import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.AMobRestriction;
 import com.alessandro.astages.engine.store.Attributes;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -51,11 +50,7 @@ public class MobServerEvents {
         }
 
         if (event.getEntity() instanceof Mob mob) {
-            var x = mob.getBlockX();
-            var y = mob.getBlockY();
-            var z = mob.getBlockZ();
-            var pos = new BlockPos(x, y, z);
-
+            var pos = mob.blockPosition();
             var entityType = mob.getType();
             var spawnType = mob.getSpawnType();
 
@@ -74,16 +69,21 @@ public class MobServerEvents {
                     return;
                 }
 
+                var biome = level.getBiome(pos).getKey();
+                if (biome != null) {
+                    if (restriction.getIgnoredBiomes().contains(biome.location())) {
+                        return;
+                    }
+                }
+
                 var dimensionRS = level.dimension().location();
                 if (restriction.getRestrictedDimensions().contains(dimensionRS)) {
                     preventSpawning(event, restriction);
                     return;
                 }
 
-                var biome = level.getBiome(pos).getKey();
                 if (biome != null) {
-                    var biomeRS = biome.location();
-                    if (restriction.getRestrictedBiomes().contains(biomeRS)) {
+                    if (restriction.getRestrictedBiomes().contains(biome.location())) {
                         preventSpawning(event, restriction);
                         return;
                     }
@@ -130,6 +130,10 @@ public class MobServerEvents {
                 level.addFreshEntity(newEntity);
             } else {
                 AStages.LOGGER.warn("Features disabled in this level to spawn the replacer for restriction with id {}!", restriction.getId());
+            }
+        } else if (restriction.isEnabled(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)) {
+            for (var wrapper : restriction.getEquipments()) {
+                ((LivingEntity) event.getEntity()).setItemSlot(wrapper.slot(), wrapper.stack());
             }
         }
 

@@ -40,7 +40,7 @@ public class ItemClientEvents {
             var component = either.left().orElse(null);
 
             if (component != null) {
-                if (component.getString().equals("%A%[ASTAGES_FROM_ITEMTOOLTIPEVENT]%%")) {
+                if (component.getString().equals("%[ASTAGES_FROM_ITEMTOOLTIPEVENT]%")) {
                     event.setCanceled(true);
                     break;
                 }

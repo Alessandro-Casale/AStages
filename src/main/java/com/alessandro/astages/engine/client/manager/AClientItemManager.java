@@ -8,7 +8,6 @@ import com.alessandro.astages.api.hash.CustomItemStackKey;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.evaluator.AClientItemEvaluator;
@@ -59,9 +58,7 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         return evaluator.evaluateStages(resourceLocation);
     }
 
-    public boolean isTooltipReadyForStack(@Nullable ItemStack stack) {
-        if (stack == null || stack.isEmpty()) { return true; }
-
+    public boolean isTooltipReadyForStack(ItemStack stack) {
         return registry.isPropertyPresent(CustomItemStackKey.build(stack));
     }
 

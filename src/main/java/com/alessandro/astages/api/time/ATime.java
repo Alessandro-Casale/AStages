@@ -1,6 +1,7 @@
 package com.alessandro.astages.api.time;
 
 import com.alessandro.astages.api.nullability.Nullable;
+import dev.latvian.mods.rhino.Context;
 
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
@@ -52,7 +53,7 @@ public class ATime {
         return totalTicks;
     }
 
-    public static @Nullable ATime of(@Nullable Object object) {
+    public static @Nullable ATime of(Context context, @Nullable Object object) {
         if (object instanceof CharSequence sequence) {
             var string = sequence.toString().trim();
             return new ATime(string);

@@ -34,7 +34,8 @@ public class AKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
-        registry.register(ATime.class, (TypeWrapperRegistry.ContextFromFunction<ATime>) (context, object) -> ATime.of(object));
+        registry.register(ATime.class, ATime::of);
+        registry.register(EntityType.class, AKubeJSWrappers::wrapEntityType);
     }
 
     @Override

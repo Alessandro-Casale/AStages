@@ -3,7 +3,7 @@ package com.alessandro.astages.api.holder;
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.infrastructure.capability.ClientPlayerStage;
-import com.alessandro.astages.infrastructure.capability.ClientServerStage;
+import com.alessandro.astages.infrastructure.capability.ServerStage;
 
 @NotNullMethodsReturn
 public class AClientHolder {
@@ -36,21 +36,17 @@ public class AClientHolder {
     }
 
     public AStageHolder getStages() {
-        if (isServer && isPlayer) { // Server stages is prioritized!
-            return AStageHolder.init()
-                .hold(AStageType.PLAYER, ClientPlayerStage.getClientStages())
-                .hold(AStageType.SERVER, ClientServerStage.getServerStages());
-        }
+        var holder = AStageHolder.init();
 
         if (isPlayer) {
-            return AStageHolder.initAndHold(AStageType.PLAYER, ClientPlayerStage.getClientStages());
+            holder.hold(AStageType.PLAYER, ClientPlayerStage.getClientStages());
         }
 
         if (isServer) {
-            return AStageHolder.initAndHold(AStageType.SERVER, ClientServerStage.getServerStages());
+            holder.hold(AStageType.SERVER, ServerStage.getServerStages());
         }
 
-        return AStageHolder.init();
+        return holder;
     }
 
     public void perform(Runnable forPlayer, Runnable forServer) {

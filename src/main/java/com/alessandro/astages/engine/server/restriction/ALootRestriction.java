@@ -10,6 +10,7 @@ import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -33,7 +34,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
     public static String IDENTIFIER = "/loot";
 
     private final Set<Item> restrictedItems = new HashSet<>();
-    private final Set<ResourceLocation> restrictedTags = new HashSet<>();
+    private final Set<TagKey<Item>> restrictedTags = new HashSet<>();
     private final Set<String> restrictedMods = new HashSet<>();
     private final Set<Item> ignoredItems = new HashSet<>();
     private final Set<ResourceLocation> ignoredTags = new HashSet<>();
@@ -78,7 +79,8 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         return this;
     }
 
-    public ALootRestriction restrictTags(ResourceLocation... tags) {
+    @SafeVarargs
+    public final ALootRestriction restrictTags(TagKey<Item>... tags) {
         restrictedTags.addAll(List.of(tags));
         return this;
     }

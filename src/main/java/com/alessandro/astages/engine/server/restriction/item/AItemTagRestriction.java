@@ -6,17 +6,18 @@ import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.ALootRestriction;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemTagS2C;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
-public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestriction, ResourceLocation> {
-    private ResourceLocation tag;
-    private final List<Item> ignoredItems = new ArrayList<>();
+public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestriction, TagKey<Item>> {
+    private TagKey<Item> tag;
+    private final Set<Item> ignoredItems = new HashSet<>();
 
     public AItemTagRestriction(String id, String stage) {
         super(id, stage);
@@ -31,7 +32,7 @@ public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestrictio
     }
 
     @Override
-    public AItemTagRestriction restrict(ResourceLocation tag) {
+    public AItemTagRestriction restrict(TagKey<Item> tag) {
         this.tag = tag;
         return this;
     }
@@ -40,20 +41,19 @@ public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestrictio
     public boolean isRestricted(ItemStack stack) {
         if (stack.isEmpty()) { return false; }
 
-        return !ignoredItems.contains(stack.getItem()) && stack.getTags().anyMatch(t -> t.location().equals(tag));
+        return !ignoredItems.contains(stack.getItem()) && stack.is(tag);
     }
 
-    @SuppressWarnings("unused")
     public AItemTagRestriction ignoreItems(Item... items) {
         ignoredItems.addAll(List.of(items));
         return this;
     }
 
-    public ResourceLocation getTag() {
+    public TagKey<Item> getTag() {
         return tag;
     }
 
-    public List<Item> getIgnoredItems() {
+    public Set<Item> getIgnoredItems() {
         return ignoredItems;
     }
 

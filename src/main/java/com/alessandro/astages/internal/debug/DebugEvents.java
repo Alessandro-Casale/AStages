@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -35,7 +36,7 @@ public class DebugEvents {
             .allowInventoryStorage()
             .allowPickup()
             .allowContainerStorage();
-        ARestrictionUtils.addRestrictionForTag("astages:item3", "stage_item_3", AResourceLocation.fromTag("#forge:ingots/iron"));
+        ARestrictionUtils.addRestrictionForTag("astages:item3", "stage_item_3", Tags.Items.INGOTS_IRON);
 
         ARestrictionUtils.addRestrictionForMob("astages:mob1", "stage_mob_1", EntityType.BEE)
             .restrictDimensionSpawn(AResourceLocation.parse("minecraft:overworld"))

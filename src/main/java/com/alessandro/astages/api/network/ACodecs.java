@@ -6,10 +6,14 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Function8;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -26,6 +30,13 @@ public class ACodecs {
         // ResourceLocation -> String
         ResourceLocation::toString
     );
+
+    public static <T> StreamCodec<FriendlyByteBuf, TagKey<T>> tagKey(ResourceKey<? extends Registry<T>> registryKey) {
+        return StreamCodec.of(
+            (buf, tagKey) -> buf.writeResourceLocation(tagKey.location()),
+            (buf) -> TagKey.create(registryKey, buf.readResourceLocation())
+        );
+    }
 
     public static final StreamCodec<ByteBuf, AABB> AABB_CODEC = StreamCodec.composite(
         ByteBufCodecs.DOUBLE, aabb -> aabb.minX,

@@ -22,6 +22,7 @@ import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestrictio
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -82,9 +83,9 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static AItemTagRestriction addRestrictionForTag(String id, String stage, ResourceLocation name) {
+    public static AItemTagRestriction addRestrictionForTag(String id, String stage, TagKey<Item> tag) {
         var restriction = new AItemTagRestriction(id, stage);
-        restriction.restrict(name);
+        restriction.restrict(tag);
         ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
 
         return restriction;

@@ -2,19 +2,19 @@ package com.alessandro.astages.engine.client.restriction.item;
 
 import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.api.store.container.AttributeStore;
-import net.minecraft.resources.ResourceLocation;
+import com.alessandro.astages.engine.AClientRestrictionManager;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @NotNullParams
-public class AClientItemTagRestriction extends AClientBaseItemRestriction<AClientItemTagRestriction, ResourceLocation> {
-    private ResourceLocation tag;
-    private final List<Item> ignoredItems = new ArrayList<>();
+public class AClientItemTagRestriction extends AClientBaseItemRestriction<AClientItemTagRestriction, TagKey<Item>> {
+    private TagKey<Item> tag;
+    private final Set<Item> ignoredItems = new HashSet<>();
 
     public AClientItemTagRestriction(String id, String stage) {
         super(id, stage);
@@ -29,7 +29,7 @@ public class AClientItemTagRestriction extends AClientBaseItemRestriction<AClien
     }
 
     @Override
-    public AClientItemTagRestriction restrict(ResourceLocation tag) {
+    public AClientItemTagRestriction restrict(TagKey<Item> tag) {
         this.tag = tag;
         return this;
     }
@@ -38,19 +38,19 @@ public class AClientItemTagRestriction extends AClientBaseItemRestriction<AClien
     public boolean isRestricted(ItemStack stack) {
         if (stack.isEmpty()) { return false; }
 
-        return !ignoredItems.contains(stack.getItem()) && stack.getTags().anyMatch(t -> t.location().equals(tag));
+        return !ignoredItems.contains(stack.getItem()) && stack.is(tag);
     }
 
-    public AClientItemTagRestriction ignoreItems(List<Item> items) {
+    public AClientItemTagRestriction ignoreItems(Set<Item> items) {
         ignoredItems.addAll(items);
         return this;
     }
 
-    public ResourceLocation getTag() {
+    public TagKey<Item> getTag() {
         return tag;
     }
 
-    public List<Item> getIgnoredItems() {
+    public Set<Item> getIgnoredItems() {
         return ignoredItems;
     }
 }

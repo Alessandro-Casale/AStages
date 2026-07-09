@@ -111,10 +111,8 @@ public class MobServerEvents {
     }
 
     private static void preventSpawning(EntityJoinLevelEvent event, AMobRestriction restriction) {
-        // If prevent spawn, you can place the replacer!
-        var level = event.getLevel();
-
         if (!restriction.isValueNull(Attributes.REPLACE)) {
+            var level = event.getLevel();
             Entity newEntity = restriction.get(Attributes.REPLACE).create(level);
 
             if (newEntity != null) {
@@ -135,6 +133,8 @@ public class MobServerEvents {
             for (var wrapper : restriction.getEquipments()) {
                 ((LivingEntity) event.getEntity()).setItemSlot(wrapper.slot(), wrapper.stack());
             }
+
+            return;
         }
 
         event.setCanceled(true);

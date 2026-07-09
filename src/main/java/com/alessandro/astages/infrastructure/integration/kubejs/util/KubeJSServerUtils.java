@@ -23,6 +23,7 @@ import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestrictio
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -33,14 +34,13 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("unused")
 @NotNullParamsAndMethodsReturn
 public class KubeJSServerUtils {
-    // Player Stages
+    // PLAYER Stages
     public static void addStageToPlayer(Player player, String stage) {
         AStagesUtils.addStage(AHolder.player(player), stage, false, false, false);
     }
@@ -57,15 +57,15 @@ public class KubeJSServerUtils {
         AStagesUtils.removeStages(AHolder.player(player), stages, false, false, false);
     }
 
-    public static List<String> getStagesFromPlayer(Player player) {
-        return new ArrayList<>(AStagesUtils.getStages(AHolder.player(player)));
-    }
-
     public static void removeAllStagesFromPlayer(Player player) {
         AStagesUtils.removeAllStages(AHolder.player(player), false, false, false);
     }
 
-    public static boolean playerHasStage(String stage, Player player) {
+    public static Set<String> getStagesFromPlayer(Player player) {
+        return AStagesUtils.getStages(AHolder.player(player));
+    }
+
+    public static boolean playerHasStage(Player player, String stage) {
         return AStagesUtils.hasStage(AHolder.player(player), stage);
     }
 
@@ -88,6 +88,11 @@ public class KubeJSServerUtils {
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
+    public static boolean playerHasStage(String stage, Player player) {
+        return AStagesUtils.hasStage(AHolder.player(player), stage);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static boolean playerHasAtLeastOneStage(Set<String> stages, Player player) {
         return AStagesUtils.hasAtLeastOneStage(AHolder.player(player), stages);
     }
@@ -97,7 +102,7 @@ public class KubeJSServerUtils {
         return AStagesUtils.hasAllStages(AHolder.player(player), stages);
     }
 
-    // Server Stages
+    // SERVER Stages
     public static void addStageToServer(String stage) {
         AStagesUtils.addStage(AHolder.server(), stage, false, false, false);
     }
@@ -116,6 +121,10 @@ public class KubeJSServerUtils {
 
     public static void removeAllStagesFromServer() {
         AStagesUtils.removeAllStages(AHolder.server(), false, false, false);
+    }
+
+    public static Set<String> getStagesFromServer() {
+        return AStagesUtils.getStages(AHolder.server());
     }
 
     public static boolean serverHasStage(String stage) {
@@ -200,8 +209,8 @@ public class KubeJSServerUtils {
         return ARestrictionUtils.addRestrictionForMod(id, stage, List.of(modIds));
     }
 
-    public static AItemTagRestriction addRestrictionForTag(String id, String stage, ResourceLocation name) {
-        return ARestrictionUtils.addRestrictionForTag(id, stage, name);
+    public static AItemTagRestriction addRestrictionForTag(String id, String stage, TagKey<Item> tag) {
+        return ARestrictionUtils.addRestrictionForTag(id, stage, tag);
     }
 
     public static AItemRestriction addRestrictionForArmor(String id, String stage, Item... armors) {

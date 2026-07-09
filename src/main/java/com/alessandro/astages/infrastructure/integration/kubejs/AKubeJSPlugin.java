@@ -3,15 +3,16 @@ package com.alessandro.astages.infrastructure.integration.kubejs;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.constant.AFilter;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.BaseStage;
+import com.alessandro.astages.api.stage.Stage;
+import com.alessandro.astages.api.stage.TemporaryStage;
 import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.engine.server.restriction.*;
 import com.alessandro.astages.engine.server.restriction.item.*;
 import com.alessandro.astages.engine.server.restriction.recipe.ABaseRecipeRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
-import com.alessandro.astages.engine.store.ARestrictionTypes;
-import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.engine.store.StageAttributes;
+import com.alessandro.astages.engine.store.*;
 import com.alessandro.astages.infrastructure.integration.Mods;
 import com.alessandro.astages.infrastructure.integration.kubejs.bridge.KubeJSEventBridge;
 import com.alessandro.astages.infrastructure.integration.kubejs.bridge.KubeJSStageEvents;
@@ -19,10 +20,12 @@ import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSClien
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSClientUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSModelUtils;
 import com.alessandro.astages.infrastructure.integration.kubejs.util.KubeJSServerUtils;
+import com.alessandro.astages.infrastructure.integration.kubejs.wrapper.AKubeJSWrappers;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import net.minecraft.world.entity.EntityType;
 
 @NotNullParams
 public class AKubeJSPlugin implements KubeJSPlugin {
@@ -55,6 +58,9 @@ public class AKubeJSPlugin implements KubeJSPlugin {
         bindings.add("ATime", ATime.class);
         bindings.add("AFilter", AFilter.class);
         bindings.add("ARestrictionTypes", ARestrictionTypes.class);
+        bindings.add("ASimpleRestrictionTypes", ASimpleRestrictionTypes.class);
+        bindings.add("AttributeTypes", AttributeTypes.class);
+        bindings.add("StageAttributeTypes", StageAttributeTypes.class);
 
         bindings.add("Attributes", Attributes.class);
         bindings.add("ItemAttributes", Attributes.Item.class);
@@ -93,6 +99,10 @@ public class AKubeJSPlugin implements KubeJSPlugin {
         bindings.add("ARegionRestriction", ARegionRestriction.class);
         bindings.add("AScreenRestriction", AScreenRestriction.class);
         bindings.add("AStructureRestriction", AStructureRestriction.class);
+
+        bindings.add("BaseStage", BaseStage.class);
+        bindings.add("Stage", Stage.class);
+        bindings.add("TemporaryStage", TemporaryStage.class);
     }
 
     @Override

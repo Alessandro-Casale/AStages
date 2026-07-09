@@ -1,12 +1,12 @@
 package com.alessandro.astages.engine.server.restriction;
 
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.api.wrapper.EquipmentWrapper;
-import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.constant.AFilter;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.api.wrapper.EquipmentWrapper;
+import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -14,18 +14,20 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @NotNullParamsAndMethodsReturn
 public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>, EntityType<?>> {
-    private final List<EntityType<?>> mobs = new ArrayList<>();
+    private final Set<EntityType<?>> mobs = new HashSet<>();
 
-    private final List<EquipmentWrapper> equipments = new ArrayList<>();
-    private final List<MobSpawnType> disabledSpawnTypes = new ArrayList<>();
-    private final List<ResourceLocation> restrictedBiomes = new ArrayList<>();
-    private final List<ResourceLocation> restrictedDimensions = new ArrayList<>();
+    private final Set<EquipmentWrapper> equipments = new HashSet<>();
+    private final Set<MobSpawnType> disabledSpawnTypes = new HashSet<>();
+    private final Set<ResourceLocation> restrictedBiomes = new HashSet<>();
+    private final Set<ResourceLocation> restrictedDimensions = new HashSet<>();
+
+    private final Set<ResourceLocation> ignoredBiomes = new HashSet<>();
 
     public AMobRestriction(String id, String stage) {
         super(id, stage);
@@ -66,7 +68,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         return mobs.contains(mob);
     }
 
-    public List<EntityType<?>> getMobs() {
+    public Set<EntityType<?>> getMobs() {
         return mobs;
     }
 
@@ -83,20 +85,24 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         return associateLootRestriction(getId() + ALootRestriction.IDENTIFIER);
     }
 
-    public List<EquipmentWrapper> getEquipments() {
+    public Set<EquipmentWrapper> getEquipments() {
         return equipments;
     }
 
-    public List<MobSpawnType> getDisabledSpawnTypes() {
+    public Set<MobSpawnType> getDisabledSpawnTypes() {
         return disabledSpawnTypes;
     }
 
-    public List<ResourceLocation> getRestrictedBiomes() {
+    public Set<ResourceLocation> getRestrictedBiomes() {
         return restrictedBiomes;
     }
 
-    public List<ResourceLocation> getRestrictedDimensions() {
+    public Set<ResourceLocation> getRestrictedDimensions() {
         return restrictedDimensions;
+    }
+
+    public Set<ResourceLocation> getIgnoredBiomes() {
+        return ignoredBiomes;
     }
 
     public AMobRestriction spawnWithEquipment() {
@@ -109,7 +115,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     public AMobRestriction restrictSpawnType(MobSpawnType... types) {
-        disabledSpawnTypes.addAll(List.of(types));
+        disabledSpawnTypes.addAll(Set.of(types));
         return this;
     }
 
@@ -122,12 +128,17 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     public AMobRestriction restrictBiomeSpawn(ResourceLocation... biomes) {
-        restrictedBiomes.addAll(List.of(biomes));
+        restrictedBiomes.addAll(Set.of(biomes));
         return this;
     }
 
     public AMobRestriction restrictDimensionSpawn(ResourceLocation... dimensions) {
-        restrictedDimensions.addAll(List.of(dimensions));
+        restrictedDimensions.addAll(Set.of(dimensions));
+        return this;
+    }
+
+    public AMobRestriction ignoredBiomes(ResourceLocation... biomes) {
+        ignoredBiomes.addAll(Set.of(biomes));
         return this;
     }
 

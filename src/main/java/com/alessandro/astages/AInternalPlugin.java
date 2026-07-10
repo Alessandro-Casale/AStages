@@ -12,6 +12,7 @@ import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
 import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.engine.AModelManager;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.ASimpleRestrictionManager;
 import com.alessandro.astages.engine.AStageManager;
@@ -27,6 +28,7 @@ public class AInternalPlugin implements AStagesPlugin {
     @Override
     public void onReload(McReloadPhase phase, ReloadContext context) {
         if (phase == McReloadPhase.WORLD_LOAD_STARTED || phase == McReloadPhase.RELOAD_STARTED) {
+            AModelManager.reloadBeforeScripts();
             AStageManager.reloadBeforeScripts();
             ARestrictionManager.reloadBeforeScripts();
             ASimpleRestrictionManager.reloadBeforeScripts();

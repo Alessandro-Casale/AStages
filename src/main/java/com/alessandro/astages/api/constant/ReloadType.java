@@ -8,15 +8,16 @@ public enum ReloadType {
     CLIENT_BEFORE(0),
     CLIENT_SYNC(1),
     RELOAD_BEFORE(2),
-    ORE(3),
+    MODEL_BEFORE(3),
+    ORE(4),
 
     // For JEI!
-    JEI_ITEM(4),
-    JEI_RECIPE(5),
+    JEI_ITEM(5),
+    JEI_RECIPE(6),
 
     // For MarkAsDirty methods!
-    ITEM(6),
-    RECIPE(7);
+    ITEM(7),
+    RECIPE(8);
 
     // NeoForge Part
     public static final IntFunction<ReloadType> BY_ID =

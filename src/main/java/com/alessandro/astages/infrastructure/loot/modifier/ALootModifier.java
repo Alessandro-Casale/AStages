@@ -1,7 +1,7 @@
 package com.alessandro.astages.infrastructure.loot.modifier;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
-import com.alessandro.astages.engine.loot.ALootProcessor;
+import com.alessandro.astages.api.loot.ALootProcessor;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.alessandro.astages.infrastructure.integration.Mods;
 import com.mojang.serialization.MapCodec;

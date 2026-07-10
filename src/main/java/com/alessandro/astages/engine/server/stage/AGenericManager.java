@@ -34,11 +34,9 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> {
 
     @Override
     public void reloadAfterScripts() {
-        getStages().values().forEach(stage -> {
-            if (stage.isDisabled(StageAttributes.SERVER_ONLY)) {
-                MiscStorage.ALL_STAGES.add(stage.getStage());
-            }
-        });
+        for (var stage : getStages().values()) {
+            MiscStorage.ALL_STAGES.add(stage.getStage());
+        }
     }
 
     public Set<AGrantable> getStagesWithCustomGrantedEvent(Set<String> stageKeys) {

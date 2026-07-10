@@ -1,4 +1,4 @@
-package com.alessandro.astages.engine.model;
+package com.alessandro.astages.engine.server.model;
 
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.engine.store.AModel;
@@ -28,5 +28,9 @@ public class ARegisteredModels {
 
     public Set<ResourceLocation> getModels() {
         return Collections.unmodifiableSet(MODELS.keySet());
+    }
+
+    public void reloadBeforeScripts() {
+        MODELS.clear();
     }
 }

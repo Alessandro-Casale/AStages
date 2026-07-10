@@ -1,7 +1,7 @@
 package com.alessandro.astages.infrastructure.mixin.loot;
 
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.engine.loot.ALootProcessor;
+import com.alessandro.astages.api.loot.ALootProcessor;
 import com.almostreliable.lootjs.LootModificationsAPI;
 import com.almostreliable.lootjs.core.LootBucket;
 import net.minecraft.world.level.storage.loot.LootContext;

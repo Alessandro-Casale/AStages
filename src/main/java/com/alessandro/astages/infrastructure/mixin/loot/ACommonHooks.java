@@ -1,6 +1,6 @@
 package com.alessandro.astages.infrastructure.mixin.loot;
 
-import com.alessandro.astages.engine.loot.ALootProcessor;
+import com.alessandro.astages.api.loot.ALootProcessor;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.alessandro.astages.infrastructure.integration.Mods;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

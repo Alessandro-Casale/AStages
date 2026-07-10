@@ -1,7 +1,6 @@
-package com.alessandro.astages.engine.loot;
+package com.alessandro.astages.api.loot;
 
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.api.loot.ALootPayload;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.util.APlayerUtils;

@@ -3,6 +3,7 @@ package com.alessandro.astages.infrastructure.loot.modifier;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.engine.loot.ALootProcessor;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
+import com.alessandro.astages.infrastructure.integration.Mods;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -24,9 +25,10 @@ public class ALootModifier extends LootModifier {
 
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if (AStagesCommon.FORCE_LAST_LOOT_MODIFIER.get()) { return generatedLoot; }
+        if (Mods.LOOTJS.isLoaded() || AStagesCommon.FORCE_LAST_LOOT_MODIFIER.get()) { return generatedLoot; }
 
-        return ALootProcessor.apply(generatedLoot, context);
+        ALootProcessor.apply(generatedLoot.listIterator(), context);
+        return generatedLoot;
     }
 
     @Override

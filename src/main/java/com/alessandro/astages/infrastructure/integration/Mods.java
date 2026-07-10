@@ -9,7 +9,8 @@ import java.util.Locale;
 public enum Mods {
     JEI,
     KUBEJS,
-    JADE;
+    JADE,
+    LOOTJS;
 
     public boolean isLoaded() {
         return ModList.get().isLoaded(asId());

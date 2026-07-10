@@ -27,6 +27,8 @@ import java.util.function.Function;
 
 // /give Dev chest{BlockEntityTag:{LootTable:"chests/village/village_toolsmith"}}
 // /give Dev chest{BlockEntityTag:{LootTable:"minecraft:chests/simple_dungeon"}}
+// /give Dev chest{BlockEntityTag:{LootTable:"minecraft:chests/desert_pyramid"}}
+// /give @p chest[container_loot={loot_table:"minecraft:chests/desert_pyramid"}]
 // /setblock ~ ~1 ~ minecraft:chest{LootTable:"minecraft:chests/simple_dungeon"}
 
 @NotNullParamsAndMethodsReturn

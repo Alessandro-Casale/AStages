@@ -26,7 +26,7 @@ public class AScreenManager extends AManager<AScreenRestriction, MenuType<?>, Ab
     public AScreenRestriction getRestriction(AHolder holder, AbstractContainerMenu menu, @Nullable BlockState state, @Nullable BlockEntity entity) {
         if (holder.isServerActive()) {
             var serverRestriction = getRegistry().stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
                     r.isRestricted(menu, state, entity)
             ).findFirst().orElse(null);
 
@@ -35,7 +35,7 @@ public class AScreenManager extends AManager<AScreenRestriction, MenuType<?>, Ab
 
         if (holder.isPlayerActive()) {
             return getRegistry().stream().filter(r ->
-                AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
                     r.isRestricted(menu, state, entity)
             ).findFirst().orElse(null);
         }

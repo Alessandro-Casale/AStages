@@ -9,13 +9,11 @@ import com.alessandro.astages.infrastructure.capability.OfflinePlayerStage;
 import com.alessandro.astages.infrastructure.capability.ServerStage;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 @UnderDevelopment("Use getFirst()!")
@@ -43,7 +41,7 @@ public class AHolder {
         return new AHolder(false, true, false).addPlayer(uuid);
     }
 
-    public static AHolder players(List<Player> players) {
+    public static AHolder players(Collection<ServerPlayer> players) {
         var toReturn = new AHolder(false, true, true);
         players.forEach(toReturn::addPlayer);
         return toReturn;

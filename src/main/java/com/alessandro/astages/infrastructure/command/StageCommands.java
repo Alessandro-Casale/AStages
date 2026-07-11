@@ -60,25 +60,19 @@ public class StageCommands {
     }
 
     private static int addStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToAdd, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
-        for (var player : players) {
-            AStagesUtils.addStage(AHolder.player(player), stageToAdd, showTitle, displayChatMessage, displayActionBarMessage);
-        }
+        AStagesUtils.addStage(AHolder.players(players), stageToAdd, showTitle, displayChatMessage, displayActionBarMessage);
 
         return 1;
     }
 
     private static int removeStage(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, String stageToRemove, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
-        for (var player : players) {
-            AStagesUtils.removeStage(AHolder.player(player), stageToRemove, showTitle, displayChatMessage, displayActionBarMessage);
-        }
+        AStagesUtils.removeStage(AHolder.players(players), stageToRemove, showTitle, displayChatMessage, displayActionBarMessage);
 
         return 1;
     }
 
     private static int removeAllStages(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
-        for (var player : players) {
-            AStagesUtils.removeAllStages(AHolder.player(player), showTitle, displayChatMessage, displayActionBarMessage);
-        }
+        AStagesUtils.removeAllStages(AHolder.players(players), showTitle, displayChatMessage, displayActionBarMessage);
 
         return 1;
     }
@@ -116,7 +110,7 @@ public class StageCommands {
 
     private static int clientInfo(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer executor, @Nullable ServerPlayer player) {
         if (player == null) { return 0; }
-        Networking.sendToPlayer(executor, new RequestClientStagesS2C(AStageSource.PLAYER, AStageSource.PLAYER, executor.getUUID(), player.getUUID()));
+        Networking.sendToPlayer(player, new RequestClientStagesS2C(AStageSource.PLAYER, AStageSource.PLAYER, executor.getUUID(), player.getUUID()));
 
         return 1;
     }

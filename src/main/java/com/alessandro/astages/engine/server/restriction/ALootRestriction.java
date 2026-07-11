@@ -39,7 +39,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
     private final Set<TagKey<Item>> restrictedTags = new HashSet<>();
     private final Set<String> restrictedMods = new HashSet<>();
     private final Set<Item> ignoredItems = new HashSet<>();
-    private final Set<ResourceLocation> ignoredTags = new HashSet<>();
+    private final Set<TagKey<Item>> ignoredTags = new HashSet<>();
 
     private final Set<Block> restrictedBlocks = new HashSet<>();
     private final Set<BlockState> restrictedBlockStates = new HashSet<>();
@@ -97,7 +97,8 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         return this;
     }
 
-    public ALootRestriction ignoredTags(ResourceLocation... tags) {
+    @SafeVarargs
+    public final ALootRestriction ignoredTags(TagKey<Item>... tags) {
         ignoredTags.addAll(List.of(tags));
         return this;
     }
@@ -142,7 +143,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         }
 
         if (!ignoredTags.isEmpty() &&
-            ignoredTags.stream().anyMatch(ignoredTag -> stack.getTags().anyMatch(tag -> tag.location().equals(ignoredTag)))) {
+            ignoredTags.stream().anyMatch(stack::is)) {
             return false;
         }
 
@@ -156,7 +157,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         }
 
         if (!restrictedTags.isEmpty() &&
-            stack.getTags().anyMatch(tag -> restrictedTags.contains(tag.location())) ) {
+            restrictedTags.stream().anyMatch(stack::is)) {
             return true;
         }
 

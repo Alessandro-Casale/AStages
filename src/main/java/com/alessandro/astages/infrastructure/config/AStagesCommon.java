@@ -47,6 +47,7 @@ public class AStagesCommon {
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_ADD_ALL_OPERATION;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_REMOVE_ALL_OPERATION;
     public static final ModConfigSpec.ConfigValue<Boolean> FORCE_LAST_LOOT_MODIFIER;
+    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_LIVING_DROPS_CHECK;
 //    public static final ModConfigSpec.EnumValue<RestrictedItemBehavior> RESTRICTED_ITEM_BEHAVIOR;
 //    public static final ModConfigSpec.IntValue MESSAGE_COOLDOWN_TICKS;
 
@@ -162,6 +163,14 @@ public class AStagesCommon {
                 "Ignored if LootJS is installed!"
             )
             .define("Force Last Loot Modifier Execution", false);
+
+        ENABLE_LIVING_DROPS_CHECK = BUILDER
+            .comment(
+                "If true, enables an additional check on entity drops via the 'LivingDropsEvent'.",
+                "WARNING: This option may cause conflicts, item duplication, or compatibility issues with loot restriction replacer or other loot-modifying mods. ",
+                "Enable this ONLY if strictly necessary (e.g., if standard mob drop restrictions are not working as expected)."
+            )
+            .define("Enable Living Drops Event Check", false);
 
 //        RESTRICTED_ITEM_BEHAVIOR = BUILDER
 //            .comment("What happens when a player somehow gets a restricted item they haven't unlocked yet. Options: DROP (drops it on ground), DELETE (removes it), INVENTORY_LOCK (keeps it but makes it un-interactable)")

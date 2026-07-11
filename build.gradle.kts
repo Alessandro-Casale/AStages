@@ -188,6 +188,10 @@ dependencies {
     implementation("curse.maven:better-modlist-neoforge-1089803:7711471")
     compileOnly("curse.maven:lootr-361276:8333694")
     compileOnly("curse.maven:lootjs-570630:8009262")
+
+    implementation("curse.maven:reliquified-artifacts-1100379:8215303")
+    implementation("curse.maven:artifacts-312353:7875426")
+    implementation("curse.maven:relics-mod-445274:8158315")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

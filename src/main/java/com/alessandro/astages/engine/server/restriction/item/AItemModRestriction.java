@@ -7,18 +7,19 @@ import com.alessandro.astages.engine.server.restriction.ALootRestriction;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemModS2C;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class AItemModRestriction extends ABaseItemRestriction<AItemModRestriction, String> {
-    private final List<String> modIds = new ArrayList<>();
-    private final List<Item> ignoredItems = new ArrayList<>();
-    private final List<ResourceLocation> ignoredTags = new ArrayList<>();
+    private final Set<String> modIds = new HashSet<>();
+    private final Set<Item> ignoredItems = new HashSet<>();
+    private final Set<TagKey<Item>> ignoredTags = new HashSet<>();
 
     public AItemModRestriction(String id, String stage) {
         super(id, stage);
@@ -45,8 +46,8 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
         return !ignoredItems.contains(stack.getItem()) &&
-            modIds.contains(registry.getNamespace()) &&
-            stack.getTags().noneMatch(t -> ignoredTags.contains(t.location()));
+            ignoredTags.stream().anyMatch(stack::is) &&
+            modIds.contains(registry.getNamespace());
     }
 
     @SuppressWarnings("unused")
@@ -56,20 +57,20 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
     }
 
     @SuppressWarnings("unused")
-    public AItemModRestriction ignoreTags(ResourceLocation... tags) {
-        ignoredTags.addAll(List.of(tags));
+    public AItemModRestriction ignoreTags(TagKey<Item>... tags) {
+        ignoredTags.addAll(Set.of(tags));
         return this;
     }
 
-    public List<String> getModIds() {
+    public Set<String> getModIds() {
         return modIds;
     }
 
-    public List<Item> getIgnoredItems() {
+    public Set<Item> getIgnoredItems() {
         return ignoredItems;
     }
 
-    public List<ResourceLocation> getIgnoredTags() {
+    public Set<TagKey<Item>> getIgnoredTags() {
         return ignoredTags;
     }
 

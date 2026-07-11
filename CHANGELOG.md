@@ -1,9 +1,23 @@
-## [2.3.2] - 07-07-2026
+## [2.3.2-test] - 11-07-2026
 
+
+New Features
+
+- Update AItemTagRestriction class to use `TagKey<Item>` instead of `ResourceLocation` . ([#191](https://github.com/Alessandro-Casale/AStages/pull/191))
+- Introduce entity type handling to show an error message if the wrong id is typed. ([#190](https://github.com/Alessandro-Casale/AStages/pull/190))
+- Enhance KubeJS integration with player and server stage management methods. ([#192](https://github.com/Alessandro-Casale/AStages/pull/192))
+- Integrate LootJS support for loot modification processing. ([#193](https://github.com/Alessandro-Casale/AStages/pull/193))
+- Add living drops check for enhanced loot control, flag must be enabled in common config. ([#198](https://github.com/Alessandro-Casale/AStages/pull/198))
 
 Bug Fixes
 
-- Fix tooltip checks and handle missing properties. ([#182](https://github.com/Alessandro-Casale/AStages/pull/182))
-- Update item retrieval logic in AItemColors to use BlockItem directly. ([#186](https://github.com/Alessandro-Casale/AStages/pull/186))
+- Refactor stage retrieval logic in AClientHolder to be in line with AHolder implementation. ([#189](https://github.com/Alessandro-Casale/AStages/pull/189))
+- Add ignoredBiomes method for AMobRestriction, restricted mobs can spawn with different equipment. ([#185](https://github.com/Alessandro-Casale/AStages/pull/185))
+- Invert stage check logic in AScreenManager for server and player restrictions. ([#195](https://github.com/Alessandro-Casale/AStages/pull/195))
+- Update AHolder and AStagesSuggestions to use ServerPlayer collection for command suggestions. ([#196](https://github.com/Alessandro-Casale/AStages/pull/196))
+
+API Changes
+
+- Change item restriction collections from List to Set for improved performance and semantics. ([#197](https://github.com/Alessandro-Casale/AStages/pull/197))
 
 

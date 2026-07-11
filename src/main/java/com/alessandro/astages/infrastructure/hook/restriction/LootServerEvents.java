@@ -37,7 +37,6 @@ public class LootServerEvents {
 
         var holder = AHolder.serverAndPlayer(payload.player() != null ? payload.player() : APlayerUtils.getNearestPlayer(entity.level(), payload.position()));
 
-        AStages.LOGGER.debug("{} {}", event.getEntity(), event.getDrops());
         var iterator = event.getDrops().iterator();
         while (iterator.hasNext()) {
             var itemEntity = iterator.next();

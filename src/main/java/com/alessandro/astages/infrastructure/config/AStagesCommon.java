@@ -159,7 +159,7 @@ public class AStagesCommon {
         FORCE_LAST_LOOT_MODIFIER = BUILDER
             .comment(
                 "If true, uses an injection Mixin to force AStages' loot restrictions to run as the absolute last check, after all other mods have finished.",
-                "If false, relies on Forge's standard Global Loot Modifier registry order (JSON).",
+                "If false, relies on NeoForge's standard Global Loot Modifier registry order (JSON).",
                 "Ignored if LootJS is installed!"
             )
             .define("Force Last Loot Modifier Execution", false);

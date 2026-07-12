@@ -17,6 +17,7 @@ public class AKubeJSWrappers {
             case CharSequence cs -> findEntityType(cs.toString())
                 .getOrThrow(error -> new KubeRuntimeException("Failed to read item from %s: %s".formatted(cs, error))
                     .source(SourceLine.of(context)));
+            case EntityType<?> entityType -> entityType;
             case null, default -> EntityType.PIG;
         };
     }

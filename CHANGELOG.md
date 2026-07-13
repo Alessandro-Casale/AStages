@@ -1,4 +1,4 @@
-## [2.3.2-test] - 11-07-2026
+## [2.3.2-test] - 13-07-2026
 
 
 New Features
@@ -15,6 +15,7 @@ Bug Fixes
 - Add ignoredBiomes method for AMobRestriction, restricted mobs can spawn with different equipment. ([#185](https://github.com/Alessandro-Casale/AStages/pull/185))
 - Invert stage check logic in AScreenManager for server and player restrictions. ([#195](https://github.com/Alessandro-Casale/AStages/pull/195))
 - Update AHolder and AStagesSuggestions to use ServerPlayer collection for command suggestions. ([#196](https://github.com/Alessandro-Casale/AStages/pull/196))
+- Allow event to proceed when equipment restrictions are met. ([#209](https://github.com/Alessandro-Casale/AStages/pull/209))
 
 API Changes
 

@@ -153,7 +153,7 @@ repositories {
 
 dependencies {
     implementation("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
-    implementation("curse.maven:probejs-585406:7105159")
+    implementation("curse.maven:probejs-585406:8304356")
 
     implementation("curse.maven:jade-324717:5976517")
     implementation("curse.maven:jei-238222:7229074")

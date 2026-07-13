@@ -14,10 +14,10 @@ import java.util.function.Function;
 public class AKubeJSWrappers {
     public static EntityType<?> wrapEntityType(Context context, Object object) {
         return switch (object) {
-            case CharSequence cs -> findEntityType(cs.toString())
-                .getOrThrow(error -> new KubeRuntimeException("Failed to read item from %s: %s".formatted(cs, error))
-                    .source(SourceLine.of(context)));
             case EntityType<?> entityType -> entityType;
+            case CharSequence cs -> findEntityType(cs.toString())
+                .getOrThrow(error -> new KubeRuntimeException("Failed to read entity type from %s: %s".formatted(cs, error))
+                    .source(SourceLine.of(context)));
             case null, default -> EntityType.PIG;
         };
     }
@@ -34,7 +34,7 @@ public class AKubeJSWrappers {
         return BuiltInRegistries.ENTITY_TYPE
             .getHolder(id)
             .map(DataResult::success)
-            .orElseGet(() -> DataResult.error(() -> "Item with ID " + id + " does not exist!"))
+            .orElseGet(() -> DataResult.error(() -> "Entity type with ID " + id + " does not exist!"))
             .map(Function.identity());
     }
 }

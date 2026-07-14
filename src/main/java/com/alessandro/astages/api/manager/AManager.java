@@ -54,7 +54,7 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
 
         for (var cache : caches) {
@@ -63,7 +63,7 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
     }
 
     @Override
-    public void reloadAfterScripts() { }
+    public void onReloadFinished() { }
 
     @Override
     public ARegistry<R> getRegistry() {

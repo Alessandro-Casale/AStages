@@ -23,14 +23,16 @@ public class AStageManager {
     public static final APermanentManager PERMANENT_INSTANCE = new APermanentManager();
     public static final ATemporaryManager TEMPORARY_INSTANCE = new ATemporaryManager();
 
-    public static void reloadBeforeScripts() {
-         GENERIC_INSTANCE.reloadBeforeScripts();
-         PERMANENT_INSTANCE.reloadBeforeScripts();
-         TEMPORARY_INSTANCE.reloadBeforeScripts();
+    public static void onReloadStarted() {
+         GENERIC_INSTANCE.onReloadStarted();
+         PERMANENT_INSTANCE.onReloadStarted();
+         TEMPORARY_INSTANCE.onReloadStarted();
     }
 
-    public static void reloadAfterScripts() {
-        GENERIC_INSTANCE.reloadAfterScripts();
+    public static void onReloadFinished() {
+        GENERIC_INSTANCE.onReloadFinished();
+        PERMANENT_INSTANCE.onReloadFinished();
+        TEMPORARY_INSTANCE.onReloadFinished();
 
         if (ServerLifecycleHooks.getCurrentServer() == null) { return; }
         clientSynchronization(null);

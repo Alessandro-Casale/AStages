@@ -30,8 +30,8 @@ public record RequestReloadS2C(ReloadType reloadType) implements AStagesPacket {
     @Override
     public void run(IPayloadContext context) {
         switch (reloadType) {
-            case CLIENT_BEFORE -> AClientRestrictionManager.reloadBeforeScripts();
-            case CLIENT_SYNC -> AClientRestrictionManager.reloadAfterScripts();
+            case CLIENT_BEFORE -> AClientRestrictionManager.onReloadStarted();
+            case CLIENT_SYNC -> AClientRestrictionManager.onReloadFinished();
             case RELOAD_BEFORE -> ClientRestrictionReloadState.reloadStarted();
             case JEI_ITEM -> ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
             case JEI_RECIPE -> ALoader.EVENT_BUS.post(new ClientRecipeUpdateEvent());

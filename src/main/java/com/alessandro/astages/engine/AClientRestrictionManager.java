@@ -51,12 +51,12 @@ public class AClientRestrictionManager {
     // ----------------------------------------
     //                LIFECYCLE
     // ----------------------------------------
-    public static void reloadBeforeScripts() {
-        ClientRestrictionLifecycleService.reloadBeforeScripts();
+    public static void onReloadStarted() {
+        ClientRestrictionLifecycleService.onReloadStarted();
     }
 
-    public static void reloadAfterScripts() {
-        ClientRestrictionLifecycleService.reloadAfterScripts();
+    public static void onReloadFinished() {
+        ClientRestrictionLifecycleService.onReloadFinished();
     }
 
     // ----------------------------------------

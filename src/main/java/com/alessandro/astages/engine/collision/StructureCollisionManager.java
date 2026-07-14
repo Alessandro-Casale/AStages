@@ -4,7 +4,7 @@ public class StructureCollisionManager {
     public static final StructureCollision SERVER_INSTANCE = new StructureCollision();
     public static final ClientStructureCollision CLIENT_INSTANCE = new ClientStructureCollision();
 
-    public static void reloadBeforeScripts() {
+    public static void onReloadStarted() {
         SERVER_INSTANCE.clearCache();
         CLIENT_INSTANCE.clearCache();
     }

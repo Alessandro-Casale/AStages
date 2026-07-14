@@ -50,14 +50,13 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
             modIds.contains(registry.getNamespace());
     }
 
-    @SuppressWarnings("unused")
     public AItemModRestriction ignoreItems(Item... items) {
         ignoredItems.addAll(List.of(items));
         return this;
     }
 
-    @SuppressWarnings("unused")
-    public AItemModRestriction ignoreTags(TagKey<Item>... tags) {
+    @SafeVarargs
+    public final AItemModRestriction ignoreTags(TagKey<Item>... tags) {
         ignoredTags.addAll(Set.of(tags));
         return this;
     }

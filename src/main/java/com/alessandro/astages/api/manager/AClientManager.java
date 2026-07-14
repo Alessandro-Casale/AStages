@@ -47,7 +47,7 @@ public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
 
         for (var cache : caches) {
@@ -56,7 +56,7 @@ public abstract class AClientManager<R extends AClientRestriction<R, U, V>, U, V
     }
 
     @Override
-    public void reloadAfterScripts() { }
+    public void onReloadFinished() { }
 
     @Override
     public AClientRegistry<R> getRegistry() {

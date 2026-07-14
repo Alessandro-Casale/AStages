@@ -66,13 +66,13 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
         recipeCache.clear();
     }
 
     @Override
-    public void reloadAfterScripts() { }
+    public void onReloadFinished() { }
 
     @Override
     public ARecipeRegistry getRegistry() {

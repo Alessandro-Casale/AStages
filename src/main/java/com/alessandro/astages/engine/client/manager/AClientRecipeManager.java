@@ -65,13 +65,13 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
         recipeTypeCache.clear();
     }
 
     @Override
-    public void reloadAfterScripts() { }
+    public void onReloadFinished() { }
 
     @Override
     public AClientRecipeRegistry getRegistry() {

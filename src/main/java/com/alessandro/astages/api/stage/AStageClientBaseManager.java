@@ -1,18 +1,21 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.reload.AReloadable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AStageClientBaseManager<T> {
+public abstract class AStageClientBaseManager<T> implements AReloadable {
     private final Map<String, T> STAGES = new HashMap<>();
 
-    public void reloadBeforeScripts() {
+    @Override
+    public void onReloadStarted() {
         STAGES.clear();
     }
 
-    public void reloadAfterScripts() { }
+    @Override
+    public void onReloadFinished() { }
 
     public void addStageInternal(String key, T stage) {
         STAGES.put(key, stage);

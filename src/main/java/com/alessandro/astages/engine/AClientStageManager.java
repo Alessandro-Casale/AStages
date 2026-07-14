@@ -17,9 +17,9 @@ public class AClientStageManager {
     public static final AClientPermanentManager PERMANENT_INSTANCE = new AClientPermanentManager();
     public static final AClientTemporaryManager TEMPORARY_INSTANCE = new AClientTemporaryManager();
 
-    public static void reloadBeforeScripts() {
-        GENERIC_INSTANCE.reloadBeforeScripts();
-        PERMANENT_INSTANCE.reloadBeforeScripts();
-        TEMPORARY_INSTANCE.reloadBeforeScripts();
+    public static void onReloadStarted() {
+        GENERIC_INSTANCE.onReloadStarted();
+        PERMANENT_INSTANCE.onReloadStarted();
+        TEMPORARY_INSTANCE.onReloadStarted();
     }
 }

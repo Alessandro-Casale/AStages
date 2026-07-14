@@ -33,7 +33,9 @@ public class AGenericManager extends AStageBaseManager<BaseStage<?>> {
     }
 
     @Override
-    public void reloadAfterScripts() {
+    public void onReloadFinished() {
+        super.onReloadFinished();
+
         getStages().values().forEach(stage -> {
             if (stage.isDisabled(StageAttributes.SERVER_ONLY)) {
                 MiscStorage.ALL_STAGES.add(stage.getStage());

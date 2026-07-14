@@ -27,9 +27,9 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceL
     }
 
     @Override
-    public void reloadBeforeScripts() {
-        super.reloadBeforeScripts();
-        StructureCollisionManager.reloadBeforeScripts();
+    public void onReloadStarted() {
+        super.onReloadStarted();
+        StructureCollisionManager.onReloadStarted();
     }
 
     @UnderDevelopment("Check correct priority!")

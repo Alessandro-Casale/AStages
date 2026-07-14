@@ -233,7 +233,7 @@ public class ASimpleRestrictionManager {
         }
     }
 
-    public static void reloadBeforeScripts() { // BETTER BEFORE!
+    public static void onReloadStarted() { // BETTER BEFORE!
         if (ServerLifecycleHooks.getCurrentServer() == null) { return; }
 
         for (var type : RESTRICTION_CACHE.keySet()) {

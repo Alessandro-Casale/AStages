@@ -3,16 +3,19 @@ package com.alessandro.astages.engine.client;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
 
 public class ClientRestrictionLifecycleService {
-    public static void reloadBeforeScripts() {
+    public static void onReloadStarted() {
         ClientRestrictionReloadState.areScriptsAvailable(false);
 
         ClientRestrictionRegistry.getRegisteredManagers()
-            .forEach(AClientMinimalManager::reloadBeforeScripts);
+            .forEach(AClientMinimalManager::onReloadStarted);
 
         ClientMiscStorage.clearAll();
     }
 
-    public static void reloadAfterScripts() {
+    public static void onReloadFinished() {
         ClientRestrictionReloadState.areScriptsAvailable(true);
+
+        ClientRestrictionRegistry.getRegisteredManagers()
+            .forEach(AClientMinimalManager::onReloadFinished);
     }
 }

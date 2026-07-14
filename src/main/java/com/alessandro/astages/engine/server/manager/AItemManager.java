@@ -100,7 +100,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
 
         inventoryCache.clear();
@@ -109,7 +109,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
     }
 
     @Override
-    public void reloadAfterScripts() {
+    public void onReloadFinished() {
         registry.forEach(restriction -> {
             if (restriction.isDisabled(Attributes.STORING_IN_INVENTORY)) {
                 inventoryCache.add(restriction);

@@ -56,11 +56,11 @@ public class ARestrictionManager {
     // ----------------------------------------
     //                LIFECYCLE
     // ----------------------------------------
-    public static void reloadBeforeScripts() {
-        RestrictionLifecycleService.reloadBeforeScripts();
+    public static void onReloadStarted() {
+        RestrictionLifecycleService.onReloadStarted();
     }
 
-    public static void reloadAfterScripts() {
-        RestrictionLifecycleService.reloadAfterScripts();
+    public static void onReloadFinished() {
+        RestrictionLifecycleService.onReloadFinished();
     }
 }

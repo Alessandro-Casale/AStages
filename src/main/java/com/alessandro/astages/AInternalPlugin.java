@@ -27,9 +27,9 @@ public class AInternalPlugin implements AStagesPlugin {
     @Override
     public void onReload(McReloadPhase phase, ReloadContext context) {
         if (phase == McReloadPhase.WORLD_LOAD_STARTED || phase == McReloadPhase.RELOAD_STARTED) {
-            AStageManager.reloadBeforeScripts();
-            ARestrictionManager.reloadBeforeScripts();
-            ASimpleRestrictionManager.reloadBeforeScripts();
+            AStageManager.onReloadStarted();
+            ARestrictionManager.onReloadStarted();
+            ASimpleRestrictionManager.onReloadStarted();
             AStageManager.addStagesViaJavaCode(AEventPhase.BEFORE_JS);
             RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.BEFORE_JS);
             return;
@@ -38,8 +38,8 @@ public class AInternalPlugin implements AStagesPlugin {
         if (phase == McReloadPhase.WORLD_LOAD_FINISHED || phase == McReloadPhase.RELOAD_FINISHED) {
             AStageManager.addStagesViaJavaCode(AEventPhase.AFTER_JS);
             RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.AFTER_JS);
-            AStageManager.reloadAfterScripts();
-            ARestrictionManager.reloadAfterScripts();
+            AStageManager.onReloadFinished();
+            ARestrictionManager.onReloadFinished();
             return;
         }
 

@@ -83,12 +83,12 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
     }
 
     @Override
-    public void reloadBeforeScripts() {
+    public void onReloadStarted() {
         registry.clear();
     }
 
     @Override
-    public void reloadAfterScripts() {
+    public void onReloadFinished() {
         registry.clearProperties();
     }
 

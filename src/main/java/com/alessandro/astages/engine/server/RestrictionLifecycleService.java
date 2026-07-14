@@ -9,20 +9,20 @@ import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRel
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public class RestrictionLifecycleService {
-    public static void reloadBeforeScripts() {
+    public static void onReloadStarted() {
         if (ServerLifecycleHooks.getCurrentServer() == null) { return; }
 
         RestrictionRegistry.getRegisteredManagers()
-            .forEach(AMinimalManager::reloadBeforeScripts);
+            .forEach(AMinimalManager::onReloadStarted);
 
         MiscStorage.clearAll();
 
         Networking.sendToAllPlayers(new RequestReloadS2C(ReloadType.CLIENT_BEFORE));
     }
 
-    public static void reloadAfterScripts() {
+    public static void onReloadFinished() {
         RestrictionRegistry.getRegisteredManagers()
-            .forEach(AMinimalManager::reloadAfterScripts);
+            .forEach(AMinimalManager::onReloadFinished);
 
         if (ServerLifecycleHooks.getCurrentServer() == null) { return; }
 

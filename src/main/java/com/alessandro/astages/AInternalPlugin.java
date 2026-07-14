@@ -19,6 +19,7 @@ import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
 import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
+import com.alessandro.astages.infrastructure.integration.rei.ReiItemStagesPlugin;
 import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("unused")
@@ -40,6 +41,9 @@ public class AInternalPlugin implements AStagesPlugin {
             RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.AFTER_JS);
             AStageManager.reloadAfterScripts();
             ARestrictionManager.reloadAfterScripts();
+
+            ReiItemStagesPlugin.toggle = !ReiItemStagesPlugin.toggle;
+            ReiItemStagesPlugin.filteringRule.markDirty();
             return;
         }
 

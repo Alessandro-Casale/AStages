@@ -5,6 +5,7 @@ import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.api.holder.AClientHolder;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.api.util.ASetUtils;
 import com.alessandro.astages.api.util.AStagesClientUtils;
@@ -24,7 +25,7 @@ public record SyncServerStagesS2C(Set<String> stages, AOperation operation) impl
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncServerStagesS2C> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SyncServerStagesS2C::stages,
-        ByteBufCodecs.idMapper(AOperation.BY_ID, AOperation::getId), SyncServerStagesS2C::operation,
+        ACodecs.enumByName(AOperation.class), SyncServerStagesS2C::operation,
         SyncServerStagesS2C::new
     );
 

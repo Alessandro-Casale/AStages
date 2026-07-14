@@ -34,7 +34,14 @@ public class ACodecs {
     public static <T> StreamCodec<FriendlyByteBuf, TagKey<T>> tagKey(ResourceKey<? extends Registry<T>> registryKey) {
         return StreamCodec.of(
             (buf, tagKey) -> buf.writeResourceLocation(tagKey.location()),
-            (buf) -> TagKey.create(registryKey, buf.readResourceLocation())
+            buf -> TagKey.create(registryKey, buf.readResourceLocation())
+        );
+    }
+
+    public static <T extends Enum<T>> StreamCodec<ByteBuf, T> enumByName(Class<T> clazz) {
+        return ByteBufCodecs.STRING_UTF8.map(
+            s -> Enum.valueOf(clazz, s),
+            Enum::name
         );
     }
 

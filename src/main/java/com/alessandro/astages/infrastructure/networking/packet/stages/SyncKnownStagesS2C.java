@@ -3,6 +3,7 @@ package com.alessandro.astages.infrastructure.networking.packet.stages;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AStageSource;
 import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.engine.client.ClientMiscStorage;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
@@ -20,10 +21,10 @@ public record SyncKnownStagesS2C(Collection<String> stages, ASyncOperation opera
     public static final CustomPacketPayload.Type<SyncKnownStagesS2C> TYPE = new CustomPacketPayload.Type<>(AResourceLocation.fromNamespaceAndPath("sync_known_stages_s2c"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncKnownStagesS2C> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SyncKnownStagesS2C::stages,
-            ByteBufCodecs.idMapper(ASyncOperation.BY_ID, ASyncOperation::getId), SyncKnownStagesS2C::operation,
-            ByteBufCodecs.idMapper(AStageSource.BY_ID, AStageSource::getId), SyncKnownStagesS2C::source,
-            SyncKnownStagesS2C::new
+        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SyncKnownStagesS2C::stages,
+        ACodecs.enumByName(ASyncOperation.class), SyncKnownStagesS2C::operation,
+        ACodecs.enumByName(AStageSource.class), SyncKnownStagesS2C::source,
+        SyncKnownStagesS2C::new
     );
 
     @Override

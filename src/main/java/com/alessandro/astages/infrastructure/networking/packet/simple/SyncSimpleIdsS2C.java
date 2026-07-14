@@ -2,6 +2,7 @@ package com.alessandro.astages.infrastructure.networking.packet.simple;
 
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.engine.client.ClientMiscStorage;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
@@ -19,9 +20,9 @@ public record SyncSimpleIdsS2C(Collection<String> ids, ASyncOperation operation)
     public static final Type<SyncSimpleIdsS2C> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("sync_simple_ids_s2c"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSimpleIdsS2C> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SyncSimpleIdsS2C::ids,
-            ByteBufCodecs.idMapper(ASyncOperation.BY_ID, ASyncOperation::getId), SyncSimpleIdsS2C::operation,
-            SyncSimpleIdsS2C::new
+        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.collection(HashSet::new)), SyncSimpleIdsS2C::ids,
+        ACodecs.enumByName(ASyncOperation.class), SyncSimpleIdsS2C::operation,
+        SyncSimpleIdsS2C::new
     );
 
     @Override

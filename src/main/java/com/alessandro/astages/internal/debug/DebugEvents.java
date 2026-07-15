@@ -29,7 +29,7 @@ public class DebugEvents {
     @SubscribeEvent
     public static void addRestriction(AddRestrictionEvent event) {
         if (!AStagesCommon.ENABLE_TEST_MODE.get()) { return; }
-        if (event.getEventPhase() != AEventPhase.BEFORE_JS) { return; }
+        if (event.getEventPhase() != AEventPhase.RELOAD_STARTED) { return; }
 
         ARestrictionUtils.addRestrictionForItem("astages:item1", "stage_item_1", Items.ACACIA_BOAT);
         ARestrictionUtils.addRestrictionForItem("astages:item2", "stage_item_2", Items.ACACIA_PLANKS)
@@ -69,7 +69,7 @@ public class DebugEvents {
     @SubscribeEvent
     public static void addStage(AddStageEvent event) {
         if (!AStagesCommon.ENABLE_TEST_MODE.get()) { return; }
-        if (event.getEventPhase() != AEventPhase.BEFORE_JS) { return; }
+        if (event.getEventPhase() != AEventPhase.RELOAD_STARTED) { return; }
 
         AStagesUtils.customizeStage("stage_permanent");
 

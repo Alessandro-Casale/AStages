@@ -1,4 +1,4 @@
-## [2.3.2-test] - 13-07-2026
+## [2.3.2-test] - 15-07-2026
 
 
 New Features
@@ -16,9 +16,12 @@ Bug Fixes
 - Invert stage check logic in AScreenManager for server and player restrictions. ([#195](https://github.com/Alessandro-Casale/AStages/pull/195))
 - Update AHolder and AStagesSuggestions to use ServerPlayer collection for command suggestions. ([#196](https://github.com/Alessandro-Casale/AStages/pull/196))
 - Allow event to proceed when equipment restrictions are met. ([#209](https://github.com/Alessandro-Casale/AStages/pull/209))
+- Implement AItemTag integration with new formatter and assignment manager, fix suggestion provider (1.20.X only). ([#212](https://github.com/Alessandro-Casale/AStages/pull/212))
 
 API Changes
 
 - Change item restriction collections from List to Set for improved performance and semantics. ([#197](https://github.com/Alessandro-Casale/AStages/pull/197))
+- Rename reload methods to onReloadStarted and onReloadFinished for clarity. ([#214](https://github.com/Alessandro-Casale/AStages/pull/214))
+- Simplify enum definitions and update StreamCodec usage for better clarity (1.21.X only). ([#215](https://github.com/Alessandro-Casale/AStages/pull/215))
 
 

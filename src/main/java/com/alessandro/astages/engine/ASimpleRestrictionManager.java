@@ -233,7 +233,7 @@ public class ASimpleRestrictionManager {
         }
     }
 
-    public static void onReloadStarted() { // BETTER BEFORE!
+    public static void onReloadStarted() { // Better when reload STARTS!
         if (ServerLifecycleHooks.getCurrentServer() == null) { return; }
 
         for (var type : RESTRICTION_CACHE.keySet()) {

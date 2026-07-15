@@ -15,29 +15,12 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @NotNullParams
 @EventBusSubscriber(modid = AStages.MODID)
 public class MobServerEvents {
-    /**
-     * This event is used to capture the MobSpawnType. <br> <br>
-     * IMPORTANT: This event can fire on asynchronous worker threads (e.g., during chunk generation).
-     * We only attach a data component here and avoid any world-access logic or player searches to prevent
-     * thread deadlocks between the WorldGen worker and the Main Server thread.
-     */
-    @SubscribeEvent
-    public static void onEntityJoin(FinalizeSpawnEvent event) {
-//        if (event.getLevel().isClientSide()) {
-//            return;
-//        }
-//
-//        event.getEntity()
-//            .setData(AProvider.SPAWN_TYPE, Optional.of(event.getSpawnType()));
-    }
-
     /**
      * This event fires when the entity is actually added to the level.
      * It runs on the Main Server thread, making it safe to perform proximity checks for players

@@ -17,6 +17,7 @@ Bug Fixes
 - Update AHolder and AStagesSuggestions to use ServerPlayer collection for command suggestions. ([#196](https://github.com/Alessandro-Casale/AStages/pull/196))
 - Allow event to proceed when equipment restrictions are met. ([#209](https://github.com/Alessandro-Casale/AStages/pull/209))
 - Implement AItemTag integration with new formatter and assignment manager, fix suggestion provider (1.20.X only). ([#212](https://github.com/Alessandro-Casale/AStages/pull/212))
+- Refactor mob spawning event handling to use EntityJoinLevelEvent (1.20.X only). ([#220](https://github.com/Alessandro-Casale/AStages/pull/220))
 
 API Changes
 

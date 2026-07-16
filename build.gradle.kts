@@ -302,6 +302,8 @@ publishMods {
             "roughly-enough-items", "jei", "kubejs",
             "in-control", "jade", "fastworkbench"
         )
+        clientRequired = true
+        serverRequired = true
 
         displayName.set("astages-$mod_version")
 

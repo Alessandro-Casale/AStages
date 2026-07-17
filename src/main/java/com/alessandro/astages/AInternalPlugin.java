@@ -1,9 +1,13 @@
 package com.alessandro.astages;
 
+import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.constant.ASyncOperation;
+import com.alessandro.astages.api.event.update.ClientItemUpdateEvent;
+import com.alessandro.astages.api.event.update.ClientOreUpdateEvent;
+import com.alessandro.astages.api.event.update.ClientRecipeUpdateEvent;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
@@ -12,62 +16,99 @@ import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
 import com.alessandro.astages.api.util.AStagesUtils;
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.engine.ASimpleRestrictionManager;
-import com.alessandro.astages.engine.AStageManager;
+import com.alessandro.astages.engine.*;
+import com.alessandro.astages.engine.client.ClientRestrictionReloadState;
 import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
 import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
+import com.alessandro.astages.infrastructure.networking.Networking;
+import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 @SuppressWarnings("unused")
 @NotNullParamsAndMethodsReturn
 public class AInternalPlugin implements AStagesPlugin {
     @Override
     public void onReload(McReloadPhase phase, ReloadContext context) {
-        if (phase == McReloadPhase.WORLD_LOAD_STARTED || phase == McReloadPhase.RELOAD_STARTED) {
-            AStageManager.onReloadStarted();
-            ARestrictionManager.onReloadStarted();
-            ASimpleRestrictionManager.onReloadStarted();
-            AStageManager.addStagesViaJavaCode(AEventPhase.BEFORE_JS);
-            RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.BEFORE_JS);
-            return;
-        }
-
-        if (phase == McReloadPhase.WORLD_LOAD_FINISHED || phase == McReloadPhase.RELOAD_FINISHED) {
-            AStageManager.addStagesViaJavaCode(AEventPhase.AFTER_JS);
-            RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.AFTER_JS);
-            AStageManager.onReloadFinished();
-            ARestrictionManager.onReloadFinished();
-            return;
-        }
-
-        if (phase == McReloadPhase.PLAYER_LOGGED_IN) {
-            var player = context.player();
-
-            var playerStages = AStagesUtils.getStages(AHolder.player(player));
-            AStagesUtils.synchronizeWithClient(AHolder.player(player), player, AOperation.LOGIN, playerStages);
-
-            RestrictionSyncService.clearClientOnLogin(player);
-            AStageManager.clientSynchronization(player);
-            RestrictionSyncService.reflectServerStagesChangesToClients(player);
-            RestrictionSyncService.reflectSimpleIdsChangesToClients(player, MiscStorage.SIMPLE_IDS, ASyncOperation.ADD);
-            RestrictionSyncService.reflectAllStagesChangesToClients(player);
-            RestrictionSyncService.clientSynchronization(player);
-            CommonEventSettings.allInventoryChanged();
+        switch (phase) {
+            case WORLD_LOAD_STARTED -> invokeOnReloadStarted();
+            case WORLD_LOAD_FINISHED -> invokeOnReloadFinished();
+            case RELOAD_STARTED -> {
+                invokeOnReloadStarted();
+                Networking.sendTo(null, new RequestReloadS2C(ClientReloadPhase.RELOAD_STARTED));
+            }
+            case RELOAD_FINISHED -> {
+                invokeOnReloadFinished();
+                Networking.sendTo(null, new RequestReloadS2C(ClientReloadPhase.RELOAD_FINISHED));
+            }
+            case PLAYER_LOGGED_IN -> {
+                var player = context.player();
+                invokeOnPlayerLoggedIn(player);
+                Networking.sendTo(player, new RequestReloadS2C(ClientReloadPhase.PLAYER_LOGGED_IN));
+            }
         }
     }
 
     @Override
     public void onClientReload(ClientReloadPhase phase, ClientReloadContext context) {
-//        if (phase == ClientReloadPhase.PLAYER_CONNECTED) {
-//            Networking.sendToServer(new SendClientModelsC2S());
-//        }
+        switch (phase) {
+            case PLAYER_CONNECTED, RELOAD_STARTED -> invokeOnClientReloadStarted();
+            case PLAYER_LOGGED_IN, RELOAD_FINISHED -> invokeOnClientReloadFinished();
+
+            case ITEM_RESTRICTION_MARKED_AS_DIRTY -> {
+                AClientRestrictionManager.ITEM_INSTANCE.getRegistry().clearProperties();
+                ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
+            }
+            case RECIPE_RESTRICTION_MARKED_AS_DIRTY ->
+                ALoader.EVENT_BUS.post(new ClientRecipeUpdateEvent());
+            case ORE_RESTRICTION_MARKED_AS_DIRTY ->
+                ALoader.EVENT_BUS.post(new ClientOreUpdateEvent());
+        }
     }
 
     @Override
     public ResourceLocation id() {
         return AResourceLocation.fromNamespaceAndPath("internal");
+    }
+
+    public void invokeOnReloadStarted() {
+        AStageManager.onReloadStarted();
+        ARestrictionManager.onReloadStarted();
+        ASimpleRestrictionManager.onReloadStarted();
+        AStageManager.addStagesViaJavaCode(AEventPhase.RELOAD_STARTED);
+        RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.RELOAD_STARTED);
+    }
+
+    public void invokeOnClientReloadStarted() {
+        ClientRestrictionReloadState.reloadStarted();
+        AClientStageManager.onReloadStarted();
+        AClientRestrictionManager.onReloadStarted();
+    }
+
+    public void invokeOnReloadFinished() {
+        AStageManager.addStagesViaJavaCode(AEventPhase.RELOAD_FINISHED);
+        RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.RELOAD_FINISHED);
+        AStageManager.onReloadFinished();
+        ARestrictionManager.onReloadFinished();
+    }
+
+    public void invokeOnClientReloadFinished() {
+        AClientStageManager.onReloadFinished();
+        AClientRestrictionManager.onReloadFinished();
+    }
+
+    public void invokeOnPlayerLoggedIn(ServerPlayer player) {
+        var playerStages = AStagesUtils.getStages(AHolder.player(player));
+        AStagesUtils.synchronizeWithClient(AHolder.player(player), player, AOperation.LOGIN, playerStages);
+
+        RestrictionSyncService.clearClientOnLogin(player);
+        AStageManager.clientSynchronization(player);
+        RestrictionSyncService.reflectServerStagesChangesToClients(player);
+        RestrictionSyncService.reflectSimpleIdsChangesToClients(player, MiscStorage.SIMPLE_IDS, ASyncOperation.ADD);
+        RestrictionSyncService.reflectAllStagesChangesToClients(player);
+        RestrictionSyncService.clientSynchronization(player);
+        CommonEventSettings.allInventoryChanged();
     }
 }

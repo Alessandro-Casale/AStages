@@ -18,7 +18,7 @@ public interface AStagesPlugin {
     default void onReload(McReloadPhase phase, ReloadContext context) { }
     default void onClientReload(ClientReloadPhase phase, ClientReloadContext context) { }
     default void clientSynchronization(@Nullable ServerPlayer player) { }
-    default void clearClientOnLogin() { }
+    default void clearClientOnLogin(ServerPlayer player) { }
     default void attachAttributes(AttributeContainer container) { }
     default void attachClientAttributes(AttributeContainer container) { }
     default void attachStageAttributes(AttributeContainer container) { }

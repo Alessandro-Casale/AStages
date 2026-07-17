@@ -1,9 +1,9 @@
 package com.alessandro.astages.engine.server.restriction.item;
 
-import com.alessandro.astages.api.constant.ReloadType;
 import com.alessandro.astages.api.feature.AChangeable;
 import com.alessandro.astages.api.feature.AMarkable;
 import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AttributeStore;
@@ -89,8 +89,7 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     @Override
     public void markAsDirty() {
         setChanged();
-        Networking.sendTo(null, new RequestReloadS2C(ReloadType.JEI_ITEM)); // For JEI cache reloading
-        Networking.sendTo(null,  new RequestReloadS2C(ReloadType.ITEM)); // For Client properties clearing!
+        Networking.sendTo(null, new RequestReloadS2C(ClientReloadPhase.ITEM_RESTRICTION_MARKED_AS_DIRTY));
         CommonEventSettings.allInventoryChanged();
     }
 

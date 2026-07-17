@@ -2,17 +2,17 @@ package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.feature.AChangeable;
 import com.alessandro.astages.api.feature.AMarkable;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
+import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.wrapper.OreWrapper;
+import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.ore.SyncOreS2C;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
-import com.alessandro.astages.api.restriction.ARestriction;
-import com.alessandro.astages.api.constant.ReloadType;
-import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParamsAndMethodsReturn
@@ -81,7 +81,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
     @Override
     public void markAsDirty() {
         Networking.sendToAllPlayers(new SyncOreS2C(this));
-        Networking.sendToAllPlayers(new RequestReloadS2C(ReloadType.ORE));
+        Networking.sendToAllPlayers(new RequestReloadS2C(ClientReloadPhase.ORE_RESTRICTION_MARKED_AS_DIRTY));
     }
 
     public AOreRestriction matchAllBlockStates() {

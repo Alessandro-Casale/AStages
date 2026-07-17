@@ -282,6 +282,7 @@ public class ARestrictionUtils {
     public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, IndexedOrderedMultiMap<W, R> cache, W value) {
         if (holder.isServerActive()) {
             var serverRestriction = getRestrictionFromCache(holder, AStageType.SERVER, cache, value);
+            if (holder.holdOnlyOneType()) { return serverRestriction; }
             if (serverRestriction == null) { return null; }
         }
 

@@ -1,6 +1,7 @@
 package com.alessandro.astages.engine;
 
 import com.alessandro.astages.api.misc.TriConsumer;
+import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
 
 import java.util.ArrayList;
@@ -21,7 +22,23 @@ public class PluginManager {
         }
     }
 
+    public static <T> void callMethod(T parameter, BiConsumer<AStagesPlugin, T> method, @NotNull Consumer<T> description) {
+        description.accept(parameter);
+
+        for (var plugin : PLUGINS) {
+            method.accept(plugin, parameter);
+        }
+    }
+
     public static <T, S> void callMethod(T parameter1, S parameter2, TriConsumer<AStagesPlugin, T, S> method) {
+        for (var plugin : PLUGINS) {
+            method.accept(plugin, parameter1, parameter2);
+        }
+    }
+
+    public static <T, S> void callMethod(T parameter1, S parameter2, TriConsumer<AStagesPlugin, T, S> method, @NotNull BiConsumer<T, S> description) {
+        description.accept(parameter1, parameter2);
+
         for (var plugin : PLUGINS) {
             method.accept(plugin, parameter1, parameter2);
         }

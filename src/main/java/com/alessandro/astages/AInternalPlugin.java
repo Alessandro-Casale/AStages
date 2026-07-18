@@ -57,6 +57,9 @@ public class AInternalPlugin implements AStagesPlugin {
             case PLAYER_CONNECTED, RELOAD_STARTED -> invokeOnClientReloadStarted();
             case PLAYER_LOGGED_IN, RELOAD_FINISHED -> invokeOnClientReloadFinished();
 
+            case INSTANCE_LOAD_STARTED, ASSETS_RELOAD_STARTED -> invokeOnClientAssetsReloadStarted();
+            case INSTANCE_LOAD_FINISHED, ASSETS_RELOAD_FINISHED -> invokeOnClientAssetsReloadFinished();
+
             case ITEM_RESTRICTION_MARKED_AS_DIRTY -> {
                 AClientRestrictionManager.ITEM_INSTANCE.getRegistry().clearProperties();
                 ALoader.EVENT_BUS.post(new ClientItemUpdateEvent());
@@ -76,27 +79,18 @@ public class AInternalPlugin implements AStagesPlugin {
     public void invokeOnReloadStarted() {
         AStageManager.onReloadStarted();
         ARestrictionManager.onReloadStarted();
+        AModelManager.onReloadStarted();
         ASimpleRestrictionManager.onReloadStarted();
         AStageManager.addStagesViaJavaCode(AEventPhase.RELOAD_STARTED);
         RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.RELOAD_STARTED);
     }
 
-    public void invokeOnClientReloadStarted() {
-        ClientRestrictionReloadState.reloadStarted();
-        AClientStageManager.onReloadStarted();
-        AClientRestrictionManager.onReloadStarted();
-    }
-
     public void invokeOnReloadFinished() {
         AStageManager.addStagesViaJavaCode(AEventPhase.RELOAD_FINISHED);
         RestrictionEventService.addRestrictionsViaJavaCode(AEventPhase.RELOAD_FINISHED);
+        AModelManager.onReloadFinished();
         AStageManager.onReloadFinished();
         ARestrictionManager.onReloadFinished();
-    }
-
-    public void invokeOnClientReloadFinished() {
-        AClientStageManager.onReloadFinished();
-        AClientRestrictionManager.onReloadFinished();
     }
 
     public void invokeOnPlayerLoggedIn(ServerPlayer player) {
@@ -110,5 +104,24 @@ public class AInternalPlugin implements AStagesPlugin {
         RestrictionSyncService.reflectAllStagesChangesToClients(player);
         RestrictionSyncService.clientSynchronization(player);
         CommonEventSettings.allInventoryChanged();
+    }
+
+    public void invokeOnClientReloadStarted() {
+        ClientRestrictionReloadState.reloadStarted();
+        AClientStageManager.onReloadStarted();
+        AClientRestrictionManager.onReloadStarted();
+    }
+
+    public void invokeOnClientReloadFinished() {
+        AClientStageManager.onReloadFinished();
+        AClientRestrictionManager.onReloadFinished();
+    }
+
+    public void invokeOnClientAssetsReloadStarted() {
+        AClientModelManager.onReloadStarted();
+    }
+
+    public void invokeOnClientAssetsReloadFinished() {
+        AClientModelManager.onReloadFinished();
     }
 }

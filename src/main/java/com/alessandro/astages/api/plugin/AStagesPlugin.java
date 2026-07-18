@@ -1,5 +1,6 @@
 package com.alessandro.astages.api.plugin;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.plugin.container.AttributeContainer;
@@ -28,4 +29,12 @@ public interface AStagesPlugin {
     default void registerSimpleRestriction(SimpleRestrictionsContainer container) { }
 
     ResourceLocation id();
+
+    static void getDescriptionForReload(McReloadPhase phase, ReloadContext context) {
+        AStages.LOGGER.info("[AStagesPlugin] Called method `onReload` for phase {}", phase.name());
+    }
+
+    static void getDescriptionForClientReload(ClientReloadPhase phase, ClientReloadContext context) {
+        AStages.LOGGER.info("[AStagesPlugin] Called method `onClientReload` for phase {}", phase.name());
+    }
 }

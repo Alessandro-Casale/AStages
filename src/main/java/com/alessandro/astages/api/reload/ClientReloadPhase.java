@@ -1,8 +1,10 @@
 package com.alessandro.astages.api.reload;
 
 public enum ClientReloadPhase {
-    PLAYER_CONNECTED,
+    INSTANCE_LOAD_STARTED,
+    INSTANCE_LOAD_FINISHED,
 
+    PLAYER_CONNECTED,
     PLAYER_LOGGED_IN,
 
     STAGES_SYNCED,
@@ -14,10 +16,12 @@ public enum ClientReloadPhase {
     RELOAD_STARTED,
     RELOAD_FINISHED,
 
+    ASSETS_RELOAD_STARTED,
+    ASSETS_RELOAD_FINISHED,
+
     RECIPE_VIEWERS_BUILD_CACHE,
 
     PLAYER_LOGGED_OUT,
-
     PLAYER_DISCONNECTED
 
 }

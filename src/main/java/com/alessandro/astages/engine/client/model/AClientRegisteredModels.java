@@ -1,6 +1,7 @@
-package com.alessandro.astages.engine.model;
+package com.alessandro.astages.engine.client.model;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.api.reload.AReloadable;
 import com.alessandro.astages.engine.store.AModel;
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ARegisteredModels {
+public class AClientRegisteredModels implements AReloadable {
     private final Map<ResourceLocation, AModel<?>> MODELS = new HashMap<>();
 
     public <T> AModel<T> registerModel(ResourceLocation id, AModel<T> model) {
         if (MODELS.containsKey(id)) {
-            AStages.LOGGER.error("Model with id `{}` already found in server registered models, skipped!", id);
+            AStages.LOGGER.error("Model with id `{}` already found in client registered models, skipped!", id);
             return null;
         }
 
@@ -29,4 +30,12 @@ public class ARegisteredModels {
     public Set<ResourceLocation> getModels() {
         return Collections.unmodifiableSet(MODELS.keySet());
     }
+
+    @Override
+    public void onReloadStarted() {
+        MODELS.clear();
+    }
+
+    @Override
+    public void onReloadFinished() { }
 }

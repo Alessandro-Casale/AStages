@@ -24,7 +24,7 @@ public record RequestReloadS2C(ClientReloadPhase reloadType) implements AStagesP
 
     @Override
     public void run(IPayloadContext context) {
-        PluginManager.callMethod(reloadType, new ClientReloadContext(), AStagesPlugin::onClientReload);
+        PluginManager.callMethod(reloadType, new ClientReloadContext(), AStagesPlugin::onClientReload, AStagesPlugin::getDescriptionForClientReload);
 
 //        switch (reloadType) {
 //            case CLIENT_BEFORE -> AClientRestrictionManager.onReloadStarted();

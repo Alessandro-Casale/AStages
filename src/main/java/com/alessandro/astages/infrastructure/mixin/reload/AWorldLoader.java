@@ -20,7 +20,7 @@ public class AWorldLoader {
     @Inject(method = "load", at = @At("HEAD"))
     private static <D, R> void astages$onWorldLoadStart(WorldLoader.InitConfig initConfig, WorldLoader.WorldDataSupplier<D> worldDataSupplier, WorldLoader.ResultFactory<D, R> resultFactory, Executor backgroundExecutor, Executor mainExecutor, CallbackInfoReturnable<CompletableFuture<R>> cir) {
         var context = new ReloadContext(null, null);
-        PluginManager.callMethod(McReloadPhase.WORLD_LOAD_STARTED, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.WORLD_LOAD_STARTED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @Inject(method = "load", at = @At("RETURN"))
@@ -28,7 +28,7 @@ public class AWorldLoader {
         cir.getReturnValue()
             .thenRunAsync(() -> {
                 var context = new ReloadContext(null, null);
-                PluginManager.callMethod(McReloadPhase.WORLD_LOAD_FINISHED, context, AStagesPlugin::onReload);
+                PluginManager.callMethod(McReloadPhase.WORLD_LOAD_FINISHED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
             }, mainExecutor);
     }
 }

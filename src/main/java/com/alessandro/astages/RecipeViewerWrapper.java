@@ -1,14 +1,12 @@
 package com.alessandro.astages;
 
-import net.minecraft.world.item.ItemStack;
-
 import java.util.Collection;
 
-public abstract class RecipeViewerWrapper {
-    public abstract Collection<ItemStack> getAllStacks();
+public abstract class RecipeViewerWrapper<T> {
+    public abstract Collection<T> getAllEntries();
 
-    public abstract void showStacks(Collection<ItemStack> stacks);
-    public abstract void hideStacks(Collection<ItemStack> stacks);
+    public abstract void showEntries(Collection<T> entries);
+    public abstract void hideEntries(Collection<T> entries);
 
     public boolean isRuntimeAvailable() {
         return true;

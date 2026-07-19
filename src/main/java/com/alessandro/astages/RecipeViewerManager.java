@@ -1,6 +1,5 @@
 package com.alessandro.astages;
 
-import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.engine.AClientRestrictionManager;
@@ -11,22 +10,22 @@ import java.util.*;
 
 @NotNullParams
 public class RecipeViewerManager<T> {
-    private final RecipeViewerWrapper wrapper;
+    private final RecipeViewerWrapper<ItemStack> wrapper;
     private Map<String, List<ItemStack>> STAGE_TO_ENTRY_CACHE; // Sets, why not?
 
-    public RecipeViewerManager(RecipeViewerWrapper wrapper) {
+    public RecipeViewerManager(RecipeViewerWrapper<ItemStack> wrapper) {
         this.wrapper = wrapper;
     }
 
     public void buildCache() {
         AStages.TIMER.start();
+
         STAGE_TO_ENTRY_CACHE = new HashMap<>();
         var hidden = new HashSet<ItemStack>();
 
         var holder = AClientHolder.serverAndPlayer();
 
-        AStages.LOGGER.debug("Restrictions {}", AClientRestrictionManager.ITEM_INSTANCE.getRegistry().getRestrictions());
-        wrapper.getAllStacks()
+        wrapper.getAllEntries()
             .forEach(stack -> {
                 for (var stage : AClientRestrictionManager.ITEM_INSTANCE.getStagesForStack(stack)) {
                     STAGE_TO_ENTRY_CACHE
@@ -42,16 +41,16 @@ public class RecipeViewerManager<T> {
 
         AStages.TIMER.stop();
         AStages.LOGGER.debug("Cache built in {}", AStages.TIMER);
-
         AStages.TIMER.reset().start();
-        AStages.LOGGER.debug("Cache {}", STAGE_TO_ENTRY_CACHE);
-        AStages.LOGGER.debug("Hide {}", hidden);
-        if (!hidden.isEmpty()) { wrapper.hideStacks(hidden); }
+
+        if (!hidden.isEmpty()) { wrapper.hideEntries(hidden); }
+
         AStages.TIMER.stop();
         AStages.LOGGER.debug("Hide entries in {}", AStages.TIMER);
+        AStages.TIMER.reset();
     }
 
-    public void onStageChanged(AOperation operation, Set<String> stages) {
+    public void onStageChanged(Set<String> stages) {
         var affectedStacks = new HashSet<ItemStack>();
         for (var stage : stages) {
             affectedStacks.addAll(STAGE_TO_ENTRY_CACHE.get(stage));
@@ -67,7 +66,7 @@ public class RecipeViewerManager<T> {
             (restriction != null ? toHide : toShow).add(stack);
         }
 
-        if (!toShow.isEmpty()) { wrapper.showStacks(toShow); }
-        if (!toHide.isEmpty()) { wrapper.hideStacks(toHide); }
+        if (!toShow.isEmpty()) { wrapper.showEntries(toShow); }
+        if (!toHide.isEmpty()) { wrapper.hideEntries(toHide); }
     }
 }

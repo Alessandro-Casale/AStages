@@ -4,6 +4,7 @@ import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AEventPhase;
 import com.alessandro.astages.api.constant.AOperation;
+import com.alessandro.astages.api.constant.AStageSource;
 import com.alessandro.astages.api.constant.ASyncOperation;
 import com.alessandro.astages.api.event.update.ClientItemUpdateEvent;
 import com.alessandro.astages.api.event.update.ClientOreUpdateEvent;
@@ -27,6 +28,8 @@ import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @NotNullParamsAndMethodsReturn
@@ -60,6 +63,9 @@ public class AInternalPlugin implements AStagesPlugin {
 
             case INSTANCE_LOAD_STARTED, ASSETS_RELOAD_STARTED -> invokeOnClientAssetsReloadStarted();
             case INSTANCE_LOAD_FINISHED, ASSETS_RELOAD_FINISHED -> invokeOnClientAssetsReloadFinished();
+
+            case STAGES_SYNCED ->
+                invokeOnClientStagesSynced(context.getSource(), context.getOperation(), context.getStagesSynced());
 
             case ITEM_RESTRICTION_MARKED_AS_DIRTY -> {
                 AClientRestrictionManager.ITEM_INSTANCE.getRegistry().clearProperties();
@@ -125,5 +131,11 @@ public class AInternalPlugin implements AStagesPlugin {
 
     public void invokeOnClientAssetsReloadFinished() {
         AClientModelManager.onReloadFinished();
+    }
+
+    public void invokeOnClientStagesSynced(AStageSource source, AOperation operation, Set<String> syncedStages) {
+        if (operation == AOperation.LOGIN) { return; }
+
+        JeiItemStagesPlugin.JEI_MANAGER.onStageChanged(syncedStages);
     }
 }

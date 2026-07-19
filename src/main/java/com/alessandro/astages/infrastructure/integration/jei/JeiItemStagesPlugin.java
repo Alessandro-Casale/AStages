@@ -1,18 +1,18 @@
 package com.alessandro.astages.infrastructure.integration.jei;
 
 import com.alessandro.astages.AStages;
+import com.alessandro.astages.RecipeViewerManager;
+import com.alessandro.astages.RecipeViewerWrapper;
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeStagesEvent;
-import com.alessandro.astages.api.event.update.ClientItemUpdateEvent;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.util.AStagesClientUtils;
 import com.alessandro.astages.engine.AClientRestrictionManager;
-import com.alessandro.astages.infrastructure.integration.Mods;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -28,29 +28,65 @@ import java.util.*;
 @NotNullParamsAndMethodsReturn
 @JeiPlugin
 public class JeiItemStagesPlugin implements IModPlugin {
+    private static final RecipeViewerWrapper JEI_WRAPPER = new RecipeViewerWrapper() {
+        @Override
+        public Collection<ItemStack> getAllStacks() {
+            if (isRuntimeAvailable()) {
+                return runtime.getIngredientManager().getAllItemStacks();
+            }
+
+            return Collections.emptyList();
+        }
+
+        @Override
+        public void showStacks(Collection<ItemStack> stacks) {
+            if (isRuntimeAvailable()) {
+                runtime.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, stacks);
+            }
+        }
+
+        @Override
+        public void hideStacks(Collection<ItemStack> stacks) {
+            if (isRuntimeAvailable()) {
+                runtime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, stacks);
+            }
+        }
+
+        @Override
+        public boolean isRuntimeAvailable() {
+            if (runtime == null) {
+                AStages.LOGGER.error("[JeiItemStagesPlugin]: runtime is null!");
+                return false;
+            }
+
+            return true;
+        }
+    };
+
     private static final HashMap<String, List<ItemStack>> ITEM_CACHE = new HashMap<>();
     private static final HashMap<String, HashMap<IIngredientType<?>, List<Object>>> GENERIC_CACHE = new HashMap<>();
 
-    private IJeiRuntime runtime;
+    public static RecipeViewerManager<ItemStack> JEI_MANAGER = new RecipeViewerManager<>(JEI_WRAPPER);
+    private static IJeiRuntime runtime;
     private static final ResourceLocation PLUGIN_ID = AResourceLocation.fromNamespaceAndPath("item_jei");
 
     public JeiItemStagesPlugin() {
-        if (!Mods.JEI.isLoaded()) return;
+        // if (!Mods.JEI.isLoaded()) return;
 
         if (EffectiveSide.get().isClient()) {
-            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class,
-                e -> updateGui(null, null)
-            );
+//            ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientItemUpdateEvent.class,
+//                e -> updateGui(null, null)
+//            );
 
             ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeStagesEvent.class, e -> {
                 if (e.getOperation() != AOperation.LOGIN) {
-                    updateGui(e.getOperation(), e.getStagesSynced());
+                    // updateGui(e.getOperation(), e.getStagesSynced());
                 }
             });
 
             ALoader.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientSynchronizeServerStagesEvent.class, e -> {
                 if (e.getOperation() != AOperation.LOGIN) {
-                    updateGui(e.getOperation(), e.getStagesSynced());
+                    // updateGui(e.getOperation(), e.getStagesSynced());
                 }
             });
         }

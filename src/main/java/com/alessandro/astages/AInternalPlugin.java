@@ -22,6 +22,7 @@ import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
 import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
+import com.alessandro.astages.infrastructure.integration.jei.JeiItemStagesPlugin;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import net.minecraft.resources.ResourceLocation;
@@ -115,6 +116,7 @@ public class AInternalPlugin implements AStagesPlugin {
     public void invokeOnClientReloadFinished() {
         AClientStageManager.onReloadFinished();
         AClientRestrictionManager.onReloadFinished();
+        JeiItemStagesPlugin.JEI_MANAGER.buildCache();
     }
 
     public void invokeOnClientAssetsReloadStarted() {

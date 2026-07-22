@@ -23,7 +23,7 @@ public record AClientRecipeEvaluator(AClientRecipeRegistry registry) {
     public @Nullable AClientBaseRecipeRestriction<?, ?, ?> evaluateCache(RecipeTypeClientCache<AClientRecipeRestriction> cache, AClientHolder holder, RecipeWrapper wrapper) {
         var serverModRestriction = registry.getModRestrictions().stream().filter(r -> r.isRestricted(wrapper) && !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage())).findFirst().orElse(null);
         if (serverModRestriction == null) { return null; }
-        var modRestriction = registry.getRecipeRestrictions().stream().filter(r -> r.isRestricted(wrapper) && !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage())).findFirst().orElse(null);
+        var modRestriction = registry.getModRestrictions().stream().filter(r -> r.isRestricted(wrapper) && !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage())).findFirst().orElse(null);
         if (modRestriction != null) { return modRestriction; }
 
         var restrictions = cache.get(wrapper.type());

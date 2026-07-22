@@ -23,7 +23,10 @@ import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
 import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
+import com.alessandro.astages.infrastructure.integration.Mods;
+import com.alessandro.astages.infrastructure.integration.emi.EmiItemStagesPlugin;
 import com.alessandro.astages.infrastructure.integration.jei.JeiItemStagesPlugin;
+import com.alessandro.astages.infrastructure.integration.rei.ReiItemStagesPlugin;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import net.minecraft.resources.ResourceLocation;
@@ -122,7 +125,14 @@ public class AInternalPlugin implements AStagesPlugin {
     public void invokeOnClientReloadFinished() {
         AClientStageManager.onReloadFinished();
         AClientRestrictionManager.onReloadFinished();
-        JeiItemStagesPlugin.JEI_MANAGER.buildCache();
+
+        if (Mods.JEI.isLoaded()) {
+            JeiItemStagesPlugin.MANAGER.buildCache();
+        } else if (Mods.ROUGHLYENOUGHITEMS.isLoaded()) {
+            ReiItemStagesPlugin.MANAGER.buildCache();
+        } else if (Mods.EMI.isLoaded()) {
+            EmiItemStagesPlugin.MANAGER.buildCache();
+        }
     }
 
     public void invokeOnClientAssetsReloadStarted() {
@@ -136,6 +146,12 @@ public class AInternalPlugin implements AStagesPlugin {
     public void invokeOnClientStagesSynced(AStageSource source, AOperation operation, Set<String> syncedStages) {
         if (operation == AOperation.LOGIN) { return; }
 
-        JeiItemStagesPlugin.JEI_MANAGER.onStageChanged(syncedStages);
+        if (Mods.JEI.isLoaded()) {
+            JeiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
+        } else if (Mods.ROUGHLYENOUGHITEMS.isLoaded()) {
+            ReiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
+        } else if (Mods.EMI.isLoaded()) {
+            EmiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
+        }
     }
 }

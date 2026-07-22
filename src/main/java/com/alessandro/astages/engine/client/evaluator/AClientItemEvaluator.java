@@ -69,6 +69,26 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         return null;
     }
 
+    public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AClientHolder holder, ResourceLocation resourceLocation) {
+        if (holder.isServerActive()) {
+            var serverRestriction = registry.getModRestrictions().stream().filter(r ->
+                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+                    r.getModIds().contains(resourceLocation.getNamespace())
+            ).findFirst().orElse(null);
+
+            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+        }
+
+        if (holder.isPlayerActive()) {
+            return registry.getModRestrictions().stream().filter(r ->
+                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+                    r.getModIds().contains(resourceLocation.getNamespace())
+            ).findFirst().orElse(null);
+        }
+
+        return null;
+    }
+
     private @Nullable String evaluateId(ItemStack stack) {
         if (stack.isEmpty()) { return null; }
 

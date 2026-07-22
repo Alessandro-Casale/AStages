@@ -105,7 +105,7 @@ public class AStagesUtils {
     }
 
     public static void addAllStages(AHolder holder, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
-        var stages = MiscStorage.ALL_STAGES;
+        var stages = Set.copyOf(MiscStorage.ALL_STAGES);
 
         holder.perform(
             player -> {
@@ -161,7 +161,7 @@ public class AStagesUtils {
 
         holder.perform(
             player -> {
-                var stages = OfflinePlayerStage.getPlayerStagesFromCache(player);
+                var stages = Set.copyOf(OfflinePlayerStage.getPlayerStagesFromCache(player));
                 toReturn.set(OfflinePlayerStage.removePlayerStages(player, stages));
                 var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages);
                 OfflinePlayerStage.displayStageAlert(player, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);

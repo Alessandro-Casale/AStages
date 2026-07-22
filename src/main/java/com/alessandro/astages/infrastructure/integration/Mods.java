@@ -8,6 +8,8 @@ import java.util.Locale;
 @NotNullMethodsReturn
 public enum Mods {
     JEI,
+    ROUGHLYENOUGHITEMS,
+    EMI,
     KUBEJS,
     JADE,
     LOOTJS;

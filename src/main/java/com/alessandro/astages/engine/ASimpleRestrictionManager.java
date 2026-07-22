@@ -3,12 +3,12 @@ package com.alessandro.astages.engine;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.base.Elaborator;
 import com.alessandro.astages.api.constant.ASyncOperation;
-import com.alessandro.astages.api.constant.ReloadType;
 import com.alessandro.astages.api.exception.SimpleRestrictionsException;
 import com.alessandro.astages.api.foldersystem.AFolderPaths;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
 import com.alessandro.astages.api.plugin.container.SimpleRestrictionsContainer;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.store.ASimpleRestrictionType;
 import com.alessandro.astages.api.util.AFileIOUtils;
@@ -68,7 +68,7 @@ public class ASimpleRestrictionManager {
         ELABORATION_MAP.put(ASimpleRestrictionTypes.ARMOR, ASimpleElaborator::elaborateArmor);
 
         AFTER_REMOVE_ELABORATION_MAP.put(ASimpleRestrictionTypes.ORE,
-            (restrictionId, type) -> Networking.sendToAllPlayers(new RequestReloadS2C(ReloadType.ORE)));
+            (restrictionId, type) -> Networking.sendToAllPlayers(new RequestReloadS2C(ClientReloadPhase.ORE_RESTRICTION_MARKED_AS_DIRTY)));
 
         COMMAND_MAP.put(ASimpleRestrictionTypes.ITEM, ASimpleCommands::item);
         COMMAND_MAP.put(ASimpleRestrictionTypes.MOD, ASimpleCommands::mod);

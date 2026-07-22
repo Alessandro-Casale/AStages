@@ -2,7 +2,6 @@ package com.alessandro.astages.engine.server.manager;
 
 import com.alessandro.astages.api.cache.server.BlockCache;
 import com.alessandro.astages.api.cache.server.BlockStateCache;
-import com.alessandro.astages.api.constant.ReloadType;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AManager;
@@ -17,7 +16,6 @@ import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.ore.SyncOreS2C;
-import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRestrictionDeleteS2C;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,8 +81,6 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
         getRegistry()
             .forEach(restriction -> Networking.sendTo(player, new SyncOreS2C(restriction)));
-
-        Networking.sendTo(player, new RequestReloadS2C(ReloadType.ORE));
     }
 
     public void recalculateCaches(AOreRestriction restriction) {

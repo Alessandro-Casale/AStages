@@ -18,38 +18,38 @@ public class ReloadServerEvents {
     @SubscribeEvent
     public static void serverAboutToStart(ServerAboutToStartEvent event) {
         var context = new ReloadContext(event.getServer());
-        PluginManager.callMethod(McReloadPhase.SERVER_ABOUT_TO_START, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.SERVER_ABOUT_TO_START, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @SubscribeEvent
     public static void serverStarting(ServerStartingEvent event) {
         var context = new ReloadContext(event.getServer());
-        PluginManager.callMethod(McReloadPhase.SERVER_STARTING, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.SERVER_STARTING, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @SubscribeEvent
     public static void serverStarted(ServerStartedEvent event) {
         var context = new ReloadContext(event.getServer());
-        PluginManager.callMethod(McReloadPhase.SERVER_STARTED, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.SERVER_STARTED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @SubscribeEvent
     public static void serverStopping(ServerStoppingEvent event) {
         var context = new ReloadContext(event.getServer());
-        PluginManager.callMethod(McReloadPhase.SERVER_STOPPING, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.SERVER_STOPPING, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         var context = new ReloadContext(event.getServer());
-        PluginManager.callMethod(McReloadPhase.SERVER_STOPPED, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.SERVER_STOPPED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @SubscribeEvent
     public static void realPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.getEntity().level().isClientSide && event.getEntity() instanceof ServerPlayer player) {
             var context = new ReloadContext(player);
-            PluginManager.callMethod(McReloadPhase.PLAYER_LOGGED_IN, context, AStagesPlugin::onReload);
+            PluginManager.callMethod(McReloadPhase.PLAYER_LOGGED_IN, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
         }
     }
 
@@ -57,7 +57,7 @@ public class ReloadServerEvents {
     public static void realPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (!event.getEntity().level().isClientSide && event.getEntity() instanceof ServerPlayer player) {
             var context = new ReloadContext(player);
-            PluginManager.callMethod(McReloadPhase.PLAYER_LOGGED_OUT, context, AStagesPlugin::onReload);
+            PluginManager.callMethod(McReloadPhase.PLAYER_LOGGED_OUT, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
         }
     }
 }

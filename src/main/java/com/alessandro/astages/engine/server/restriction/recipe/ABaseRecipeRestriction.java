@@ -1,7 +1,7 @@
 package com.alessandro.astages.engine.server.restriction.recipe;
 
-import com.alessandro.astages.api.constant.ReloadType;
 import com.alessandro.astages.api.feature.AMarkable;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -34,6 +34,6 @@ public class ABaseRecipeRestriction<R extends ARestriction<R, U, V>, U, V> exten
 
     @Override
     public void markAsDirty() {
-        Networking.sendToAllPlayers(new RequestReloadS2C(ReloadType.JEI_RECIPE));
+        Networking.sendToAllPlayers(new RequestReloadS2C(ClientReloadPhase.RECIPE_RESTRICTION_MARKED_AS_DIRTY));
     }
 }

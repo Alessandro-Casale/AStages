@@ -50,6 +50,10 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
         return evaluator.evaluateProperties(holder, stack);
     }
 
+    public AClientBaseItemRestriction<?, ?> getRestrictionForResourceLocation(AClientHolder holder, ResourceLocation resourceLocation) {
+        return evaluator.evaluate(holder, resourceLocation);
+    }
+
     public Set<String> getStagesForStack(ItemStack stack) {
         return evaluator.evaluateStages(stack);
     }

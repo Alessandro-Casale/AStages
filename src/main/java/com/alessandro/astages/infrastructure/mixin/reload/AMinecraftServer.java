@@ -17,15 +17,10 @@ import java.util.concurrent.CompletableFuture;
 @NotNullParams
 @Mixin(MinecraftServer.class)
 public class AMinecraftServer {
-//    @Inject(method = "spin", at = @At("HEAD"))
-//    private static <S> void astages(Function<Thread, S> pThreadFunction, CallbackInfoReturnable<S> cir) {
-//
-//    }
-
     @Inject(method = "reloadResources", at = @At("HEAD"))
     public void astages$onReloadResourcesStart(Collection<String> pSelectedIds, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
         var context = new ReloadContext((MinecraftServer) (Object) this);
-        PluginManager.callMethod(McReloadPhase.RELOAD_STARTED, context, AStagesPlugin::onReload);
+        PluginManager.callMethod(McReloadPhase.RELOAD_STARTED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
     }
 
     @Inject(method = "reloadResources", at = @At("RETURN"))
@@ -33,7 +28,7 @@ public class AMinecraftServer {
         cir.getReturnValue()
             .thenRun(() -> {
                 var context = new ReloadContext((MinecraftServer) (Object) this);
-                PluginManager.callMethod(McReloadPhase.RELOAD_FINISHED, context, AStagesPlugin::onReload);
+                PluginManager.callMethod(McReloadPhase.RELOAD_FINISHED, context, AStagesPlugin::onReload, AStagesPlugin::getDescriptionForReload);
             });
     }
 }

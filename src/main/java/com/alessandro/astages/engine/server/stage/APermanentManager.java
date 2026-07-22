@@ -20,8 +20,8 @@ public class APermanentManager extends AStageBaseManager<Stage> implements Clien
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        getStages().forEach((stageKey, stage) -> {
-            Networking.sendTo(player, new SyncPermanentStageS2C(stage.getStage(), stage.get(StageAttributes.ICON)));
-        });
+        getStages().forEach((stageKey, stage) ->
+            Networking.sendTo(player, new SyncPermanentStageS2C(stage.getStage(), stage.get(StageAttributes.ICON)))
+        );
     }
 }

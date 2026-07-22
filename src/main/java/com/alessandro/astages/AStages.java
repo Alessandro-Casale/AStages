@@ -3,6 +3,8 @@ package com.alessandro.astages;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
 import com.alessandro.astages.api.plugin.container.AttributeContainer;
+import com.alessandro.astages.api.reload.ClientReloadContext;
+import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.store.ASimpleRestrictionType;
 import com.alessandro.astages.api.store.Attribute;
@@ -70,6 +72,9 @@ public class AStages {
         ManagerScanner.getAllManagers();
         ClientManagerScanner.getAllClientManagers();
         PluginScanner.getAllPlugins();
+
+        var context = new ClientReloadContext();
+        PluginManager.callMethod(ClientReloadPhase.INSTANCE_LOAD_STARTED, context, AStagesPlugin::onClientReload, AStagesPlugin::getDescriptionForClientReload);
 
         var attributeContainer = AttributeContainer.initialize();
         PluginManager.callMethod(attributeContainer, AStagesPlugin::attachAttributes);

@@ -31,8 +31,8 @@
     "recipe.minecraft.ACraftingMenu",
     "recipe.minecraft.ASmithingMenu",
     "recipe.minecraft.AStonecutterMenu",
+    "reload.AKubeJSClientCommands",
     "reload.AMinecraftServer",
-    "reload.AReloadCommand",
     "reload.AWorldLoader",
     "screen.AServerPlayer",
     "structure.AEntity"
@@ -44,7 +44,9 @@
     "ore.AItemColors",
     "ore.AItemModelShaper",
     "ore.ASectionCompiler",
-    "recipe.minecraft.AStonecutterScreen"
+    "recipe.minecraft.AStonecutterScreen",
+    "reload.AKeyboardHandler",
+    "reload.AMinecraft"
   ],
   "injectors": {
     "defaultRequire": 1

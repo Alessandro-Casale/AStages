@@ -15,12 +15,12 @@ public class ReloadClientEvents {
     @SubscribeEvent
     public static void clientConnected(ClientPlayerNetworkEvent.LoggingIn event) {
         var context = new ClientReloadContext();
-        PluginManager.callMethod(ClientReloadPhase.PLAYER_CONNECTED, context, AStagesPlugin::onClientReload);
+        PluginManager.callMethod(ClientReloadPhase.PLAYER_CONNECTED, context, AStagesPlugin::onClientReload, AStagesPlugin::getDescriptionForClientReload);
     }
 
     @SubscribeEvent
     public static void clientDisconnected(ClientPlayerNetworkEvent.LoggingOut event) {
         var context = new ClientReloadContext();
-        PluginManager.callMethod(ClientReloadPhase.PLAYER_DISCONNECTED, context, AStagesPlugin::onClientReload);
+        PluginManager.callMethod(ClientReloadPhase.PLAYER_DISCONNECTED, context, AStagesPlugin::onClientReload, AStagesPlugin::getDescriptionForClientReload);
     }
 }

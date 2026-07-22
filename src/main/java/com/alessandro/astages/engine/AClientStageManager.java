@@ -22,4 +22,10 @@ public class AClientStageManager {
         PERMANENT_INSTANCE.onReloadStarted();
         TEMPORARY_INSTANCE.onReloadStarted();
     }
+
+    public static void onReloadFinished() {
+        GENERIC_INSTANCE.onReloadFinished();
+        PERMANENT_INSTANCE.onReloadFinished();
+        TEMPORARY_INSTANCE.onReloadFinished();
+    }
 }

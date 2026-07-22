@@ -1,7 +1,8 @@
 package com.alessandro.astages.infrastructure.integration.rei;
 
-import com.alessandro.astages.EntryViewerMultipleManager;
-import com.alessandro.astages.EntryViewerWrapper;
+import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
+import com.alessandro.astages.api.viewer.EntryViewerWrapper;
+import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -113,5 +114,15 @@ public class ReiItemStagesPlugin implements REIClientPlugin {
         if (stage == ReloadStage.END) {
             MANAGER.tryPostponedBuild();
         }
+    }
+
+    public static void onReloadStarted() { }
+
+    public static void onReloadFinished() {
+        MANAGER.buildCache();
+    }
+
+    public static void onStagesChanged(AOperation operation, Set<String> syncedStages) {
+        MANAGER.onStageChanged(syncedStages);
     }
 }

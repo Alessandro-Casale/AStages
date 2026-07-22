@@ -1,8 +1,9 @@
 package com.alessandro.astages.infrastructure.integration.jei;
 
-import com.alessandro.astages.EntryViewerMultipleManager;
-import com.alessandro.astages.EntryViewerWrapper;
+import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
+import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.api.AResourceLocation;
+import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -104,5 +105,15 @@ public class JeiItemStagesPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return AResourceLocation.fromNamespaceAndPath("item_jei");
+    }
+
+    public static void onReloadStarted() { }
+
+    public static void onReloadFinished() {
+        MANAGER.buildCache();
+    }
+
+    public static void onStagesChanged(AOperation operation, Set<String> syncedStages) {
+        MANAGER.onStageChanged(syncedStages);
     }
 }

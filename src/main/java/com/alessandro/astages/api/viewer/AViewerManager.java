@@ -1,4 +1,4 @@
-package com.alessandro.astages;
+package com.alessandro.astages.api.viewer;
 
 import java.util.Set;
 

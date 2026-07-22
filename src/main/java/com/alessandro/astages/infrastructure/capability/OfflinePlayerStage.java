@@ -19,6 +19,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @NotNullParamsAndMethodsReturn
 //@EventBusSubscriber(modid = AStages.MODID)

@@ -82,7 +82,7 @@ public class OfflinePlayerStage {
     public static void addPlayerStage(UUID uuid, String stage) {
         AStagesUtils.checkPlayerStage(uuid, AOperation.ADD, stage);
 
-        CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).add(stage);
+        CACHE.computeIfAbsent(uuid, OfflinePlayerStage::readStagesFromDisk).add(stage);
         markAsDirty(uuid);
     }
 
@@ -93,7 +93,7 @@ public class OfflinePlayerStage {
     public static void addPlayerStages(UUID uuid, Set<String> stages) {
         AStagesUtils.checkPlayerStages(uuid, AOperation.ADD_ALL, stages);
 
-        CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).addAll(stages);
+        CACHE.computeIfAbsent(uuid, OfflinePlayerStage::readStagesFromDisk).addAll(stages);
         markAsDirty(uuid);
     }
 
@@ -105,7 +105,7 @@ public class OfflinePlayerStage {
     public static AStatus removePlayerStage(UUID uuid, String stage) {
         AStagesUtils.checkPlayerStage(uuid, AOperation.REMOVE, stage);
 
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, OfflinePlayerStage::readStagesFromDisk).remove(stage) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
         if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(uuid); }
         return removeStatus;
     }
@@ -118,7 +118,7 @@ public class OfflinePlayerStage {
     public static AStatus removePlayerStages(UUID uuid, Set<String> stages) {
         AStagesUtils.checkPlayerStages(uuid, AOperation.REMOVE_ALL, stages);
 
-        var removeStatus = CACHE.computeIfAbsent(uuid, k -> ASetUtils.newSynchronizedSet()).removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
+        var removeStatus = CACHE.computeIfAbsent(uuid, OfflinePlayerStage::readStagesFromDisk).removeAll(stages) ? AStatus.SUCCESSFUL : AStatus.NOT_PRESENT;
         if (removeStatus == AStatus.SUCCESSFUL) { markAsDirty(uuid); }
         return removeStatus;
     }

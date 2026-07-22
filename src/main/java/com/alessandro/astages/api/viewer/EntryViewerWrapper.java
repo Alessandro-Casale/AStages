@@ -1,5 +1,6 @@
-package com.alessandro.astages;
+package com.alessandro.astages.api.viewer;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;

@@ -1,5 +1,6 @@
-package com.alessandro.astages;
+package com.alessandro.astages.api.viewer;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.engine.store.Attributes;
@@ -60,16 +61,19 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
 
         AStages.TIMER.stop();
         AStages.LOGGER.debug("Cache built in {}", AStages.TIMER);
-        AStages.TIMER.reset().start();
 
         if (!hidden.isEmpty()) {
+            AStages.TIMER.reset().start();
+
             wrapper.hideEntries(hidden);
             wrapper.reload();
+
+            AStages.TIMER.stop();
+            AStages.LOGGER.debug("Hide entries in {}", AStages.TIMER);
+            AStages.TIMER.reset();
         }
 
-        AStages.TIMER.stop();
-        AStages.LOGGER.debug("Hide entries in {}", AStages.TIMER);
-        AStages.TIMER.reset();
+        PENDING_BUILD = false;
     }
 
     @Override

@@ -23,10 +23,13 @@ import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
 import com.alessandro.astages.infrastructure.hook.CommonEventSettings;
-import com.alessandro.astages.infrastructure.integration.Mods;
+import com.alessandro.astages.infrastructure.integration.RecipeViewerMods;
 import com.alessandro.astages.infrastructure.integration.emi.EmiItemStagesPlugin;
+import com.alessandro.astages.infrastructure.integration.emi.EmiRecipeStagesPlugin;
 import com.alessandro.astages.infrastructure.integration.jei.JeiItemStagesPlugin;
+import com.alessandro.astages.infrastructure.integration.jei.JeiRecipeStagesPlugin;
 import com.alessandro.astages.infrastructure.integration.rei.ReiItemStagesPlugin;
+import com.alessandro.astages.infrastructure.integration.rei.ReiRecipeStagesPlugin;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
 import net.minecraft.resources.ResourceLocation;
@@ -120,18 +123,40 @@ public class AInternalPlugin implements AStagesPlugin {
         ClientRestrictionReloadState.reloadStarted();
         AClientStageManager.onReloadStarted();
         AClientRestrictionManager.onReloadStarted();
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.JEI)) {
+            JeiItemStagesPlugin.onReloadStarted();
+            JeiRecipeStagesPlugin.onReloadStarted();
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.REI)) {
+            ReiItemStagesPlugin.onReloadStarted();
+            ReiRecipeStagesPlugin.onReloadStarted();
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.EMI)) {
+            EmiItemStagesPlugin.onReloadStarted();
+            EmiRecipeStagesPlugin.onReloadStarted();
+        }
     }
 
     public void invokeOnClientReloadFinished() {
         AClientStageManager.onReloadFinished();
         AClientRestrictionManager.onReloadFinished();
 
-        if (Mods.JEI.isLoaded()) {
-            JeiItemStagesPlugin.MANAGER.buildCache();
-        } else if (Mods.ROUGHLYENOUGHITEMS.isLoaded()) {
-            ReiItemStagesPlugin.MANAGER.buildCache();
-        } else if (Mods.EMI.isLoaded()) {
-            EmiItemStagesPlugin.MANAGER.buildCache();
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.JEI)) {
+            JeiItemStagesPlugin.onReloadFinished();
+            JeiRecipeStagesPlugin.onReloadFinished();
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.REI)) {
+            ReiItemStagesPlugin.onReloadFinished();
+            ReiRecipeStagesPlugin.onReloadFinished();
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.EMI)) {
+            EmiItemStagesPlugin.onReloadFinished();
+            EmiRecipeStagesPlugin.onReloadFinished();
         }
     }
 
@@ -146,12 +171,19 @@ public class AInternalPlugin implements AStagesPlugin {
     public void invokeOnClientStagesSynced(AStageSource source, AOperation operation, Set<String> syncedStages) {
         if (operation == AOperation.LOGIN) { return; }
 
-        if (Mods.JEI.isLoaded()) {
-            JeiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
-        } else if (Mods.ROUGHLYENOUGHITEMS.isLoaded()) {
-            ReiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
-        } else if (Mods.EMI.isLoaded()) {
-            EmiItemStagesPlugin.MANAGER.onStageChanged(syncedStages);
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.JEI)) {
+            JeiItemStagesPlugin.onStagesChanged(operation, syncedStages);
+            JeiRecipeStagesPlugin.onStagesChanged(operation, syncedStages);
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.REI)) {
+            ReiItemStagesPlugin.onStagesChanged(operation, syncedStages);
+            ReiRecipeStagesPlugin.onStageChanged(operation, syncedStages);
+        }
+
+        if (RecipeViewerMods.isViewerActive(RecipeViewerMods.EMI)) {
+            EmiItemStagesPlugin.onStagesChanged(operation, syncedStages);
+            EmiRecipeStagesPlugin.onStageChanged(operation, syncedStages);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.simple;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.util.AFileIOUtils;
 import com.alessandro.astages.engine.ASimpleRestrictionManager;
@@ -21,7 +22,15 @@ public class ASimpleMigrationManager {
     public static void startMigration() {
         if (!AFileIOUtils.fileExists(PATH)) { return; }
 
-        Map<String, List<ASimpleRestriction>> rawRestrictions = AFileIOUtils.readFileContent(PATH, TYPE);
+        Map<String, List<ASimpleRestriction>> rawRestrictions;
+
+        try {
+            rawRestrictions = AFileIOUtils.readFileContent(PATH, TYPE);
+        } catch (Exception exception) {
+            AStages.LOGGER.error("Legacy simple_restrictions.json is corrupted and could not be parsed, skipping its content: {}", exception.getMessage());
+            rawRestrictions = null;
+        }
+
         ASimpleRestrictionManager.RESTRICTION_CACHE = new HashMap<>();
         ASimpleRestrictionManager.ID_TO_TYPE_CACHE = new HashMap<>();
         ASimpleRestrictionManager.HAS_RESTRICTION_BEEN_MODIFIED = new HashMap<>();
@@ -29,18 +38,22 @@ public class ASimpleMigrationManager {
             rawRestrictions.forEach((typeIdUppercased, restrictions) -> {
                 var type = AStagesRegistries.SIMPLE_RESTRICTION_TYPES.get(AResourceLocation.fromNamespaceAndPath(typeIdUppercased.toLowerCase()));
 
-                if (type != null) {
-                    ASimpleRestrictionManager.RESTRICTION_CACHE.put(type, restrictions);
-
-                    restrictions.forEach(restriction -> ASimpleRestrictionManager.ID_TO_TYPE_CACHE
-                        .computeIfAbsent(restriction.id, key -> new HashSet<>())
-                        .add(type)
-                    );
-
-                    ASimpleRestrictionManager.HAS_RESTRICTION_BEEN_MODIFIED.put(type, true);
-
-                    ASimpleRestrictionManager.synchronizeWithServer(type, restrictions);
+                if (type == null) { return; }
+                if (restrictions == null) {
+                    AStages.LOGGER.warn("Legacy simple_restrictions.json had a null restriction list for type '{}', skipping it.", typeIdUppercased);
+                    return;
                 }
+
+                ASimpleRestrictionManager.RESTRICTION_CACHE.put(type, restrictions);
+
+                restrictions.forEach(restriction -> ASimpleRestrictionManager.ID_TO_TYPE_CACHE
+                    .computeIfAbsent(restriction.id, key -> new HashSet<>())
+                    .add(type)
+                );
+
+                ASimpleRestrictionManager.HAS_RESTRICTION_BEEN_MODIFIED.put(type, true);
+
+                ASimpleRestrictionManager.synchronizeWithServer(type, restrictions);
             });
         }
 

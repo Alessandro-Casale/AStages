@@ -122,6 +122,10 @@ public class OfflinePlayerStage {
         return removeStatus;
     }
 
+    private static Set<String> readStagesFromDisk(UUID uuid) {
+        return ASetUtils.synchronizedSet(AFileIOUtils.readHashSetOrDefault(getPermanentStagesFile(uuid), String.class));
+    }
+
     @Info("Synchronization is required only if the player is 'physically' in the server!")
     public static boolean synchronizeWithClient(UUID uuid, AOperation operation, String stage) {
         var player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);

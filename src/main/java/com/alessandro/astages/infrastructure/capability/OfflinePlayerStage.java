@@ -27,7 +27,7 @@ public class OfflinePlayerStage {
     public static final String UUID_TO_USERNAME_FILE = "uuid_to_username";
     public static final String USERNAME_TO_UUID_FILE = "username_to_uuid";
 
-    private static final Map<UUID, Set<String>> CACHE = new HashMap<>();
+    private static final Map<UUID, Set<String>> CACHE = new ConcurrentHashMap<>();
 
     // Try using a Google BiMap
     private static Map<UUID, String> UUID_USERNAME;

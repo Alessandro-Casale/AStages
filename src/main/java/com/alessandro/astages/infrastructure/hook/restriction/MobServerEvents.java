@@ -7,6 +7,7 @@ import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.AMobRestriction;
 import com.alessandro.astages.engine.store.Attributes;
+import com.alessandro.astages.engine.util.EventGuards;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -126,8 +127,9 @@ public class MobServerEvents {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
         var player = event.getEntity();
-        var entityType = event.getTarget().getType();
+        if (!EventGuards.isValidPlayer(player)) { return; }
 
+        var entityType = event.getTarget().getType();
         var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), entityType);
 
         if (restriction != null && restriction.isDisabled(Attributes.RIGHT_CLICK_INTERACTIONS)) {

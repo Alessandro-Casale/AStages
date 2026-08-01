@@ -141,8 +141,9 @@ public class MobServerEvents {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onPlayerAttack(AttackEntityEvent event) {
         var player = event.getEntity();
-        var entityType = event.getTarget().getType();
+        if (!EventGuards.isValidPlayer(player)) { return; }
 
+        var entityType = event.getTarget().getType();
         var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), entityType);
 
         if (restriction != null && restriction.isDisabled(Attributes.ATTACKING)) {

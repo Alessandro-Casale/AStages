@@ -4,13 +4,13 @@ import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.util.EventGuards;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 
 @NotNullParams
@@ -20,17 +20,26 @@ public class OreServerEvents {
     @SubscribeEvent
     public static void onBlockBroken(BlockDropsEvent event) {
         if (event.getBreaker() instanceof Player player) {
-            if (canBeRunForPlayer(player)) {
-                var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), event.getState());
+            if (!EventGuards.isValidPlayer(player)) { return; }
 
-                if (restriction != null) {
-                    var newValue = EnchantmentHelper.processBlockExperience(event.getLevel(), event.getTool(), restriction.getReplacement().getExpDrop(event.getLevel(), event.getPos(), event.getBlockEntity(), player, event.getTool()));
-                    event.setDroppedExperience(newValue);
-                }
+            var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), event.getState());
+
+            if (restriction != null) {
+                var newValue = EnchantmentHelper.processBlockExperience(event.getLevel(), event.getTool(), restriction.getReplacement().getExpDrop(event.getLevel(), event.getPos(), event.getBlockEntity(), player, event.getTool()));
+                event.setDroppedExperience(newValue);
             }
         }
     }
-    public static boolean canBeRunForPlayer(@Nullable Player player) {
-        return player != null && !player.level().isClientSide && !(player instanceof FakePlayer);
+
+    @SubscribeEvent
+    public static void onPlayerHarvest(PlayerEvent.HarvestCheck event) {
+        var player = event.getEntity();
+        if (!EventGuards.isValidPlayer(player)) { return; }
+
+        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), event.getTargetBlock());
+
+        if (restriction != null) {
+            event.setCanHarvest(player.hasCorrectToolForDrops(restriction.getReplacement(), player.level(), event.getPos()));
+        }
     }
 }

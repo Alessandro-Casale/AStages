@@ -21,7 +21,6 @@
     "ore.ALevelChunk",
     "ore.ALevelChunkSection",
     "ore.ALightEngine",
-    "ore.APlayer",
     "ore.AServerPlayerGameMode",
     "ore.event.ABreakEvent",
     "recipe.minecraft.AAbstractFurnaceBlockEntity",

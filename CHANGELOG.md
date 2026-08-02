@@ -1,4 +1,4 @@
-## [2.4.1] - 22-07-2026
+## [2.5.0] - 02-08-2026
 
 
 New Features
@@ -13,6 +13,9 @@ Bug Fixes
 - Fix remove_all action and command. ([#237](https://github.com/Alessandro-Casale/AStages/pull/237))
 - Finally solved "AStages is forgetting Player Data". ([#239](https://github.com/Alessandro-Casale/AStages/pull/239))
 - Handle corrupted legacy simple_restrictions.json. ([#240](https://github.com/Alessandro-Casale/AStages/pull/240))
+- Improve player validation in block breaking and harvesting events. ([#253](https://github.com/Alessandro-Casale/AStages/pull/253))
+- Add player validation in entity interaction event. ([#254](https://github.com/Alessandro-Casale/AStages/pull/254))
+- Add player validation in player attack event. ([#255](https://github.com/Alessandro-Casale/AStages/pull/255))
 
 API Changes
 

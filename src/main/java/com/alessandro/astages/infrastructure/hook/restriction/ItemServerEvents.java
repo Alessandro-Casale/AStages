@@ -33,11 +33,11 @@ public class ItemServerEvents {
         if (canBeRunForPlayer(event.getPlayer())) {
             var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(AHolder.player(event.getPlayer()), event.getItemEntity().getItem());
 
-            if (restriction != null && restriction.isDisabled(Attributes.PICKING_UP)) {
+            if (restriction != null && restriction.isDisabled(Attributes.PICKUP)) {
                 event.setCanPickup(TriState.FALSE);
 
-                event.getItemEntity().setPickUpDelay(restriction.get(Attributes.PICK_UP_DELAY));
-                restriction.displayMessage(Attributes.Item.PICKING_UP_MESSAGE, event.getItemEntity().getItem(), event.getPlayer());
+                event.getItemEntity().setPickUpDelay(restriction.get(Attributes.PICKUP_DELAY));
+                restriction.displayMessage(Attributes.Item.PICKUP_MESSAGE, event.getItemEntity().getItem(), event.getPlayer());
             }
         }
     }
@@ -52,7 +52,7 @@ public class ItemServerEvents {
         if (restriction != null && restriction.isDisabled(Attributes.BLOCK_BREAKING)) {
             event.setCanceled(true);
 
-            restriction.displayMessage(Attributes.Item.MINING_MESSAGE, ABlockStateUtils.stateToStack(event.getState()), event.getPlayer());
+            restriction.displayMessage(Attributes.Item.BREAKING_MESSAGE, ABlockStateUtils.stateToStack(event.getState()), event.getPlayer());
         }
     }
 
@@ -63,7 +63,7 @@ public class ItemServerEvents {
 
             if (restriction != null && restriction.isDisabled(Attributes.RIGHT_CLICK_INTERACTIONS)) {
                 event.setCanceled(true);
-                restriction.displayMessage(Attributes.Item.USING_MESSAGE, event.getItemStack(), event.getEntity());
+                restriction.displayMessage(Attributes.Item.USE_MESSAGE, event.getItemStack(), event.getEntity());
             }
         }
     }
@@ -78,7 +78,7 @@ public class ItemServerEvents {
                 if (event.getEntity() instanceof ServerPlayer player) {
                     AInventoryUtils.updateSelectedSlot(player);
                 }
-                restriction.displayMessage(Attributes.Item.USING_MESSAGE, event.getItemStack(), event.getEntity());
+                restriction.displayMessage(Attributes.Item.USE_MESSAGE, event.getItemStack(), event.getEntity());
             }
 //            else if (restriction != null && restriction.isEnabled(Attributes.IGNORE_BLOCKS_AROUND) && restriction.isEnabled(Attributes.BLOCK_PLACING)) {
 //                return;
@@ -92,7 +92,7 @@ public class ItemServerEvents {
                     if (event.getEntity() instanceof ServerPlayer player) {
                         AInventoryUtils.updateSelectedSlot(player);
                     }
-                    restriction.displayMessage(Attributes.Item.USING_MESSAGE, block, event.getEntity());
+                    restriction.displayMessage(Attributes.Item.USE_MESSAGE, block, event.getEntity());
                 }
             }
         }
@@ -105,7 +105,7 @@ public class ItemServerEvents {
 
             if (restriction != null && restriction.isDisabled(Attributes.LEFT_CLICK_INTERACTIONS)) {
                 event.setCanceled(true);
-                restriction.displayMessage(Attributes.Item.USING_MESSAGE, event.getItemStack(), event.getEntity());
+                restriction.displayMessage(Attributes.Item.USE_MESSAGE, event.getItemStack(), event.getEntity());
             }
 //            else if (restriction == null) {
 //                var block = AStagesUtil.stateToStack(event.getLevel().getBlockState(event.getPos()));
@@ -127,7 +127,7 @@ public class ItemServerEvents {
 
             if (restriction != null && (restriction.isDisabled(Attributes.LEFT_CLICK_INTERACTIONS) || restriction.isDisabled(Attributes.RIGHT_CLICK_INTERACTIONS))) {
                 event.setCanceled(true);
-                restriction.displayMessage(Attributes.Item.USING_MESSAGE, event.getItemStack(), event.getEntity());
+                restriction.displayMessage(Attributes.Item.USE_MESSAGE, event.getItemStack(), event.getEntity());
             }
         }
     }
@@ -139,7 +139,7 @@ public class ItemServerEvents {
 
             if (restriction != null && (restriction.isDisabled(Attributes.RIGHT_CLICK_INTERACTIONS) || restriction.isDisabled(Attributes.RIGHT_CLICK_INTERACTIONS))) {
                 event.setCanceled(true);
-                restriction.displayMessage(Attributes.Item.USING_MESSAGE, event.getItemStack(), event.getEntity());
+                restriction.displayMessage(Attributes.Item.USE_MESSAGE, event.getItemStack(), event.getEntity());
             }
         }
     }
@@ -153,7 +153,7 @@ public class ItemServerEvents {
             if (restriction != null && restriction.isDisabled(Attributes.BLOCK_PLACING)) {
                 event.setCanceled(true);
                 AInventoryUtils.updateSelectedSlot(player);
-                restriction.displayMessage(Attributes.Item.PLACING_MESSAGE, stack, player);
+                restriction.displayMessage(Attributes.Item.PLACE_MESSAGE, stack, player);
             }
         }
     }

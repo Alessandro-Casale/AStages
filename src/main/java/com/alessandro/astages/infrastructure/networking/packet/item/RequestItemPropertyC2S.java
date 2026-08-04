@@ -42,7 +42,9 @@ public record RequestItemPropertyC2S(String id, String stage, ItemStack stack) i
             if (!Objects.equals(serverRestriction.getStage(), stage)) { throw EXCEPTION.apply(id); }
 
             Networking.sendToPlayer((ServerPlayer) context.player(), new ReplyItemPropertyS2C(id, stage, stack,
-                serverRestriction.get(Attributes.Item.HIDDEN_NAME).apply(stack),
+                serverRestriction.get(Attributes.Item.ACTION_BAR_MESSAGE).apply(stack),
+                serverRestriction.get(Attributes.Item.TOOLTIP_MESSAGE).apply(stack),
+                serverRestriction.get(Attributes.Item.RECIPE_VIEWER_MESSAGE).apply(stack),
                 serverRestriction.get(Attributes.Item.JADE_ITEM_MESSAGE).apply(stack),
                 serverRestriction.get(Attributes.Item.JADE_BLOCK_MESSAGE).apply(stack)
             ));

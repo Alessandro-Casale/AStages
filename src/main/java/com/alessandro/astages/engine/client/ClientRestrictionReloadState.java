@@ -1,61 +1,17 @@
 package com.alessandro.astages.engine.client;
 
-import com.alessandro.astages.infrastructure.integration.Mods;
-
 public class ClientRestrictionReloadState {
-    private static boolean areScriptsAvailable = false;
-    private static boolean didJeiFinishReloading = false;
-    private static boolean isReloading = false;
+    private static boolean areRestrictionsAvailable = true;
 
-    public static void reloadStarted() {
-        isReloading = true;
-        areScriptsAvailable = false;
-        didJeiFinishReloading = false;
+    public static boolean areRestrictionsAvailable() {
+        return areRestrictionsAvailable;
     }
 
-    public static void areScriptsAvailable(boolean areScriptsAvailable) {
-        ClientRestrictionReloadState.areScriptsAvailable = areScriptsAvailable;
-
-        if (ClientRestrictionReloadState.areScriptsAvailable) {
-            if (didJeiFinishReloading) {
-                isReloading = false;
-            }
-
-            ClientRestrictionEventService.fireUpdates();
-        }
+    public static void buildingRestrictions() {
+        areRestrictionsAvailable = false;
     }
 
-    public static boolean areScriptsAvailable() {
-        return areScriptsAvailable;
-    }
-
-    public static void jeiStartedReload() {
-        didJeiFinishReloading = false;
-    }
-
-    public static void jeiFinishedReload() {
-        didJeiFinishReloading = true;
-
-        if (areScriptsAvailable) {
-            isReloading = false;
-        }
-
-        ClientRestrictionEventService.fireUpdates();
-    }
-
-    public static boolean didJeiFinishReloading() {
-        if (!Mods.JEI.isLoaded()) {
-            return true;
-        }
-
-        return didJeiFinishReloading;
-    }
-
-    public static boolean isReloadFinished() {
-        return !isReloading;
-    }
-
-    public static boolean ableToUpdateJeiUI() {
-        return areScriptsAvailable() && didJeiFinishReloading() && isReloadFinished();
+    public static void restrictionsAvailable() {
+        areRestrictionsAvailable = true;
     }
 }

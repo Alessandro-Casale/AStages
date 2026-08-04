@@ -62,19 +62,7 @@ public class AClientRestrictionManager {
     // ----------------------------------------
     //              RELOAD STATE
     // ----------------------------------------
-    public static boolean isReloadFinished() {
-        return ClientRestrictionReloadState.isReloadFinished();
-    }
-
-    public static boolean areScriptsAvailable() {
-        return ClientRestrictionReloadState.areScriptsAvailable();
-    }
-
-    public static boolean didJeiFinishReloading() {
-        return ClientRestrictionReloadState.didJeiFinishReloading();
-    }
-
-    public static boolean ableToUpdateJeiUI() {
-        return ClientRestrictionReloadState.ableToUpdateJeiUI();
+    public static boolean areRestrictionsAvailable() {
+        return ClientRestrictionReloadState.areRestrictionsAvailable();
     }
 }

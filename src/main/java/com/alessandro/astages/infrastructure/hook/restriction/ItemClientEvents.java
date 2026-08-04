@@ -17,16 +17,16 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 public class ItemClientEvents {
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        if (event.getEntity() != null && AClientRestrictionManager.didJeiFinishReloading()) {
+        if (event.getEntity() != null && AClientRestrictionManager.areRestrictionsAvailable()) {
             var stack = event.getItemStack();
             var restriction = AClientRestrictionManager.ITEM_INSTANCE.getRestriction(AClientHolder.serverAndPlayer(), stack);
             var properties = AClientRestrictionManager.ITEM_INSTANCE.getProperties(AClientHolder.serverAndPlayer(), stack);
 
-            if (restriction != null && restriction.isEnabled(Attributes.HIDING_TOOLTIP)) {
+            if (restriction != null && restriction.isDisabled(Attributes.SHOW_TOOLTIP_NAME)) {
                 event.getToolTip().clear();
 
                 if (properties != null) {
-                    event.getToolTip().add(properties.hiddenName());
+                    event.getToolTip().add(properties.getMessage(Attributes.Item.TOOLTIP_MESSAGE, stack));
                 } else {
                     event.getToolTip().addFirst(Component.literal("%[ASTAGES_FROM_ITEMTOOLTIPEVENT]%"));
                 }

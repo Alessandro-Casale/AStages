@@ -20,8 +20,8 @@ public class JadeMobHandler {
                 if (restriction != null) {
                     tooltip.getTooltip().clear();
 
-                    if (!restriction.isValueNull(Attributes.Mob.JADE_MOB_MESSAGE)) {
-                        tooltip.getTooltip().add(restriction.get(Attributes.Mob.JADE_MOB_MESSAGE).get());
+                    if (!restriction.isValueNull(Attributes.Mob.JADE_MESSAGE)) {
+                        tooltip.getTooltip().add(restriction.get(Attributes.Mob.JADE_MESSAGE).get());
                     }
                 }
             }

@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
-public record SyncItemTagS2C(String id, String stage, TagKey<Item> tag, Set<Item> ignoredItems, boolean renderItemName, boolean hideTooltip, boolean hideInJei) implements AStagesPacket {
+public record SyncItemTagS2C(String id, String stage, TagKey<Item> tag, Set<Item> ignoredItems,
+                             boolean hideInRecipeViewer,
+                             boolean showActionBarName, boolean showTooltipName, boolean showRecipeViewerName, boolean showJadeItemName, boolean showJadeBlockName) implements AStagesPacket {
     public static final Type<SyncItemTagS2C> TYPE = new Type<>(AResourceLocation.fromNamespaceAndPath("tag_syncer_s2c_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncItemTagS2C> STREAM_CODEC = ACodecs.composite(
@@ -29,24 +31,32 @@ public record SyncItemTagS2C(String id, String stage, TagKey<Item> tag, Set<Item
         ByteBufCodecs.STRING_UTF8, SyncItemTagS2C::stage,
         ACodecs.tagKey(Registries.ITEM), SyncItemTagS2C::tag,
         ByteBufCodecs.registry(Registries.ITEM).apply(ByteBufCodecs.collection(HashSet::new)), SyncItemTagS2C::ignoredItems,
-        ByteBufCodecs.BOOL, SyncItemTagS2C::renderItemName,
-        ByteBufCodecs.BOOL, SyncItemTagS2C::hideTooltip,
-        ByteBufCodecs.BOOL, SyncItemTagS2C::hideInJei,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::hideInRecipeViewer,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::showActionBarName,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::showTooltipName,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::showRecipeViewerName,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::showJadeItemName,
+        ByteBufCodecs.BOOL, SyncItemTagS2C::showJadeBlockName,
         SyncItemTagS2C::new
     );
 
     public SyncItemTagS2C(AItemTagRestriction restriction) {
-        this(restriction.getId(), restriction.getStage(), restriction.getTag(), restriction.getIgnoredItems(), restriction.get(Attributes.RENDERING_NAME), restriction.get(Attributes.HIDING_TOOLTIP), restriction.get(Attributes.HIDING_JEI));
+        this(restriction.getId(), restriction.getStage(), restriction.getTag(), restriction.getIgnoredItems(),
+            restriction.get(Attributes.HIDING_RECIPE_VIEWER),
+            restriction.get(Attributes.SHOW_ACTION_BAR_NAME), restriction.get(Attributes.SHOW_TOOLTIP_NAME), restriction.get(Attributes.SHOW_RECIPE_VIEWER_NAME), restriction.get(Attributes.SHOW_JADE_ITEM_NAME), restriction.get(Attributes.SHOW_JADE_BLOCK_NAME));
     }
 
     @Override
     public void run(IPayloadContext context) {
         var restriction = new AClientItemTagRestriction(id, stage)
-                .set(Attributes.RENDERING_NAME, renderItemName)
-                .set(Attributes.HIDING_TOOLTIP, hideTooltip)
-                .set(Attributes.HIDING_JEI, hideInJei)
-                .restrict(tag)
-                .ignoreItems(ignoredItems);
+            .restrict(tag)
+            .ignoreItems(ignoredItems)
+            .set(Attributes.HIDING_RECIPE_VIEWER, hideInRecipeViewer)
+            .set(Attributes.SHOW_ACTION_BAR_NAME, showActionBarName)
+            .set(Attributes.SHOW_TOOLTIP_NAME, showTooltipName)
+            .set(Attributes.SHOW_RECIPE_VIEWER_NAME, showRecipeViewerName)
+            .set(Attributes.SHOW_JADE_ITEM_NAME, showJadeItemName)
+            .set(Attributes.SHOW_JADE_BLOCK_NAME, showJadeBlockName);
 
         AClientRestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
     }

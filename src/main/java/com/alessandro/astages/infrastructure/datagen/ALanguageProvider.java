@@ -59,16 +59,18 @@ public class ALanguageProvider extends LanguageProvider {
         add("chat.astages.simple.valid_type.item", "- %s");
 
         // ITEM
-        add("tooltip.astages.item.hidden_name", "Unfamiliar Item");
         add("tooltip.astages.item.item_description", "This item has been staged to [%s]");
         add("message.astages.item.drop", "You dropped the %s.");
-        add("message.astages.item.mine", "You do not know how to mine with the %s.");
-        add("message.astages.item.attach", "You don't know how to attack with the %s.");
+        add("message.astages.item.break", "You do not know how to mine with the %s.");
+        add("message.astages.item.attack", "You don't know how to attack with the %s.");
         add("message.astages.item.use", "You don't know how to use the %s.");
         add("message.astages.item.pickup", "You couldn't pick up the %s.");
         add("message.astages.item.place", "You couldn't place the %s.");
-        add("tooltip.astages.item.jade_integration.item", "Unfamiliar Item");
-        add("tooltip.astages.item.jade_integration.block", "Unfamiliar Block");
+        add("message.astages.item.action_bar_message", "Unfamiliar Item");
+        add("message.astages.item.tooltip_message", "Unfamiliar Item");
+        add("message.astages.item.recipe_viewer_message", "Unfamiliar Item");
+        add("message.astages.item.jade_integration.item", "Unfamiliar Item");
+        add("message.astages.item.jade_integration.block", "Unfamiliar Block");
 
         // DIMENSION
         add("message.astages.dimension.enter", "You can't visit this dimension!");
@@ -78,7 +80,7 @@ public class ALanguageProvider extends LanguageProvider {
         add("message.astages.dimension.access.zero", "You can no longer enter this dimension!"); // You cannot enter this dimension anymore
 
         // SCREEN
-        add("message.astages.screen", "You can't open this menu!");
+        add("message.astages.screen.open", "You can't open this menu!");
 
         // PET
         add("message.astages.pet.tame", "You can't tame %s!");

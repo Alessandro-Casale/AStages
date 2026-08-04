@@ -36,17 +36,16 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.SPAWNER)
-            .addAttribute(Attributes.MOB_SPAWNING)
-            .addAttribute(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)
+            .addAttribute(Attributes.OVERALL_MOB_SPAWNING)
+            .addAttribute(Attributes.SPAWN_WITH_EQUIPMENT)
             .addAttribute(Attributes.ATTACKING).setAttribute(Attributes.ATTACKING, true) // Left click interactions
             .addAttribute(Attributes.RIGHT_CLICK_INTERACTIONS).setAttribute(Attributes.RIGHT_CLICK_INTERACTIONS, true)
 
-            .addAttribute(Attributes.REPLACE, true)
+            .addAttribute(Attributes.REPLACEMENT, true)
             .addAttribute(Attributes.MIN_LIGHT_LEVEL, true)
             .addAttribute(Attributes.MAX_LIGHT_LEVEL, true)
 
-            .addAttribute(Attributes.Mob.JADE_MOB_MESSAGE)
+            .addAttribute(Attributes.Mob.JADE_MESSAGE)
             .addAttribute(Attributes.Mob.INTERACTION_MESSAGE)
             .addAttribute(Attributes.Mob.ATTACK_MESSAGE);
 
@@ -106,7 +105,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     public AMobRestriction spawnWithEquipment() {
-        return set(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT, true);
+        return set(Attributes.SPAWN_WITH_EQUIPMENT, true);
     }
 
     public AMobRestriction equipment(EquipmentSlot slot, ItemStack stack) {
@@ -143,11 +142,11 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     public AMobRestriction replaceWith(EntityType<?> value) {
-        return set(Attributes.REPLACE, value);
+        return set(Attributes.REPLACEMENT, value);
     }
 
     public AMobRestriction disableOverallSpawning() {
-        return set(Attributes.MOB_SPAWNING, false);
+        return set(Attributes.OVERALL_MOB_SPAWNING, false);
     }
 
     public AMobRestriction disableAttack() {
@@ -158,8 +157,8 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
         return set(Attributes.RIGHT_CLICK_INTERACTIONS, false);
     }
 
-    public AMobRestriction jadeMessage(Supplier<Component> message) {
-        return set(Attributes.Mob.JADE_MOB_MESSAGE, message);
+    public AMobRestriction jadeMobMessage(Supplier<Component> message) {
+        return set(Attributes.Mob.JADE_MESSAGE, message);
     }
 
     public AMobRestriction attackMessage(Supplier<Component> message) {
@@ -171,8 +170,13 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
+    public AMobRestriction jadeMessage(Supplier<Component> message) {
+        return set(Attributes.Mob.JADE_MESSAGE, message);
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AMobRestriction spawnReplacementWithEquipment(boolean value) {
-        set(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT, value);
+        set(Attributes.SPAWN_WITH_EQUIPMENT, value);
         return this;
     }
 
@@ -195,8 +199,8 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
-    public AMobRestriction setDisableSpawner(boolean value) {
-        set(Attributes.SPAWNER, !value);
+    public AMobRestriction setDisableSpawner(boolean ignoredValue) {
+//        set(Attributes.SPAWNER, !value);
         return this;
     }
 
@@ -208,13 +212,13 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AMobRestriction setReplacing(EntityType<?> value) {
-        set(Attributes.REPLACE, value);
+        set(Attributes.REPLACEMENT, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AMobRestriction setEnableMobSpawning(boolean value) {
-        set(Attributes.MOB_SPAWNING, value);
+        set(Attributes.OVERALL_MOB_SPAWNING, value);
         return this;
     }
 
@@ -232,7 +236,7 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AMobRestriction setJadeMobMessage(Supplier<Component> message) {
-        set(Attributes.Mob.JADE_MOB_MESSAGE, message);
+        set(Attributes.Mob.JADE_MESSAGE, message);
         return this;
     }
 

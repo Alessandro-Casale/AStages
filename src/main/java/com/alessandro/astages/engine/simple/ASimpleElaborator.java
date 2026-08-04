@@ -109,13 +109,13 @@ public class ASimpleElaborator {
     }
 
     public static void elaborateTame(ASimpleRestriction simple, boolean ignoredMarkAsDirty) {
-        ARestrictionManager.PET_INSTANCE.addRestriction(new APetRestriction(simple.id, simple.stage).restrict(BuiltInRegistries.ENTITY_TYPE.get(AResourceLocation.parse(simple.object))).set(Attributes.BREEDABLE, true).set(Attributes.MOUNTABLE, true).set(Attributes.TAMABLE, false));
+        ARestrictionManager.PET_INSTANCE.addRestriction(new APetRestriction(simple.id, simple.stage).restrict(BuiltInRegistries.ENTITY_TYPE.get(AResourceLocation.parse(simple.object))).set(Attributes.BREEDING, true).set(Attributes.MOUNTING, true).set(Attributes.TAMING, false));
 
         commonOperations(simple);
     }
 
     public static void elaborateMount(ASimpleRestriction simple, boolean ignoredMarkAsDirty) {
-        ARestrictionManager.PET_INSTANCE.addRestriction(new APetRestriction(simple.id, simple.stage).restrict(BuiltInRegistries.ENTITY_TYPE.get(AResourceLocation.parse(simple.object))).set(Attributes.BREEDABLE, true).set(Attributes.MOUNTABLE, false).set(Attributes.TAMABLE, true));
+        ARestrictionManager.PET_INSTANCE.addRestriction(new APetRestriction(simple.id, simple.stage).restrict(BuiltInRegistries.ENTITY_TYPE.get(AResourceLocation.parse(simple.object))).set(Attributes.BREEDING, true).set(Attributes.MOUNTING, false).set(Attributes.TAMING, true));
 
         commonOperations(simple);
     }

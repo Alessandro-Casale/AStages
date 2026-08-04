@@ -33,13 +33,13 @@ public record SyncMobS2C(String id, String stage, Set<EntityType<?>> types, Comp
     );
 
     public SyncMobS2C(AMobRestriction restriction) {
-        this(restriction.getId(), restriction.getStage(), restriction.getMobs(), restriction.get(Attributes.Mob.JADE_MOB_MESSAGE).get());
+        this(restriction.getId(), restriction.getStage(), restriction.getMobs(), restriction.get(Attributes.Mob.JADE_MESSAGE).get());
     }
 
     @Override
     public void run(IPayloadContext context) {
         var restriction = new AClientMobRestriction(id, stage)
-                .set(Attributes.Mob.JADE_MOB_MESSAGE, () -> jadeMobMessage);
+                .set(Attributes.Mob.JADE_MESSAGE, () -> jadeMobMessage);
 
         for (var type : types) {
             restriction.restrict(type);

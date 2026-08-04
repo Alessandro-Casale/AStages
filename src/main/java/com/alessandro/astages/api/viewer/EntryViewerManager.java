@@ -54,7 +54,7 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
                 }
 
                 var restriction = wrapper.evaluateRestriction(holder, entry);
-                if (restriction != null && restriction.isEnabled(Attributes.HIDING_JEI)) {
+                if (restriction != null && restriction.isDisabled(Attributes.SHOW_RECIPE_VIEWER_NAME)) {
                     hidden.add(entry);
                 }
             });

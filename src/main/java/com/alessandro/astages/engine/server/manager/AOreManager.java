@@ -32,7 +32,7 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
     private final BlockCache<AOreRestriction> blockCache = new BlockCache<>() {
         @Override
         public void index(AOreRestriction restriction) {
-            if (restriction.isEnabled(Attributes.STAGE_ALL_BLOCK_STATES)) {
+            if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
                 add(restriction.getOriginal().getBlock(), restriction);
             }
         }
@@ -87,7 +87,7 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
         blockCache.remove(restriction);
         affectsPlayerCache.remove(restriction);
 
-        if (restriction.isEnabled(Attributes.STAGE_ALL_BLOCK_STATES)) {
+        if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
             blockCache.add(restriction.getOriginal().getBlock(), restriction);
         }
 

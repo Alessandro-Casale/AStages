@@ -37,7 +37,7 @@ public class ARegionRestriction extends ARestriction<ARegionRestriction, Void, B
             .addAttribute(Attributes.GENERIC_INTERACTIONS)
             .addAttribute(Attributes.EXPLOSIONS_AFFECT_BLOCKS)
             .addAttribute(Attributes.EXPLOSIONS_AFFECT_ENTITIES)
-            .addAttribute(Attributes.MOB_SPAWNING)
+            .addAttribute(Attributes.OVERALL_MOB_SPAWNING).setAttribute(Attributes.OVERALL_MOB_SPAWNING, false)
             .addAttribute(Attributes.PERFORM_COMMANDS)
 
             .addAttribute(Attributes.DIMENSION, true)
@@ -122,24 +122,24 @@ public class ARegionRestriction extends ARestriction<ARegionRestriction, Void, B
         return disabledCommands;
     }
 
-    public ARegionRestriction explosionsAffectBlocks(boolean value) {
-        return set(Attributes.EXPLOSIONS_AFFECT_BLOCKS, value);
+    public ARegionRestriction explosionsAffectBlocks() {
+        return set(Attributes.EXPLOSIONS_AFFECT_BLOCKS, true);
     }
 
-    public ARegionRestriction explosionsAffectEntities(boolean value) {
-        return set(Attributes.EXPLOSIONS_AFFECT_ENTITIES, value);
+    public ARegionRestriction explosionsAffectEntities() {
+        return set(Attributes.EXPLOSIONS_AFFECT_ENTITIES, true);
     }
 
-    public ARegionRestriction allowInteractions(boolean value) {
-        return set(Attributes.GENERIC_INTERACTIONS, value);
+    public ARegionRestriction allowInteractions() {
+        return set(Attributes.GENERIC_INTERACTIONS, true);
     }
 
-    public ARegionRestriction allowMobSpawning(boolean value) {
-        return set(Attributes.MOB_SPAWNING, value);
+    public ARegionRestriction allowMobSpawning() {
+        return set(Attributes.OVERALL_MOB_SPAWNING, true);
     }
 
-    public ARegionRestriction denyCommands(boolean value) {
-        return set(Attributes.PERFORM_COMMANDS, value);
+    public ARegionRestriction denyCommands() {
+        return set(Attributes.PERFORM_COMMANDS, false);
     }
 
     public ARegionRestriction denyCommands(String... commands) {
@@ -179,7 +179,7 @@ public class ARegionRestriction extends ARestriction<ARegionRestriction, Void, B
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ARegionRestriction setEnableMobSpawning(boolean value) {
-        set(Attributes.MOB_SPAWNING, value);
+        set(Attributes.OVERALL_MOB_SPAWNING, value);
         return this;
     }
 

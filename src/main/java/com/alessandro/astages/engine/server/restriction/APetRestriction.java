@@ -28,9 +28,9 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.TAMABLE)
-            .addAttribute(Attributes.BREEDABLE)
-            .addAttribute(Attributes.MOUNTABLE)
+            .addAttribute(Attributes.TAMING)
+            .addAttribute(Attributes.BREEDING)
+            .addAttribute(Attributes.MOUNTING)
 
             .addAttribute(Attributes.Pet.TAME_MESSAGE)
             .addAttribute(Attributes.Pet.BREED_MESSAGE)
@@ -56,15 +56,15 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
     }
 
     public APetRestriction allowTaming() {
-        return set(Attributes.TAMABLE, true);
+        return set(Attributes.TAMING, true);
     }
 
     public APetRestriction allowBreeding() {
-        return set(Attributes.BREEDABLE, true);
+        return set(Attributes.BREEDING, true);
     }
 
     public APetRestriction allowMounting() {
-        return set(Attributes.MOUNTABLE, true);
+        return set(Attributes.MOUNTING, true);
     }
 
     public APetRestriction tameMessage(Function<Entity, Component> message) {
@@ -81,19 +81,19 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setTamable(boolean value) {
-        set(Attributes.TAMABLE, value);
+        set(Attributes.TAMING, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setBreedable(boolean value) {
-        set(Attributes.BREEDABLE, value);
+        set(Attributes.BREEDING, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public APetRestriction setMountable(boolean value) {
-        set(Attributes.MOUNTABLE, value);
+        set(Attributes.MOUNTING, value);
         return this;
     }
 

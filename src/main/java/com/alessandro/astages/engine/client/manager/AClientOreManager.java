@@ -30,7 +30,7 @@ public class AClientOreManager extends AClientManager<AClientOreRestriction, Ore
     private final BlockClientCache<AClientOreRestriction> blockCache = new BlockClientCache<>() {
         @Override
         public void index(AClientOreRestriction restriction) {
-            if (restriction.isEnabled(Attributes.STAGE_ALL_BLOCK_STATES)) {
+            if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
                 add(restriction.getOriginal().getBlock(), restriction);
             }
         }

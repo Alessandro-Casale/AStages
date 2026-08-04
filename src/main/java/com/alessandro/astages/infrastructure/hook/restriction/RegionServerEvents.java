@@ -33,7 +33,7 @@ public class RegionServerEvents {
         if (canBeRunForPlayer(player)) {
             var restriction = ARestrictionManager.REGION_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pos);
 
-            if (restriction != null && restriction.isDisabled(Attributes.MOB_SPAWNING)) {
+            if (restriction != null && restriction.isDisabled(Attributes.OVERALL_MOB_SPAWNING)) {
                 var restrictedDimension = restriction.get(Attributes.DIMENSION);
 
                 if (restrictedDimension == null || event.getLevel().getLevel().dimension().location().equals(restrictedDimension)) {

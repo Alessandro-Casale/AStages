@@ -59,7 +59,7 @@ public class StructureServerEvents {
             if (restriction != null && restriction.isDisabled(Attributes.BLOCK_BREAKING)) {
                 if (!restriction.isBlockBreakable(event.getState())) {
                     event.setCanceled(true);
-                    restriction.displayMessage(Attributes.Structure.MINING_MESSAGE, structureId, player);
+                    restriction.displayMessage(Attributes.Structure.BREAKING_MESSAGE, structureId, player);
                     break;
                 }
             }
@@ -144,7 +144,7 @@ public class StructureServerEvents {
                 if (restriction != null && restriction.isDisabled(Attributes.BLOCK_PLACING)) {
                     if (!restriction.isBlockPlaceable(event.getPlacedBlock())) {
                         event.setCanceled(true);
-                        restriction.displayMessage(Attributes.Structure.PLACING_MESSAGE, structureId, player);
+                        restriction.displayMessage(Attributes.Structure.PLACE_MESSAGE, structureId, player);
                         AInventoryUtils.updateSelectedSlot(player);
                         break;
                     }

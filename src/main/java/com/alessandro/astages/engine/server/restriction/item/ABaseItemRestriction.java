@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
+@SuppressWarnings("UnusedReturnValue")
 public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> extends ARestriction<R, U, ItemStack> implements AChangeable, AMarkable {
     public ABaseItemRestriction(String id, String stage) {
         super(id, stage);
@@ -26,30 +27,34 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     @Override
     public @NotNull AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.RENDERING_NAME)
-            .addAttribute(Attributes.HIDING_TOOLTIP)
-            .addAttribute(Attributes.PICKING_UP)
+            .addAttribute(Attributes.PICKUP)
             .addAttribute(Attributes.EQUIPPING)
             .addAttribute(Attributes.STORING_IN_INVENTORY)
             .addAttribute(Attributes.ATTACKING)
-            .addAttribute(Attributes.HIDING_JEI)
+            .addAttribute(Attributes.HIDING_RECIPE_VIEWER)
             .addAttribute(Attributes.BLOCK_PLACING)
             .addAttribute(Attributes.LEFT_CLICK_INTERACTIONS)
             .addAttribute(Attributes.RIGHT_CLICK_INTERACTIONS)
             .addAttribute(Attributes.BLOCK_BREAKING)
             .addAttribute(Attributes.BLOCK_INTERACTIONS)
-            // .addAttribute(Attributes.IGNORE_BLOCKS_AROUND)
             .addAttribute(Attributes.STORING_IN_CONTAINERS)
+            .addAttribute(Attributes.SHOW_ACTION_BAR_NAME)
+            .addAttribute(Attributes.SHOW_TOOLTIP_NAME)
+            .addAttribute(Attributes.SHOW_RECIPE_VIEWER_NAME)
+            .addAttribute(Attributes.SHOW_JADE_ITEM_NAME)
+            .addAttribute(Attributes.SHOW_JADE_BLOCK_NAME)
 
-            .addAttribute(Attributes.PICK_UP_DELAY)
+            .addAttribute(Attributes.PICKUP_DELAY)
 
-            .addAttribute(Attributes.Item.HIDDEN_NAME)
             .addAttribute(Attributes.Item.DROP_MESSAGE)
             .addAttribute(Attributes.Item.ATTACK_MESSAGE)
-            .addAttribute(Attributes.Item.PICKING_UP_MESSAGE)
-            .addAttribute(Attributes.Item.USING_MESSAGE)
-            .addAttribute(Attributes.Item.MINING_MESSAGE)
-            .addAttribute(Attributes.Item.PLACING_MESSAGE)
+            .addAttribute(Attributes.Item.PICKUP_MESSAGE)
+            .addAttribute(Attributes.Item.USE_MESSAGE)
+            .addAttribute(Attributes.Item.BREAKING_MESSAGE)
+            .addAttribute(Attributes.Item.PLACE_MESSAGE)
+            .addAttribute(Attributes.Item.ACTION_BAR_MESSAGE)
+            .addAttribute(Attributes.Item.TOOLTIP_MESSAGE)
+            .addAttribute(Attributes.Item.RECIPE_VIEWER_MESSAGE)
             .addAttribute(Attributes.Item.JADE_ITEM_MESSAGE)
             .addAttribute(Attributes.Item.JADE_BLOCK_MESSAGE);
 
@@ -102,11 +107,15 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     }
 
     public R pickupDelay(int value) {
-        return set(Attributes.PICK_UP_DELAY, value);
+        return set(Attributes.PICKUP_DELAY, value);
     }
 
     public R allowAttack() {
         return set(Attributes.ATTACKING, true);
+    }
+
+    public R showInRecipeViewer() {
+        return set(Attributes.HIDING_RECIPE_VIEWER, false);
     }
 
     public R allowInventoryStorage() {
@@ -118,19 +127,7 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     }
 
     public R allowPickup() {
-        return set(Attributes.PICKING_UP, true);
-    }
-
-    public R showTooltip() {
-        return set(Attributes.HIDING_TOOLTIP, false);
-    }
-
-    public R showName() {
-        return set(Attributes.RENDERING_NAME, true);
-    }
-
-    public R showInJEI() {
-        return set(Attributes.HIDING_JEI, false);
+        return set(Attributes.PICKUP, true);
     }
 
     public R allowPlacement() {
@@ -157,8 +154,35 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
         return set(Attributes.STORING_IN_CONTAINERS, true);
     }
 
-    public R hiddenName(Function<ItemStack, Component> message) {
-        return set(Attributes.Item.HIDDEN_NAME, message);
+    @SuppressWarnings("unchecked")
+    public R globalShowName() {
+        showActionBarName();
+        showTooltipName();
+        showRecipeViewerName();
+        showJadeItemName();
+        showJadeBlockName();
+
+        return (R) this;
+    }
+
+    public R showActionBarName() {
+        return set(Attributes.SHOW_ACTION_BAR_NAME, true);
+    }
+
+    public R showTooltipName() {
+        return set(Attributes.SHOW_TOOLTIP_NAME, true);
+    }
+
+    public R showRecipeViewerName() {
+        return set(Attributes.SHOW_RECIPE_VIEWER_NAME, true);
+    }
+
+    public R showJadeItemName() {
+        return set(Attributes.SHOW_JADE_ITEM_NAME, true);
+    }
+
+    public R showJadeBlockName() {
+        return set(Attributes.SHOW_JADE_BLOCK_NAME, true);
     }
 
     public R dropMessage(Function<ItemStack, Component> message) {
@@ -170,19 +194,42 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     }
 
     public R pickupMessage(Function<ItemStack, Component> message) {
-        return set(Attributes.Item.PICKING_UP_MESSAGE, message);
+        return set(Attributes.Item.PICKUP_MESSAGE, message);
     }
 
     public R useMessage(Function<ItemStack, Component> message) {
-        return set(Attributes.Item.USING_MESSAGE, message);
+        return set(Attributes.Item.USE_MESSAGE, message);
     }
 
-    public R mineMessage(Function<ItemStack, Component> message) {
-        return set(Attributes.Item.MINING_MESSAGE, message);
+    public R breakMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.BREAKING_MESSAGE, message);
     }
 
     public R placeMessage(Function<ItemStack, Component> message) {
-        return set(Attributes.Item.PLACING_MESSAGE, message);
+        return set(Attributes.Item.PLACE_MESSAGE, message);
+    }
+
+    @SuppressWarnings("unchecked")
+    public R globalHiddenMessage(Function<ItemStack, Component> message) {
+        actionBarMessage(message);
+        tooltipMessage(message);
+        recipeViewerMessage(message);
+        jadeItemMessage(message);
+        jadeBlockMessage(message);
+
+        return (R) this;
+    }
+
+    public R actionBarMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.ACTION_BAR_MESSAGE, message);
+    }
+
+    public R tooltipMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.TOOLTIP_MESSAGE, message);
+    }
+
+    public R recipeViewerMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.RECIPE_VIEWER_MESSAGE, message);
     }
 
     public R jadeItemMessage(Function<ItemStack, Component> message) {
@@ -193,9 +240,42 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
         return set(Attributes.Item.JADE_BLOCK_MESSAGE, message);
     }
 
+    @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public R showTooltip() {
+        // return set(Attributes.HIDING_TOOLTIP, false);
+        return (R) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public R showName() {
+        // return set(Attributes.RENDERING_NAME, true);
+        return (R) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public R hiddenName(Function<ItemStack, Component> message) {
+        // return set(Attributes.Item.HIDDEN_NAME, message);
+        return (R) this;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public R mineMessage(Function<ItemStack, Component> message) {
+        return set(Attributes.Item.BREAKING_MESSAGE, message);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public R showInJEI() {
+        // return set(Attributes.HIDING_RECIPE_VIEWER, false);
+        return (R) this;
+    }
+
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPickUpDelay(int value) {
-        set(Attributes.PICK_UP_DELAY, value);
+        set(Attributes.PICKUP_DELAY, value);
         return this;
     }
 
@@ -219,25 +299,25 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setCanPickedUp(boolean value) {
-        set(Attributes.PICKING_UP, value);
+        set(Attributes.PICKUP, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
-    public ABaseItemRestriction<R, U> setHideTooltip(boolean value) {
-        set(Attributes.HIDING_TOOLTIP, value);
+    public ABaseItemRestriction<R, U> setHideTooltip(boolean ignoredValue) {
+        // set(Attributes.HIDING_TOOLTIP, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
-    public ABaseItemRestriction<R, U> setRenderItemName(boolean value) {
-        set(Attributes.RENDERING_NAME, value);
+    public ABaseItemRestriction<R, U> setRenderItemName(boolean ignoredValue) {
+        // set(Attributes.RENDERING_NAME, value);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
-    public ABaseItemRestriction<R, U> setHideInJEI(boolean value) {
-        set(Attributes.HIDING_JEI, value);
+    public ABaseItemRestriction<R, U> setHideInJEI(boolean ignoredValue) {
+        // set(Attributes.HIDING_RECIPE_VIEWER, value);
         return this;
     }
 
@@ -285,7 +365,7 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setHiddenName(Function<ItemStack, Component> message) {
-        set(Attributes.Item.HIDDEN_NAME, message);
+        // set(Attributes.Item.HIDDEN_NAME, message);
         return this;
     }
 
@@ -303,25 +383,25 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPickupMessage(Function<ItemStack, Component> message) {
-        set(Attributes.Item.PICKING_UP_MESSAGE, message);
+        set(Attributes.Item.PICKUP_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setUsageMessage(Function<ItemStack, Component> message) {
-        set(Attributes.Item.USING_MESSAGE, message);
+        set(Attributes.Item.USE_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setMineMessage(Function<ItemStack, Component> message) {
-        set(Attributes.Item.MINING_MESSAGE, message);
+        set(Attributes.Item.BREAKING_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ABaseItemRestriction<R, U> setPlaceMessage(Function<ItemStack, Component> message) {
-        set(Attributes.Item.PLACING_MESSAGE, message);
+        set(Attributes.Item.PLACE_MESSAGE, message);
         return this;
     }
 

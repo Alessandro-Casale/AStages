@@ -51,8 +51,8 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         if (registry.isPropertyPresent(key)) {
             var restriction = registry.getProperty(key);
             if (restriction != null) {
-                return AStagesClientUtils.hasStage(holder, AStageType.SERVER, restriction.stage()) ||
-                    AStagesClientUtils.hasStage(holder, AStageType.PLAYER, restriction.stage()) ? null : restriction;
+                return AStagesClientUtils.hasStage(holder, AStageType.SERVER, restriction.getStage()) ||
+                    AStagesClientUtils.hasStage(holder, AStageType.PLAYER, restriction.getStage()) ? null : restriction;
             } else {
                 return null;
             }
@@ -105,7 +105,7 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         Set<String> toReturn = new HashSet<>();
 
         registry.forEach(restriction -> {
-            if (restriction.isRestricted(stack) && restriction.isEnabled(Attributes.HIDING_JEI)) { toReturn.add(restriction.getStage()); }
+            if (restriction.isRestricted(stack) && restriction.isEnabled(Attributes.HIDING_RECIPE_VIEWER)) { toReturn.add(restriction.getStage()); }
         });
 
         return toReturn;
@@ -115,7 +115,7 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         Set<String> toReturn = new HashSet<>();
 
         registry.getModRestrictions().forEach(restriction -> {
-            if (restriction.getModIds().contains(resourceLocation.getNamespace()) && restriction.isEnabled(Attributes.HIDING_JEI)) {
+            if (restriction.getModIds().contains(resourceLocation.getNamespace()) && restriction.isEnabled(Attributes.HIDING_RECIPE_VIEWER)) {
                 toReturn.add(restriction.getStage());
             }
         });

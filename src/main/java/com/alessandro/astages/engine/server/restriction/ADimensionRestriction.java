@@ -36,7 +36,7 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
 
             .addAttribute(Attributes.MAX_ACCESS)
 
-            .addAttribute(Attributes.CHAT_FORMATTING)
+            .addAttribute(Attributes.TIMER_FORMATTING)
 
             .addAttribute(Attributes.Dimension.ENTER_MESSAGE)
             .addAttribute(Attributes.Dimension.LEAVE_MESSAGE)
@@ -111,7 +111,7 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
     }
 
     public ADimensionRestriction timerFormatting(ChatFormatting value) {
-        return set(Attributes.CHAT_FORMATTING, value);
+        return set(Attributes.TIMER_FORMATTING, value);
     }
 
     public ADimensionRestriction enterMessage(Function<ResourceLocation, Component> message) {
@@ -146,7 +146,7 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public ADimensionRestriction setTimerFormatting(ChatFormatting value) {
-        set(Attributes.CHAT_FORMATTING, value);
+        set(Attributes.TIMER_FORMATTING, value);
         return this;
     }
 

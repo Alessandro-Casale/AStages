@@ -43,7 +43,7 @@ public class MobServerEvents {
             var restriction = ARestrictionManager.MOB_INSTANCE.getRestriction(AHolder.serverAndPlayer(nearestPlayer), entityType);
 
             if (restriction != null) {
-                if (restriction.isDisabled(Attributes.MOB_SPAWNING)) {
+                if (restriction.isDisabled(Attributes.OVERALL_MOB_SPAWNING)) {
                     preventSpawning(event, restriction);
                     return;
                 }
@@ -95,13 +95,13 @@ public class MobServerEvents {
     }
 
     private static void preventSpawning(EntityJoinLevelEvent event, AMobRestriction restriction) {
-        if (!restriction.isValueNull(Attributes.REPLACE)) {
+        if (!restriction.isValueNull(Attributes.REPLACEMENT)) {
             var level = event.getLevel();
-            Entity newEntity = restriction.get(Attributes.REPLACE).create(level);
+            Entity newEntity = restriction.get(Attributes.REPLACEMENT).create(level);
 
             if (newEntity != null) {
                 if (newEntity instanceof LivingEntity) {
-                    if (restriction.isEnabled(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)) {
+                    if (restriction.isEnabled(Attributes.SPAWN_WITH_EQUIPMENT)) {
                         for (var wrapper : restriction.getEquipments()) {
                             ((LivingEntity) newEntity).setItemSlot(wrapper.slot(), wrapper.stack());
                         }
@@ -113,7 +113,7 @@ public class MobServerEvents {
             } else {
                 AStages.LOGGER.warn("Features disabled in this level to spawn the replacer for restriction with id {}!", restriction.getId());
             }
-        } else if (restriction.isEnabled(Attributes.SPAWN_WITH_DIFFERENT_EQUIPMENT)) {
+        } else if (restriction.isEnabled(Attributes.SPAWN_WITH_EQUIPMENT)) {
             for (var wrapper : restriction.getEquipments()) {
                 ((LivingEntity) event.getEntity()).setItemSlot(wrapper.slot(), wrapper.stack());
             }

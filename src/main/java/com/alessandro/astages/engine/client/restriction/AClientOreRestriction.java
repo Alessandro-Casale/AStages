@@ -20,7 +20,7 @@ public class AClientOreRestriction extends AClientRestriction<AClientOreRestrict
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.STAGE_ALL_BLOCK_STATES);
+            .addAttribute(Attributes.MATCH_ALL_BLOCK_STATES);
 
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
@@ -39,7 +39,7 @@ public class AClientOreRestriction extends AClientRestriction<AClientOreRestrict
 
     @Override
     public boolean isRestricted(BlockState original) {
-        if (isEnabled(Attributes.STAGE_ALL_BLOCK_STATES)) {
+        if (isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
             return this.original.is(original.getBlock());
         }
 

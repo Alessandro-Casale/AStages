@@ -30,14 +30,14 @@ public record SyncOreS2C(String id, String stage, BlockState original, BlockStat
     );
 
     public SyncOreS2C(AOreRestriction restriction) {
-        this(restriction.getId(), restriction.getStage(), restriction.getOriginal(), restriction.getReplacement(), restriction.get(Attributes.STAGE_ALL_BLOCK_STATES));
+        this(restriction.getId(), restriction.getStage(), restriction.getOriginal(), restriction.getReplacement(), restriction.get(Attributes.MATCH_ALL_BLOCK_STATES));
     }
 
     @Override
     public void run(IPayloadContext context) {
         var restriction = new AClientOreRestriction(id, stage)
                 .restrict(new OreWrapper(original, replacement))
-                .set(Attributes.STAGE_ALL_BLOCK_STATES, stageAllBlockStates);
+                .set(Attributes.MATCH_ALL_BLOCK_STATES, stageAllBlockStates);
 
         AClientRestrictionManager.ORE_INSTANCE.addRestriction(restriction);
     }

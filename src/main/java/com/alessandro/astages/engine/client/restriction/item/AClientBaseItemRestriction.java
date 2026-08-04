@@ -15,9 +15,12 @@ public class AClientBaseItemRestriction<R extends AClientRestriction<R, U, ItemS
     @Override
     public @NotNull AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.RENDERING_NAME)
-            .addAttribute(Attributes.HIDING_TOOLTIP)
-            .addAttribute(Attributes.HIDING_JEI);
+            .addAttribute(Attributes.HIDING_RECIPE_VIEWER)
+            .addAttribute(Attributes.SHOW_ACTION_BAR_NAME)
+            .addAttribute(Attributes.SHOW_TOOLTIP_NAME)
+            .addAttribute(Attributes.SHOW_RECIPE_VIEWER_NAME)
+            .addAttribute(Attributes.SHOW_JADE_ITEM_NAME)
+            .addAttribute(Attributes.SHOW_JADE_BLOCK_NAME);
 
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())

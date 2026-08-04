@@ -196,6 +196,9 @@ dependencies {
     compileOnly("curse.maven:reliquified-artifacts-1100379:8215303")
     implementation("curse.maven:artifacts-312353:7875426")
     compileOnly("curse.maven:relics-mod-445274:8158315")
+
+    implementation("curse.maven:ferritecore-429235:7524151")
+    implementation("curse.maven:tooltip-overhaul-1327508:8376246")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

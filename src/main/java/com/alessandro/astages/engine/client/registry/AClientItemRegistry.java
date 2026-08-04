@@ -73,7 +73,7 @@ public class AClientItemRegistry extends AClientRegistry<AClientBaseItemRestrict
     }
 
     public void register(AClientItemPropertyRestriction restriction) {
-        properties.put(CustomItemStackKey.build(restriction.stack()), restriction);
+        properties.put(CustomItemStackKey.build(restriction.getStack()), restriction);
     }
 
     @Override

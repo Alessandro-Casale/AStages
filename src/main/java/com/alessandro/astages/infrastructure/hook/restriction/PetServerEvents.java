@@ -23,7 +23,7 @@ public class PetServerEvents {
 
             var restriction = ARestrictionManager.PET_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pet.getType());
 
-            if (restriction != null && restriction.isDisabled(Attributes.TAMABLE)) {
+            if (restriction != null && restriction.isDisabled(Attributes.TAMING)) {
                 event.setCanceled(true);
 
                 restriction.displayMessage(Attributes.Pet.TAME_MESSAGE, pet, player);
@@ -40,7 +40,7 @@ public class PetServerEvents {
             if (entity instanceof Player player) {
                 var restriction = ARestrictionManager.PET_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pet.getType());
 
-                if (restriction != null && restriction.isDisabled(Attributes.MOUNTABLE)) {
+                if (restriction != null && restriction.isDisabled(Attributes.MOUNTING)) {
                     event.setCanceled(true);
 
                     restriction.displayMessage(Attributes.Pet.MOUNT_MESSAGE, pet, player);
@@ -58,7 +58,7 @@ public class PetServerEvents {
 
             var restriction = ARestrictionManager.PET_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), pet.getType());
 
-            if (restriction != null && restriction.isDisabled(Attributes.BREEDABLE) && !item.isEmpty()) {
+            if (restriction != null && restriction.isDisabled(Attributes.BREEDING) && !item.isEmpty()) {
                 event.setCanceled(true);
 
                 restriction.displayMessage(Attributes.Pet.BREED_MESSAGE, pet, player);

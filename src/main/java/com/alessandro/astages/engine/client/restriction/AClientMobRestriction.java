@@ -21,7 +21,7 @@ public class AClientMobRestriction extends AClientRestriction<AClientMobRestrict
     @Override
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
-            .addAttribute(Attributes.Mob.JADE_MOB_MESSAGE);
+            .addAttribute(Attributes.Mob.JADE_MESSAGE);
 
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())

@@ -80,7 +80,7 @@ public class DimensionServerEvents {
                     currentTicks = currentTicks - 1;
                     persistentData.putInt(nbtId, currentTicks);
 
-                    showTimer(player, currentTicks, restriction.get(Attributes.CHAT_FORMATTING));
+                    showTimer(player, currentTicks, restriction.get(Attributes.TIMER_FORMATTING));
 
                     if (currentTicks == 0) {
                         persistentData.remove(nbtId);

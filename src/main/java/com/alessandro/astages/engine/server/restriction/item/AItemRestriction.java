@@ -40,19 +40,20 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
     @SuppressWarnings("UnusedReturnValue")
     @Info("Utility method used to maintain consistency across multiple implementations.")
     public AItemRestriction setArmorAttributes() {
-        set(Attributes.HIDING_TOOLTIP, false);
         set(Attributes.STORING_IN_INVENTORY, true);
         set(Attributes.STORING_IN_CONTAINERS, true);
         set(Attributes.EQUIPPING, false);
         set(Attributes.ATTACKING, true);
-        set(Attributes.HIDING_JEI, false);
         set(Attributes.BLOCK_PLACING, true);
         set(Attributes.LEFT_CLICK_INTERACTIONS, true);
         set(Attributes.RIGHT_CLICK_INTERACTIONS, true);
         set(Attributes.BLOCK_BREAKING, true);
-        set(Attributes.PICKING_UP, true);
-        set(Attributes.RENDERING_NAME, true);
-//        set(Attributes.);
+        set(Attributes.PICKUP, true);
+        set(Attributes.SHOW_ACTION_BAR_NAME, true);
+        set(Attributes.SHOW_TOOLTIP_NAME, true);
+        set(Attributes.SHOW_RECIPE_VIEWER_NAME, true);
+        set(Attributes.SHOW_JADE_ITEM_NAME, true);
+        set(Attributes.SHOW_JADE_BLOCK_NAME, true);
 
         return this;
     }

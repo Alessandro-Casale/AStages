@@ -44,8 +44,8 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
             .addAttribute(Attributes.Structure.ATTACK_MESSAGE)
             .addAttribute(Attributes.Structure.INTERACT_MESSAGE)
             .addAttribute(Attributes.Structure.ENTER_MESSAGE)
-            .addAttribute(Attributes.Structure.PLACING_MESSAGE)
-            .addAttribute(Attributes.Structure.MINING_MESSAGE);
+            .addAttribute(Attributes.Structure.PLACE_MESSAGE)
+            .addAttribute(Attributes.Structure.BREAKING_MESSAGE);
 
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
@@ -206,11 +206,11 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
     }
 
     public AStructureRestriction placeMessage(Function<ResourceLocation, Component> message) {
-        return set(Attributes.Structure.PLACING_MESSAGE, message);
+        return set(Attributes.Structure.PLACE_MESSAGE, message);
     }
 
     public AStructureRestriction breakMessage(Function<ResourceLocation, Component> message) {
-        return set(Attributes.Structure.MINING_MESSAGE, message);
+        return set(Attributes.Structure.BREAKING_MESSAGE, message);
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -324,13 +324,13 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setPlaceMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.PLACING_MESSAGE, message);
+        set(Attributes.Structure.PLACE_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setBreakMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.MINING_MESSAGE, message);
+        set(Attributes.Structure.BREAKING_MESSAGE, message);
         return this;
     }
 }

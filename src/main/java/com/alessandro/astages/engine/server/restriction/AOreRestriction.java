@@ -28,7 +28,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
     public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
             .addAttribute(Attributes.AFFECTS_PLAYER_ACTIONS)
-            .addAttribute(Attributes.STAGE_ALL_BLOCK_STATES);
+            .addAttribute(Attributes.MATCH_ALL_BLOCK_STATES);
 
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
@@ -47,7 +47,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
 
     @Override
     public boolean isRestricted(BlockState original) {
-        if (isEnabled(Attributes.STAGE_ALL_BLOCK_STATES)) {
+        if (isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
             return this.original.is(original.getBlock());
         }
 
@@ -66,7 +66,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
     public <T> AOreRestriction set(Attribute<T> attribute, T value) {
         var toReturn = super.set(attribute, value);
 
-        if (attribute == Attributes.AFFECTS_PLAYER_ACTIONS || attribute == Attributes.STAGE_ALL_BLOCK_STATES) {
+        if (attribute == Attributes.AFFECTS_PLAYER_ACTIONS || attribute == Attributes.MATCH_ALL_BLOCK_STATES) {
             setChanged();
         }
 
@@ -85,7 +85,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
     }
 
     public AOreRestriction matchAllBlockStates() {
-        return set(Attributes.STAGE_ALL_BLOCK_STATES, true);
+        return set(Attributes.MATCH_ALL_BLOCK_STATES, true);
     }
 
     public AOreRestriction affectPlayerActions() {
@@ -94,7 +94,7 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AOreRestriction setStageAllBlockStates(boolean value) {
-        set(Attributes.STAGE_ALL_BLOCK_STATES, value);
+        set(Attributes.MATCH_ALL_BLOCK_STATES, value);
         return this;
     }
 

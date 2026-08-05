@@ -9,7 +9,6 @@
     "food.ALivingEntity",
     "integration.fastworkbench.AFastBenchUtil",
     "integration.incontrol.AModRuleCompatibilityLayer",
-    "integration.jei.AJeiStarter",
     "integration.kubejs.APlayerEventJS",
     "loot.ACommonHooks",
     "loot.ALootModificationsAPI",

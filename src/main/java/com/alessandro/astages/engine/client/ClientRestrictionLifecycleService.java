@@ -4,7 +4,7 @@ import com.alessandro.astages.api.manager.AClientMinimalManager;
 
 public class ClientRestrictionLifecycleService {
     public static void onReloadStarted() {
-        ClientRestrictionReloadState.areScriptsAvailable(false);
+        ClientRestrictionReloadState.buildingRestrictions();
 
         ClientRestrictionRegistry.getRegisteredManagers()
             .forEach(AClientMinimalManager::onReloadStarted);
@@ -13,7 +13,7 @@ public class ClientRestrictionLifecycleService {
     }
 
     public static void onReloadFinished() {
-        ClientRestrictionReloadState.areScriptsAvailable(true);
+        ClientRestrictionReloadState.restrictionsAvailable();
 
         ClientRestrictionRegistry.getRegisteredManagers()
             .forEach(AClientMinimalManager::onReloadFinished);

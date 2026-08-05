@@ -18,7 +18,6 @@ import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
 import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.engine.*;
-import com.alessandro.astages.engine.client.ClientRestrictionReloadState;
 import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.RestrictionEventService;
 import com.alessandro.astages.engine.server.RestrictionSyncService;
@@ -120,7 +119,6 @@ public class AInternalPlugin implements AStagesPlugin {
     }
 
     public void invokeOnClientReloadStarted() {
-        ClientRestrictionReloadState.reloadStarted();
         AClientStageManager.onReloadStarted();
         AClientRestrictionManager.onReloadStarted();
 

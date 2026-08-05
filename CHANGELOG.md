@@ -6,7 +6,7 @@ New Features
 - Add config options for recipe viewer integration and asynchronous cache building. ([#230](https://github.com/Alessandro-Casale/AStages/pull/230))
 - Implement EMI integration for item, fluid and recipes. ([#232](https://github.com/Alessandro-Casale/AStages/pull/232))
 - Implement REI integration for item, fluid and recipes. ([#236](https://github.com/Alessandro-Casale/AStages/pull/236))
-- Update item messages for consistency. ([#257](https://github.com/Alessandro-Casale/AStages/pull/257))
+- Update item property restrictions and tooltip messages (Introduce new methods). ([#257](https://github.com/Alessandro-Casale/AStages/pull/257))
 - Update item messages for consistency. ([#261](https://github.com/Alessandro-Casale/AStages/pull/261))
 
 Bug Fixes

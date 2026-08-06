@@ -3,7 +3,6 @@ package com.alessandro.astages.infrastructure.hook.renderer;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.graphic.RenderSystemUtils;
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.engine.collision.StructureCollisionManager;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -41,7 +40,7 @@ public class ClientBorderRenderer {
 
         double shieldRadius = 10.0D;
 
-        for (AABB originalBox : StructureCollisionManager.CLIENT_INSTANCE.getRestrictedAABBsForChunks(dimension, player.chunkPosition(), 1)) {
+        for (AABB originalBox : AClientStructureCollisionManager.INSTANCE.getRestrictedAABBsForChunks(dimension, player.chunkPosition(), 1)) {
             if (!originalBox.inflate(shieldRadius).contains(player.position())) continue;
 
             if (!isSetup) {

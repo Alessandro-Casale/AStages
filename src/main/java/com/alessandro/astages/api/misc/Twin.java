@@ -1,11 +1,12 @@
 package com.alessandro.astages.api.misc;
 
-import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-@NotNullMethodsReturn
-public record Twin<A, B>(A id, B value) {
+@NotNullParamsAndMethodsReturn
+public record Twin<A, B>(@Nullable A id, @Nullable B value) {
     public Twin() {
         this(null, null);
     }

@@ -15,6 +15,7 @@ import com.alessandro.astages.infrastructure.networking.packet.reload.*;
 import com.alessandro.astages.infrastructure.networking.packet.simple.SyncSimpleIdsS2C;
 import com.alessandro.astages.infrastructure.networking.packet.stages.*;
 import com.alessandro.astages.infrastructure.networking.packet.structure.SyncRestrictedStructuresS2C;
+import com.alessandro.astages.infrastructure.networking.packet.structure.SyncStructureS2C;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -62,6 +63,7 @@ public class Networking {
         registrar.playToClient(SyncDimensionIdsS2C.TYPE, SyncDimensionIdsS2C.STREAM_CODEC, SyncDimensionIdsS2C::handle);
 
         // STRUCTURE
+        registrar.playToClient(SyncStructureS2C.TYPE, SyncStructureS2C.STREAM_CODEC, SyncStructureS2C::handle);
         registrar.playToClient(SyncRestrictedStructuresS2C.TYPE, SyncRestrictedStructuresS2C.STREAM_CODEC, SyncRestrictedStructuresS2C::handle);
 
         // SERVER

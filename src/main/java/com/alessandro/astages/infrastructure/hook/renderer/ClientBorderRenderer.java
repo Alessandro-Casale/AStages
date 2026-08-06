@@ -3,6 +3,7 @@ package com.alessandro.astages.infrastructure.hook.renderer;
 import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.graphic.RenderSystemUtils;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.engine.AClientStructureCollisionManager;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;

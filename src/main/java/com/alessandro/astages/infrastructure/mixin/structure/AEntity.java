@@ -2,18 +2,21 @@ package com.alessandro.astages.infrastructure.mixin.structure;
 
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.event.world.EntityChangedChunkEvent;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.alessandro.astages.engine.AClientStructureCollisionManager;
+import com.alessandro.astages.engine.AStructureCollisionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,24 +27,29 @@ public abstract class AEntity {
 
     @Shadow public abstract BlockPos blockPosition();
 
-    @ModifyExpressionValue(method = "collide", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntityCollisions(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;"))
-    public List<VoxelShape> astages$collide(List<VoxelShape> original) {
+    @Inject(method = "collide", at = @At("HEAD"), cancellable = true)
+    public void astages$collide(Vec3 vec, CallbackInfoReturnable<Vec3> cir) {
         var entity = (Entity) (Object) this;
 
-        if (entity instanceof Player player && !player.isSpectator()) {
-            List<VoxelShape> newCollisions = new ArrayList<>(original);
-            var level = player.level();
-
-            if (level instanceof ServerLevel serverLevel) {
-                newCollisions.addAll(StructureCollisionManager.SERVER_INSTANCE.getRestrictedShapesForChunk(serverLevel, chunkPosition(), player));
-            } else {
-                newCollisions.addAll(StructureCollisionManager.CLIENT_INSTANCE.getRestrictedShapesForChunks(level.dimension(), chunkPosition(), 1));
-            }
-
-            return newCollisions;
+        if (!(entity instanceof Player player) || player.isSpectator()) {
+            return;
         }
 
-        return original;
+        var level = player.level();
+        var restrictedShapes = level instanceof ServerLevel serverLevel
+            ? AStructureCollisionManager.INSTANCE.getRestrictedShapesForChunk(serverLevel, chunkPosition(), player)
+            : AClientStructureCollisionManager.INSTANCE.getRestrictedShapesForChunks(level.dimension(), chunkPosition(), 1);
+
+        if (restrictedShapes.isEmpty()) {
+            return;
+        }
+
+        var aabb = player.getBoundingBox();
+        List<VoxelShape> collisions = new ArrayList<>(level.getEntityCollisions(entity, aabb.expandTowards(vec)));
+        collisions.addAll(restrictedShapes);
+
+        Vec3 result = vec.lengthSqr() == 0.0 ? vec : Entity.collideBoundingBox(entity, vec, aabb, level, collisions);
+        cir.setReturnValue(result);
     }
 
     @Inject(method = "setPosRaw", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ChunkPos;<init>(Lnet/minecraft/core/BlockPos;)V"))

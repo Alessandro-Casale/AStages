@@ -4,6 +4,7 @@ import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.misc.Twin;
 import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
+import com.alessandro.astages.engine.AClientStructureCollisionManager;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.Registries;
@@ -31,7 +32,7 @@ public record SyncRestrictedStructuresS2C(ResourceKey<Level> dimension, ChunkPos
 
     @Override
     public void run(IPayloadContext context) {
-        StructureCollisionManager.CLIENT_INSTANCE.populateClientCacheForChunk(dimension, chunkPos, boxes);
+        AClientStructureCollisionManager.INSTANCE.populateClientCacheForChunk(dimension, chunkPos, boxes);
     }
 
     @Override

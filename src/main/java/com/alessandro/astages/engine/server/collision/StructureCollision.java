@@ -1,4 +1,4 @@
-package com.alessandro.astages.engine.collision;
+package com.alessandro.astages.engine.server.collision;
 
 import com.alessandro.astages.api.base.StructureCollisionCache;
 import com.alessandro.astages.api.develop.UnderDevelopment;

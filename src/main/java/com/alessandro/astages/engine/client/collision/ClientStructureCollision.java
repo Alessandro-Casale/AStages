@@ -1,8 +1,12 @@
-package com.alessandro.astages.engine.collision;
+package com.alessandro.astages.engine.client.collision;
 
 import com.alessandro.astages.api.base.StructureCollisionCache;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.misc.Twin;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.util.AStagesClientUtils;
+import com.alessandro.astages.engine.AClientRestrictionManager;
+import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -62,7 +66,11 @@ public class ClientStructureCollision {
                 if (twins == null) { continue; }
 
                 for (var twin : twins) {
-                    aabbs.add(twin.value());
+                    var restrictionId = twin.id();
+                    var restriction = AClientRestrictionManager.STRUCTURE_INSTANCE.getRestriction(restrictionId);
+                    if (restriction != null && restriction.isDisabled(Attributes.ENTERING) && !AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(), restriction.getStage())) {
+                        aabbs.add(twin.value());
+                    }
                 }
             }
         }
@@ -83,7 +91,11 @@ public class ClientStructureCollision {
                 if (twins == null) { continue; }
 
                 for (var twin : twins) {
-                    shapes.add(twin.value());
+                    var restrictionId = twin.id();
+                    var restriction = AClientRestrictionManager.STRUCTURE_INSTANCE.getRestriction(restrictionId);
+                    if (restriction != null && restriction.isDisabled(Attributes.ENTERING) && !AStagesClientUtils.hasStage(AClientHolder.serverAndPlayer(), restriction.getStage())) {
+                        shapes.add(twin.value());
+                    }
                 }
             }
         }

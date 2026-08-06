@@ -1,4 +1,4 @@
-## [2.5.0] - 05-08-2026
+## [2.5.0] - 06-08-2026
 
 
 New Features
@@ -8,6 +8,7 @@ New Features
 - Implement REI integration for item, fluid and recipes. ([#236](https://github.com/Alessandro-Casale/AStages/pull/236))
 - Update item property restrictions and tooltip messages (Introduce new methods). ([#257](https://github.com/Alessandro-Casale/AStages/pull/257))
 - Update item messages for consistency. ([#261](https://github.com/Alessandro-Casale/AStages/pull/261))
+- Refactor collision handling, Alex's Caves compatibility. ([#278](https://github.com/Alessandro-Casale/AStages/pull/278))
 
 Bug Fixes
 
@@ -29,5 +30,8 @@ API Changes
 - Mark update events as not yet implemented and deprecate UnpackLootTableEvent. ([#258](https://github.com/Alessandro-Casale/AStages/pull/258))
 - Simplify client restriction reload state management. ([#259](https://github.com/Alessandro-Casale/AStages/pull/259))
 - Add composite StreamCodec methods for variable argument handling (1.21.X only). ([#260](https://github.com/Alessandro-Casale/AStages/pull/260))
+- Immutable server stages view in AStagesUtils. ([#275](https://github.com/Alessandro-Casale/AStages/pull/275))
+- Replace List with Set for collections for structure restrictions. ([#276](https://github.com/Alessandro-Casale/AStages/pull/276))
+- Add client-side structure restriction handling. ([#277](https://github.com/Alessandro-Casale/AStages/pull/277))
 
 

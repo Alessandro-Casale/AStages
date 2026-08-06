@@ -2,7 +2,6 @@ package com.alessandro.astages.infrastructure.mixin.structure;
 
 import com.alessandro.astages.api.ALoader;
 import com.alessandro.astages.api.event.world.EntityChangedChunkEvent;
-import com.alessandro.astages.engine.collision.StructureCollisionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

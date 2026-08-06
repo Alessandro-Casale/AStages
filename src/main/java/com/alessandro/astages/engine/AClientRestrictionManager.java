@@ -10,10 +10,7 @@ import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.client.ClientRestrictionLifecycleService;
 import com.alessandro.astages.engine.client.ClientRestrictionRegistry;
 import com.alessandro.astages.engine.client.ClientRestrictionReloadState;
-import com.alessandro.astages.engine.client.manager.AClientItemManager;
-import com.alessandro.astages.engine.client.manager.AClientMobManager;
-import com.alessandro.astages.engine.client.manager.AClientOreManager;
-import com.alessandro.astages.engine.client.manager.AClientRecipeManager;
+import com.alessandro.astages.engine.client.manager.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +24,7 @@ public class AClientRestrictionManager {
     @ClientManagerInstance public static final AClientRecipeManager RECIPE_INSTANCE = new AClientRecipeManager();
     @ClientManagerInstance public static final AClientOreManager ORE_INSTANCE = new AClientOreManager();
     @ClientManagerInstance public static final AClientMobManager MOB_INSTANCE = new AClientMobManager();
+    @ClientManagerInstance public static final AClientStructureManager STRUCTURE_INSTANCE = new AClientStructureManager();
 
     // ----------------------------------------
     //            PLUGIN EXTENSIONS

@@ -132,29 +132,29 @@ public class StructureCollision {
         var structureManager = level.structureManager();
 
         structureManager.startsForStructure(chunkPos, structure -> true)
-                .forEach(start -> {
-                    if (start.isValid()) {
-                        var structureId = registryAccess.getKeyOrNull(start.getStructure());
-                        if (structureId == null) { return; }
+            .forEach(start -> {
+                if (start.isValid()) {
+                    var structureId = registryAccess.getKeyOrNull(start.getStructure());
+                    if (structureId == null) { return; }
 
-                        var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structureId);
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structureId);
 
-                        if (restriction != null) {
-                            var bb = start.getBoundingBox();
+                    if (restriction != null) {
+                        var bb = start.getBoundingBox();
 
-                            var minX = bb.minX() >> 4;
-                            var minZ = bb.minZ() >> 4;
-                            var maxX = bb.maxX() >> 4;
-                            var maxZ = bb.maxZ() >> 4;
+                        var minX = bb.minX() >> 4;
+                        var minZ = bb.minZ() >> 4;
+                        var maxX = bb.maxX() >> 4;
+                        var maxZ = bb.maxZ() >> 4;
 
-                            for (int x = minX; x <= maxX; x++) {
-                                for (int z = minZ; z <= maxZ; z++) {
-                                    CACHE.addEntry(dimension, ChunkPos.asLong(x, z), restriction.getId(), start, false);
-                                }
+                        for (int x = minX; x <= maxX; x++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                CACHE.addEntry(dimension, ChunkPos.asLong(x, z), restriction.getId(), start, false);
                             }
                         }
                     }
-                });
+                }
+            });
 
         CACHE.setScannedChunk(dimension, chunkPos);
     }

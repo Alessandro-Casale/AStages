@@ -4,7 +4,6 @@ import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.misc.Twin;
 import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
-import com.alessandro.astages.engine.collision.StructureCollisionManager;
 import com.alessandro.astages.infrastructure.networking.AStagesPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.Registries;
@@ -15,7 +14,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;

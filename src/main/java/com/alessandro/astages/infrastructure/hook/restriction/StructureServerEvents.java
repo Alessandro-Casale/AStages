@@ -5,7 +5,7 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.util.AInventoryUtils;
 import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.engine.collision.StructureCollisionManager;
+import com.alessandro.astages.engine.AStructureCollisionManager;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.engine.util.EventGuards;
 import com.alessandro.astages.infrastructure.capability.PlacedBlocksInStructureData;
@@ -42,7 +42,7 @@ public class StructureServerEvents {
         var dimension = level.dimension();
         var pos = event.getPos();
 
-        var structures = StructureCollisionManager.SERVER_INSTANCE.getStructuresForBlockPos(dimension, pos);
+        var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
 
         for (var structure : structures) {
             var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
@@ -75,7 +75,7 @@ public class StructureServerEvents {
         var dimension = level.dimension();
         var pos = event.getPos();
 
-        var structures = StructureCollisionManager.SERVER_INSTANCE.getStructuresForBlockPos(dimension, pos);
+        var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
         for (var structure : structures) {
             var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
             if (structureId == null) { continue; }
@@ -104,7 +104,7 @@ public class StructureServerEvents {
         var dimension = level.dimension();
         var pos = target.getOnPos().above();
 
-        var structures = StructureCollisionManager.SERVER_INSTANCE.getStructuresForBlockPos(dimension, pos);
+        var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
         for (var structure : structures) {
             var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
             if (structureId == null) {
@@ -133,7 +133,7 @@ public class StructureServerEvents {
             var dimension = level.dimension();
             var pos = event.getPos();
 
-            var structures = StructureCollisionManager.SERVER_INSTANCE.getStructuresForBlockPos(dimension, pos);
+            var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
             for (var structure : structures) {
                 var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
                 if (structureId == null) { continue; }
@@ -164,7 +164,7 @@ public class StructureServerEvents {
             var dimension = level.dimension();
             var pos = BlockPos.containing(explosion.center());
 
-            var structures = StructureCollisionManager.SERVER_INSTANCE.getStructuresForBlockPos(dimension, pos);
+            var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
 
             for (var structure : structures) {
                 var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());

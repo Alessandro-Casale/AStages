@@ -166,7 +166,7 @@ public class AStagesUtils {
                 var isSynced = OfflinePlayerStage.synchronizeWithClient(player, AOperation.REMOVE_ALL, stages);
                 OfflinePlayerStage.displayStageAlert(player, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);
             }, server -> {
-                var stages = ServerStage.getServerStages();
+                var stages = Set.copyOf(ServerStage.getServerStages());
                 toReturn.set(ServerStage.removeServerStages(stages));
                 var isSynced = ServerStage.synchronizeWithClient(null, AOperation.REMOVE_ALL, stages);
                 ServerStage.displayStageAlert(server, AOperation.REMOVE_ALL, stages, toReturn.get(), !isSynced, showTitle, displayChatMessage, displayActionBarMessage);

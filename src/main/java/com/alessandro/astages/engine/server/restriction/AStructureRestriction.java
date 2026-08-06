@@ -1,30 +1,31 @@
 package com.alessandro.astages.engine.server.restriction;
 
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 @NotNullParamsAndMethodsReturn
 public class AStructureRestriction extends ARestriction<AStructureRestriction, ResourceLocation, ResourceLocation> {
-    private final List<ResourceLocation> structures = new ArrayList<>();
-    private List<Block> allowedBreakableBlocks = null;
-    private List<Block> allowedPlaceableBlocks = null;
-    private List<Block> allowedInteractableBlocks = null;
-    private List<BlockState> allowedBreakableStates = null;
-    private List<BlockState> allowedPlaceableStates = null;
-    private List<BlockState> allowedInteractableStates = null;
-    private List<EntityType<?>> allowedTargetableEntities = null;
+    private final Set<ResourceLocation> structures = new HashSet<>();
+    private Set<Block> allowedBreakableBlocks = null;
+    private Set<Block> allowedPlaceableBlocks = null;
+    private Set<Block> allowedInteractableBlocks = null;
+    private Set<BlockState> allowedBreakableStates = null;
+    private Set<BlockState> allowedPlaceableStates = null;
+    private Set<BlockState> allowedInteractableStates = null;
+    private Set<EntityType<?>> allowedTargetableEntities = null;
 
     public AStructureRestriction(String id, String stage) {
         super(id, stage);
@@ -72,7 +73,7 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
         return false;
     }
 
-    public List<ResourceLocation> getStructures() {
+    public Set<ResourceLocation> getStructures() {
         return structures;
     }
 
@@ -152,44 +153,44 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
     }
 
     public AStructureRestriction allowBreakableStates(BlockState... states) {
-        if (allowedBreakableStates == null) { allowedBreakableStates = new ArrayList<>(); }
-        allowedBreakableStates.addAll(List.of(states));
+        if (allowedBreakableStates == null) { allowedBreakableStates = new HashSet<>(); }
+        allowedBreakableStates.addAll(Set.of(states));
         return this;
     }
 
     public AStructureRestriction allowPlaceableStates(BlockState... states) {
-        if (allowedPlaceableStates == null) { allowedPlaceableStates = new ArrayList<>(); }
-        allowedPlaceableStates.addAll(List.of(states));
+        if (allowedPlaceableStates == null) { allowedPlaceableStates = new HashSet<>(); }
+        allowedPlaceableStates.addAll(Set.of(states));
         return this;
     }
 
     public AStructureRestriction allowInteractableStates(BlockState... states) {
-        if (allowedInteractableStates == null) { allowedInteractableStates = new ArrayList<>(); }
-        allowedInteractableStates.addAll(List.of(states));
+        if (allowedInteractableStates == null) { allowedInteractableStates = new HashSet<>(); }
+        allowedInteractableStates.addAll(Set.of(states));
         return this;
     }
 
     public AStructureRestriction allowBreakableBlocks(Block... blocks) {
-        if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new ArrayList<>(); }
-        allowedBreakableBlocks.addAll(List.of(blocks));
+        if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new HashSet<>(); }
+        allowedBreakableBlocks.addAll(Set.of(blocks));
         return this;
     }
 
     public AStructureRestriction allowPlaceableBlocks(Block... blocks) {
-        if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new ArrayList<>(); }
-        allowedPlaceableBlocks.addAll(List.of(blocks));
+        if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new HashSet<>(); }
+        allowedPlaceableBlocks.addAll(Set.of(blocks));
         return this;
     }
 
     public AStructureRestriction allowInteractableBlocks(Block... blocks) {
-        if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new ArrayList<>(); }
-        allowedInteractableBlocks.addAll(List.of(blocks));
+        if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new HashSet<>(); }
+        allowedInteractableBlocks.addAll(Set.of(blocks));
         return this;
     }
 
     public AStructureRestriction allowTargetableEntities(EntityType<?>... entities) {
-        if (allowedTargetableEntities == null) { allowedTargetableEntities = new ArrayList<>(); }
-        allowedTargetableEntities.addAll(List.of(entities));
+        if (allowedTargetableEntities == null) { allowedTargetableEntities = new HashSet<>(); }
+        allowedTargetableEntities.addAll(Set.of(entities));
         return this;
     }
 
@@ -257,49 +258,49 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedBreakableStates(BlockState... states) {
-        if (allowedBreakableStates == null) { allowedBreakableStates = new ArrayList<>(); }
+        if (allowedBreakableStates == null) { allowedBreakableStates = new HashSet<>(); }
         allowedBreakableStates.addAll(List.of(states));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedPlaceableStates(BlockState... states) {
-        if (allowedPlaceableStates == null) { allowedPlaceableStates = new ArrayList<>(); }
+        if (allowedPlaceableStates == null) { allowedPlaceableStates = new HashSet<>(); }
         allowedPlaceableStates.addAll(List.of(states));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedInteractableStates(BlockState... states) {
-        if (allowedInteractableStates == null) { allowedInteractableStates = new ArrayList<>(); }
+        if (allowedInteractableStates == null) { allowedInteractableStates = new HashSet<>(); }
         allowedInteractableStates.addAll(List.of(states));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedBreakableBlocks(Block... blocks) {
-        if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new ArrayList<>(); }
+        if (allowedBreakableBlocks == null) { allowedBreakableBlocks = new HashSet<>(); }
         allowedBreakableBlocks.addAll(List.of(blocks));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedPlaceableBlocks(Block... blocks) {
-        if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new ArrayList<>(); }
+        if (allowedPlaceableBlocks == null) { allowedPlaceableBlocks = new HashSet<>(); }
         allowedPlaceableBlocks.addAll(List.of(blocks));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedInteractableBlocks(Block... blocks) {
-        if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new ArrayList<>(); }
+        if (allowedInteractableBlocks == null) { allowedInteractableBlocks = new HashSet<>(); }
         allowedInteractableBlocks.addAll(List.of(blocks));
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction addAllowedTargetableEntities(EntityType<?>... entities) {
-        if (allowedTargetableEntities == null) { allowedTargetableEntities = new ArrayList<>(); }
+        if (allowedTargetableEntities == null) { allowedTargetableEntities = new HashSet<>(); }
         allowedTargetableEntities.addAll(List.of(entities));
         return this;
     }

@@ -51,4 +51,16 @@ public record AClientRecipeEvaluator(AClientRecipeRegistry registry) {
 
         return toReturn;
     }
+
+    public boolean hasRestrictionsFor(Set<String> stages) {
+        for (var restriction : registry.getModRestrictions()) {
+            if (stages.contains(restriction.getStage())) { return true; }
+        }
+
+        for (var restriction : registry.getRecipeRestrictions()) {
+            if (stages.contains(restriction.getStage())) { return true; }
+        }
+
+        return false;
+    }
 }

@@ -9,6 +9,7 @@ import com.alessandro.astages.api.constant.ASyncOperation;
 import com.alessandro.astages.api.event.update.ClientItemUpdateEvent;
 import com.alessandro.astages.api.event.update.ClientOreUpdateEvent;
 import com.alessandro.astages.api.event.update.ClientRecipeUpdateEvent;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.plugin.AStagesPlugin;
@@ -16,6 +17,7 @@ import com.alessandro.astages.api.reload.ClientReloadContext;
 import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.reload.McReloadPhase;
 import com.alessandro.astages.api.reload.ReloadContext;
+import com.alessandro.astages.api.util.AStagesClientUtils;
 import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.engine.*;
 import com.alessandro.astages.engine.server.MiscStorage;
@@ -31,6 +33,9 @@ import com.alessandro.astages.infrastructure.integration.rei.ReiItemStagesPlugin
 import com.alessandro.astages.infrastructure.integration.rei.ReiRecipeStagesPlugin;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
+import dev.emi.emi.registry.EmiStackList;
+import dev.emi.emi.runtime.EmiReloadManager;
+import dev.emi.emi.search.EmiSearch;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -155,6 +160,14 @@ public class AInternalPlugin implements AStagesPlugin {
         if (RecipeViewerMods.isViewerActive(RecipeViewerMods.EMI)) {
             EmiItemStagesPlugin.onReloadFinished();
             EmiRecipeStagesPlugin.onReloadFinished();
+
+            var playerStages = AStagesClientUtils.getStages(AClientHolder.serverAndPlayer());
+            if (AClientRestrictionManager.RECIPE_INSTANCE.hasRestrictionsFor(playerStages)) {
+                EmiReloadManager.reload();
+            } else {
+                EmiStackList.bakeFiltered();
+                EmiSearch.update();
+            }
         }
     }
 
@@ -182,6 +195,13 @@ public class AInternalPlugin implements AStagesPlugin {
         if (RecipeViewerMods.isViewerActive(RecipeViewerMods.EMI)) {
             EmiItemStagesPlugin.onStagesChanged(operation, syncedStages);
             EmiRecipeStagesPlugin.onStageChanged(operation, syncedStages);
+
+            if (AClientRestrictionManager.RECIPE_INSTANCE.hasRestrictionsFor(syncedStages)) {
+                EmiReloadManager.reload();
+            } else {
+                EmiStackList.bakeFiltered();
+                EmiSearch.update();
+            }
         }
     }
 }

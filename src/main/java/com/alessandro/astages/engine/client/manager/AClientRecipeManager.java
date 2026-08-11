@@ -46,6 +46,10 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
         return evaluator.evaluateRecipes(recipeTypeCache, type);
     }
 
+    public boolean hasRestrictionsFor(Set<String> stages) {
+        return evaluator.hasRestrictionsFor(stages);
+    }
+
     public void addRestriction(AClientRecipeRestriction restriction) {
         registry.register(restriction);
         recipeTypeCache.index(restriction);

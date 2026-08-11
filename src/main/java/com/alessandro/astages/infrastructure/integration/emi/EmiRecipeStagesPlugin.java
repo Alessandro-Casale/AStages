@@ -34,8 +34,5 @@ public class EmiRecipeStagesPlugin implements EmiPlugin {
 
     public static void onReloadFinished() { }
 
-    public static void onStageChanged(AOperation operation, Set<String> syncedStages) {
-        if (!AClientRestrictionManager.RECIPE_INSTANCE.hasRestrictionsFor(syncedStages)) { return; }
-
-    }
+    public static void onStageChanged(AOperation operation, Set<String> syncedStages) { }
 }

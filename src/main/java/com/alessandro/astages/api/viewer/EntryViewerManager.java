@@ -78,6 +78,11 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
 
     @Override
     public void onStageChanged(Set<String> stages) {
+        if (STAGE_TO_ENTRY_CACHE == null) {
+            PENDING_BUILD = true;
+            return;
+        }
+
         var affectedStacks = new HashSet<ENTRY>();
         for (var stage : stages) {
             affectedStacks.addAll(STAGE_TO_ENTRY_CACHE.getOrDefault(stage, new ArrayList<>()));

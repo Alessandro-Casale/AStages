@@ -158,8 +158,8 @@ dependencies {
     implementation("curse.maven:jade-324717:5976517")
     compileOnly("curse.maven:jei-238222:7229074")
     implementation("curse.maven:cloth-config-348521:5729127")
-    implementation("curse.maven:roughly-enough-items-310111:6199140")
-    compileOnly("curse.maven:emi-580555:8081408")
+    compileOnly("curse.maven:roughly-enough-items-310111:6199140")
+    implementation("curse.maven:emi-580555:8081408")
 
     implementation("curse.maven:in-control-257356:5932871")
 

@@ -1,20 +1,18 @@
 package com.alessandro.astages.infrastructure.integration.emi;
 
 
-import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
-import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.api.constant.AOperation;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
+import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.item.AClientBaseItemRestriction;
 import dev.emi.emi.api.*;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.FluidEmiStack;
-import dev.emi.emi.registry.EmiStackList;
 import dev.emi.emi.runtime.EmiHidden;
-import dev.emi.emi.search.EmiSearch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Unmodifiable;
@@ -40,12 +38,6 @@ public class EmiItemStagesPlugin implements EmiPlugin {
         @Override
         public void hideEntries(Collection<EmiStack> entries) {
             EmiHidden.pluginDisabledStacks.addAll(entries);
-        }
-
-        @Override
-        public void reload() {
-            EmiStackList.bakeFiltered();
-            EmiSearch.update();
         }
 
         @Override
@@ -81,12 +73,6 @@ public class EmiItemStagesPlugin implements EmiPlugin {
         @Override
         public void hideEntries(Collection<FluidEmiStack> entries) {
             EmiHidden.pluginDisabledStacks.addAll(entries);
-        }
-
-        @Override
-        public void reload() {
-            EmiStackList.bakeFiltered();
-            EmiSearch.update();
         }
 
         @Override

@@ -14,7 +14,6 @@ import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,8 +26,6 @@ import java.util.List;
 @UnderDevelopment
 @Mixin(StonecutterMenu.class)
 public class AStonecutterMenu {
-    @Shadow @Final private ContainerLevelAccess access;
-
     @Shadow private List<RecipeHolder<StonecutterRecipe>> recipes;
 
     @Unique private Player astages$player;

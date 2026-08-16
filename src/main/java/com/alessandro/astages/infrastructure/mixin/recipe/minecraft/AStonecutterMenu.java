@@ -1,9 +1,10 @@
 package com.alessandro.astages.infrastructure.mixin.recipe.minecraft;
 
 import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.api.util.APlayerUtils;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
+import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.ARestrictionManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,37 +23,38 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 @UnderDevelopment
 @Mixin(StonecutterMenu.class)
 public class AStonecutterMenu {
-    @Shadow
-    @Final
-    private ContainerLevelAccess access;
+    @Shadow @Final private ContainerLevelAccess access;
 
     @Shadow private List<RecipeHolder<StonecutterRecipe>> recipes;
 
-    @Unique
-    private UUID astages$playerUUID = null;
+    @Unique private Player astages$player;
 
     @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At("RETURN"))
     public void astages$init(int containerId, @NotNull Inventory playerInventory, ContainerLevelAccess access, CallbackInfo ci) {
-        astages$playerUUID = playerInventory.player.getUUID();
+        astages$player = playerInventory.player;
     }
 
     @Inject(method = "slotsChanged", at = @At("RETURN"))
     public void astages$slotsChanged(Container inventory, CallbackInfo ci) {
-        AtomicReference<Player> player = new AtomicReference<>();
-        access.execute((level1, pos) -> player.set(APlayerUtils.getPlayerFromUUID(Objects.requireNonNull(level1.getServer()), astages$playerUUID)));
+        var iterator = recipes.listIterator();
 
-        if (player.get() != null) {
-            var iterator = recipes.listIterator();
+        if (!astages$player.level().isClientSide()) {
             while (iterator.hasNext()) {
                 var recipe = iterator.next();
-                var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player.get()), new RecipeWrapper(recipe.value().getType(), recipe.id()));
+                var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(astages$player), new RecipeWrapper(recipe.value().getType(), recipe.id()));
+
+                if (restriction != null) {
+                    iterator.remove();
+                }
+            }
+        } else {
+            while (iterator.hasNext()) {
+                var recipe = iterator.next();
+                var restriction = AClientRestrictionManager.RECIPE_INSTANCE.getRestriction(AClientHolder.serverAndPlayer(), new RecipeWrapper(recipe.value().getType(), recipe.id()));
 
                 if (restriction != null) {
                     iterator.remove();

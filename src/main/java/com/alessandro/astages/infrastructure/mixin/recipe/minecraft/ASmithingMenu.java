@@ -2,8 +2,8 @@ package com.alessandro.astages.infrastructure.mixin.recipe.minecraft;
 
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
+import com.alessandro.astages.engine.ARestrictionManager;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,18 +33,15 @@ public class ASmithingMenu {
         astages$player = playerInventory.player;
     }
 
-    @Inject(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;)V", at = @At("TAIL"))
-    public void astages$init(int containerId, Inventory playerInventory, CallbackInfo ci) {
-        astages$player = playerInventory.player;
-    }
-
     @Inject(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/SmithingRecipe;assemble(Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     public void astages$createResult(CallbackInfo ci, @Local RecipeHolder<SmithingRecipe> recipeHolder) {
-        var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(astages$player), new RecipeWrapper(recipeHolder.value().getType(), recipeHolder.id()));
+        if (!astages$player.level().isClientSide()) {
+            var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(astages$player), new RecipeWrapper(recipeHolder.value().getType(), recipeHolder.id()));
 
-        if (restriction != null) {
-            smithingMenu$self().resultSlots.setItem(0, ItemStack.EMPTY);
-            ci.cancel();
+            if (restriction != null) {
+                smithingMenu$self().resultSlots.setItem(0, ItemStack.EMPTY);
+                ci.cancel();
+            }
         }
     }
 }

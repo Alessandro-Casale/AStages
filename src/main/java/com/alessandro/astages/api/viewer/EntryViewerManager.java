@@ -66,7 +66,6 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
             AStages.TIMER.reset().start();
 
             wrapper.hideEntries(hidden);
-            wrapper.reload();
 
             AStages.TIMER.stop();
             AStages.LOGGER.debug("Hide entries in {}", AStages.TIMER);
@@ -98,20 +97,7 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
             (restriction != null ? toHide : toShow).add(entry);
         }
 
-        boolean isChanged = false;
-
-        if (!toShow.isEmpty()) {
-            isChanged = true;
-            wrapper.showEntries(toShow);
-        }
-
-        if (!toHide.isEmpty()) {
-            isChanged = true;
-            wrapper.hideEntries(toHide);
-        }
-
-        if (isChanged) {
-            wrapper.reload();
-        }
+        wrapper.showEntries(toShow);
+        wrapper.hideEntries(toHide);
     }
 }

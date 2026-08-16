@@ -16,7 +16,6 @@ public abstract class EntryViewerWrapper<T> {
 
     public abstract void showEntries(Collection<T> entries);
     public abstract void hideEntries(Collection<T> entries);
-    public void reload() { }
 
     public abstract Set<String> evaluateStages(T entry);
     public abstract @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, T entry);

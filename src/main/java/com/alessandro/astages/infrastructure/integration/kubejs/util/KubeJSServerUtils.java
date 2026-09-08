@@ -61,6 +61,26 @@ public class KubeJSServerUtils {
         AStagesUtils.removeAllStages(AHolder.player(player), false, false, false);
     }
 
+    public static void addStageToPlayer(Player player, String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.addStage(AHolder.player(player), stage, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void addStagesToPlayer(Player player, Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.addStages(AHolder.player(player), stages, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeStageFromPlayer(Player player, String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeStage(AHolder.player(player), stage, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeStagesFromPlayer(Player player, Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeStages(AHolder.player(player), stages, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeAllStagesFromPlayer(Player player, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeAllStages(AHolder.player(player), showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
     public static Set<String> getStagesFromPlayer(Player player) {
         return AStagesUtils.getStages(AHolder.player(player));
     }
@@ -121,6 +141,26 @@ public class KubeJSServerUtils {
 
     public static void removeAllStagesFromServer() {
         AStagesUtils.removeAllStages(AHolder.server(), false, false, false);
+    }
+
+    public static void addStageToServer(String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.addStage(AHolder.server(), stage, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void addStagesToServer(Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.addStages(AHolder.server(), stages, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeStageFromServer(String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeStage(AHolder.server(), stage, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeStagesFromServer(Set<String> stages, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeStages(AHolder.server(), stages, showTitle, displayChatMessage, displayActionBarMessage);
+    }
+
+    public static void removeAllStagesFromServer(boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {
+        AStagesUtils.removeAllStages(AHolder.server(), showTitle, displayChatMessage, displayActionBarMessage);
     }
 
     public static Set<String> getStagesFromServer() {

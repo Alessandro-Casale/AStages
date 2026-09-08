@@ -26,6 +26,7 @@
     "recipe.minecraft.AAbstractFurnaceBlockEntity",
     "recipe.minecraft.ACampfireBlock",
     "recipe.minecraft.ACraftingMenu",
+    "recipe.minecraft.AServerPlayer",
     "recipe.minecraft.ASmithingMenu",
     "recipe.minecraft.AStonecutterMenu",
     "reload.AKubeJSCommands",

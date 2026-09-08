@@ -1,5 +1,6 @@
 package com.alessandro.astages.infrastructure.capability;
 
+import com.alessandro.astages.api.nullability.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
@@ -10,7 +11,7 @@ public class BlockOwner {
     public static String OWNER_KEY = "owner";
     private UUID owner;
 
-    public UUID getOwner() {
+    public @Nullable UUID getOwner() {
         return owner;
     }
 

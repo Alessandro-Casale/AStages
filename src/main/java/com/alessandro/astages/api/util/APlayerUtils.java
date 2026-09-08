@@ -1,7 +1,9 @@
 package com.alessandro.astages.api.util;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -37,7 +39,15 @@ public class APlayerUtils {
         return getPlayerFromUUID(ServerLifecycleHooks.getCurrentServer(), uuid);
     }
 
-    public static @Nullable ServerPlayer getPlayerFromUUID(MinecraftServer server, UUID uuid) {
+    public static @Nullable ServerPlayer getPlayerFromUUID(MinecraftServer server, @Nullable UUID uuid) {
+        if (uuid == null) {
+            if (AStagesCommon.ENABLE_DEV_LOGS.get()) {
+                AStages.LOGGER.debug("Encountered null uuid, skipped searching for it!");
+            }
+
+            return null;
+        }
+
         return server.getPlayerList().getPlayer(uuid);
     }
 

@@ -42,23 +42,23 @@ import java.util.Set;
 public class KubeJSServerUtils {
     // PLAYER Stages
     public static void addStageToPlayer(Player player, String stage) {
-        AStagesUtils.addStage(AHolder.player(player), stage, false, false, false);
+        AStagesUtils.addStage(AHolder.player(player), stage, true, true, true);
     }
 
     public static void addStagesToPlayer(Player player, Set<String> stages) {
-        AStagesUtils.addStages(AHolder.player(player), stages, false, false, false);
+        AStagesUtils.addStages(AHolder.player(player), stages, true, true, true);
     }
 
     public static void removeStageFromPlayer(Player player, String stage) {
-        AStagesUtils.removeStage(AHolder.player(player), stage, false, false, false);
+        AStagesUtils.removeStage(AHolder.player(player), stage, true, true, true);
     }
 
     public static void removeStagesFromPlayer(Player player, Set<String> stages) {
-        AStagesUtils.removeStages(AHolder.player(player), stages, false, false, false);
+        AStagesUtils.removeStages(AHolder.player(player), stages, true, true, true);
     }
 
     public static void removeAllStagesFromPlayer(Player player) {
-        AStagesUtils.removeAllStages(AHolder.player(player), false, false, false);
+        AStagesUtils.removeAllStages(AHolder.player(player), true, true, true);
     }
 
     public static Set<String> getStagesFromPlayer(Player player) {
@@ -104,23 +104,23 @@ public class KubeJSServerUtils {
 
     // SERVER Stages
     public static void addStageToServer(String stage) {
-        AStagesUtils.addStage(AHolder.server(), stage, false, false, false);
+        AStagesUtils.addStage(AHolder.server(), stage, true, true, true);
     }
 
     public static void addStagesToServer(Set<String> stages) {
-        AStagesUtils.addStages(AHolder.server(), stages, false, false, false);
+        AStagesUtils.addStages(AHolder.server(), stages, true, true, true);
     }
 
     public static void removeStageFromServer(String stage) {
-        AStagesUtils.removeStage(AHolder.server(), stage, false, false, false);
+        AStagesUtils.removeStage(AHolder.server(), stage, true, true, true);
     }
 
     public static void removeStagesFromServer(Set<String> stages) {
-        AStagesUtils.removeStages(AHolder.server(), stages, false, false, false);
+        AStagesUtils.removeStages(AHolder.server(), stages, true, true, true);
     }
 
     public static void removeAllStagesFromServer() {
-        AStagesUtils.removeAllStages(AHolder.server(), false, false, false);
+        AStagesUtils.removeAllStages(AHolder.server(), true, true, true);
     }
 
     public static Set<String> getStagesFromServer() {

@@ -97,7 +97,12 @@ public class EntryViewerManager<ENTRY> implements AViewerManager {
             (restriction != null ? toHide : toShow).add(entry);
         }
 
-        wrapper.showEntries(toShow);
-        wrapper.hideEntries(toHide);
+        if (!toShow.isEmpty()) {
+            wrapper.showEntries(toShow);
+        }
+
+        if (!toHide.isEmpty()) {
+            wrapper.hideEntries(toHide);
+        }
     }
 }

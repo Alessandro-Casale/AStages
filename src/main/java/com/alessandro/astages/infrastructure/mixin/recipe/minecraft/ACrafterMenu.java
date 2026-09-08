@@ -1,8 +1,8 @@
 package com.alessandro.astages.infrastructure.mixin.recipe.minecraft;
 
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
+import com.alessandro.astages.engine.ARestrictionManager;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.CrafterMenu;
@@ -30,12 +30,10 @@ public class ACrafterMenu {
             var restriction = ARestrictionManager.RECIPE_INSTANCE.getRestriction(AHolder.serverAndPlayer(serverPlayer), new RecipeWrapper(recipe.getType(), recipeHolder.id()));
 
             if (restriction != null) { return ItemStack.EMPTY; }
-
             return recipe.assemble(craftingInput, level.registryAccess());
         }).orElse(ItemStack.EMPTY);
 
         this.resultContainer.setItem(0, itemstack);
-
         ci.cancel();
     }
 }

@@ -186,19 +186,19 @@ dependencies {
 
     implementation("curse.maven:modernfix-790626:8255560")
 
-    implementation("curse.maven:better-modlist-neoforge-1089803:7711471")
+    compileOnly("curse.maven:better-modlist-neoforge-1089803:7711471")
     compileOnly("curse.maven:lootr-361276:8333694")
     compileOnly("curse.maven:lootjs-570630:8009262")
 
     implementation("curse.maven:architectury-api-419699:5786327")
     implementation("curse.maven:curios-309927:6529130")
-    implementation("curse.maven:shatterbyte-lib-916747:8040848")
+    compileOnly("curse.maven:shatterbyte-lib-916747:8040848")
     compileOnly("curse.maven:reliquified-artifacts-1100379:8215303")
-    implementation("curse.maven:artifacts-312353:7875426")
+    compileOnly("curse.maven:artifacts-312353:7875426")
     compileOnly("curse.maven:relics-mod-445274:8158315")
 
-    implementation("curse.maven:ferritecore-429235:7524151")
-    implementation("curse.maven:tooltip-overhaul-1327508:8376246")
+    compileOnly("curse.maven:ferritecore-429235:7524151")
+    compileOnly("curse.maven:tooltip-overhaul-1327508:8376246")
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {

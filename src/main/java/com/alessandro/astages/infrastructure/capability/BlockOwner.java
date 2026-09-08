@@ -21,7 +21,7 @@ public class BlockOwner implements INBTSerializable<CompoundTag> {
         this.owner = owner;
     }
 
-    public UUID getOwner() {
+    public @Nullable UUID getOwner() {
         return owner;
     }
 

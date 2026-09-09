@@ -31,7 +31,7 @@ public class ItemServerEvents {
     @SubscribeEvent
     public static void onItemPickup(ItemEntityPickupEvent.Pre event) {
         if (canBeRunForPlayer(event.getPlayer())) {
-            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(AHolder.player(event.getPlayer()), event.getItemEntity().getItem());
+            var restriction = ARestrictionManager.ITEM_INSTANCE.getRestriction(AHolder.serverAndPlayer(event.getPlayer()), event.getItemEntity().getItem());
 
             if (restriction != null && restriction.isDisabled(Attributes.PICKUP)) {
                 event.setCanPickup(TriState.FALSE);

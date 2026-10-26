@@ -2,6 +2,7 @@ package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
@@ -37,16 +38,16 @@ public class ACropRestriction extends ARestriction<ACropRestriction, Block, Crop
     }
 
     @Override
-    public boolean isRestricted(CropWrapper wrapper) {
+    public ARestrictionResult isRestricted(CropWrapper wrapper) {
         if (!isValueNull(Attributes.COMPARE_CONDITION) && !isValueNull(Attributes.AGE)) {
-            return wrapper.crop().is(crop) && elaborateRestriction(wrapper.age());
+            return wrapper.crop().is(crop) && elaborateRestriction(wrapper.age()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         } else {
-            return wrapper.crop().is(crop);
+            return wrapper.crop().is(crop) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
     }
 
     private boolean elaborateRestriction(int age) {
-        var thisAge = get(Attributes.AGE);
+        int thisAge = get(Attributes.AGE);
 
         return switch (get(Attributes.COMPARE_CONDITION)) {
             case EQUAL -> thisAge == age;

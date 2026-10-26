@@ -1,16 +1,16 @@
 package com.alessandro.astages.engine.server.restriction;
 
-import com.alessandro.astages.engine.ARestrictionManager;
-import com.alessandro.astages.api.store.container.AttributeStore;
-import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.api.restriction.ARestriction;
-import com.alessandro.astages.api.time.ATime;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
+import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.api.time.ATime;
+import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,26 +57,24 @@ public class ADimensionRestriction extends ARestriction<ADimensionRestriction, R
     }
 
     @Override
-    public boolean isRestricted(ResourceLocation dimension) {
+    public ARestrictionResult isRestricted(ResourceLocation dimension) {
         for (ResourceLocation dim : dimensions) {
             if (dim.equals(dimension)) {
-                return true;
+                return ARestrictionResult.RESTRICTED;
             }
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
     public List<ResourceLocation> getDimensions() {
         return dimensions;
     }
 
-    @Contract(pure = true)
     public static String getNbtIdForRestrictionId(String restrictionId) {
         return nbtId + restrictionId;
     }
 
-    @Contract(pure = true)
     public static String getNbtAccessForRestrictionId(String restrictionId) {
         return nbtAccess + restrictionId;
     }

@@ -2,6 +2,7 @@ package com.alessandro.astages.engine.client.restriction;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.AClientRestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
@@ -14,8 +15,8 @@ import java.util.List;
 public class AClientMobRestriction extends AClientRestriction<AClientMobRestriction, EntityType<?>, EntityType<?>> {
     private final List<EntityType<?>> mobs = new ArrayList<>();
 
-    public AClientMobRestriction(String id, String stage) {
-        super(id, stage);
+    public AClientMobRestriction(String id, String stage, int priority) {
+        super(id, stage, priority);
     }
 
     @Override
@@ -37,8 +38,8 @@ public class AClientMobRestriction extends AClientRestriction<AClientMobRestrict
     }
 
     @Override
-    public boolean isRestricted(EntityType<?> mob) {
-        return mobs.contains(mob);
+    public ARestrictionResult isRestricted(EntityType<?> mob) {
+        return mobs.contains(mob) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public List<EntityType<?>> getMobs() {

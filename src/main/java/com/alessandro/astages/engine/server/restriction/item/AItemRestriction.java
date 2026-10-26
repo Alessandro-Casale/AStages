@@ -2,6 +2,8 @@ package com.alessandro.astages.engine.server.restriction.item;
 
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.ALootRestriction;
@@ -19,7 +21,7 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
     private final List<Item> items = new ArrayList<>();
 
     public AItemRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.DEFAULT);
     }
 
     @Override
@@ -37,7 +39,6 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @Info("Utility method used to maintain consistency across multiple implementations.")
     public AItemRestriction setArmorAttributes() {
         set(Attributes.STORING_IN_INVENTORY, true);
@@ -59,10 +60,8 @@ public class AItemRestriction extends ABaseItemRestriction<AItemRestriction, Ite
     }
 
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
-
-        return items.contains(stack.getItem());
+    public ARestrictionResult isRestricted(ItemStack stack) {
+        return items.contains(stack.getItem()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public List<Item> getItems() {

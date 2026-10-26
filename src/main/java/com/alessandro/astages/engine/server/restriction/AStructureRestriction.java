@@ -2,14 +2,17 @@ package com.alessandro.astages.engine.server.restriction;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,8 +20,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 @NotNullParamsAndMethodsReturn
-public class AStructureRestriction extends ARestriction<AStructureRestriction, ResourceLocation, ResourceLocation> {
-    private final Set<ResourceLocation> structures = new HashSet<>();
+public class AStructureRestriction extends ARestriction<AStructureRestriction, ResourceKey<Structure>, ResourceKey<Structure>> {
+    private final Set<ResourceKey<Structure>> structures = new HashSet<>();
     private Set<Block> allowedBreakableBlocks = null;
     private Set<Block> allowedPlaceableBlocks = null;
     private Set<Block> allowedInteractableBlocks = null;
@@ -56,24 +59,24 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
     }
 
     @Override
-    public AStructureRestriction restrict(ResourceLocation structure) {
+    public AStructureRestriction restrict(ResourceKey<Structure> structure) {
         structures.add(structure);
 
         return this;
     }
 
     @Override
-    public boolean isRestricted(ResourceLocation structure) {
-        for (ResourceLocation str : structures) {
+    public ARestrictionResult isRestricted(ResourceKey<Structure> structure) {
+        for (var str : structures) {
             if (str.equals(structure)) {
-                return true;
+                return ARestrictionResult.RESTRICTED;
             }
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
-    public Set<ResourceLocation> getStructures() {
+    public Set<ResourceKey<Structure>> getStructures() {
         return structures;
     }
 
@@ -194,23 +197,23 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
         return this;
     }
 
-    public AStructureRestriction attackMessage(Function<ResourceLocation, Component> message) {
+    public AStructureRestriction attackMessage(Function<ResourceKey<Structure>, Component> message) {
         return set(Attributes.Structure.ATTACK_MESSAGE, message);
     }
 
-    public AStructureRestriction interactMessage(Function<ResourceLocation, Component> message) {
+    public AStructureRestriction interactMessage(Function<ResourceKey<Structure>, Component> message) {
         return set(Attributes.Structure.INTERACT_MESSAGE, message);
     }
 
-    public AStructureRestriction enterMessage(Function<ResourceLocation, Component> message) {
+    public AStructureRestriction enterMessage(Function<ResourceKey<Structure>, Component> message) {
         return set(Attributes.Structure.ENTER_MESSAGE, message);
     }
 
-    public AStructureRestriction placeMessage(Function<ResourceLocation, Component> message) {
+    public AStructureRestriction placeMessage(Function<ResourceKey<Structure>, Component> message) {
         return set(Attributes.Structure.PLACE_MESSAGE, message);
     }
 
-    public AStructureRestriction breakMessage(Function<ResourceLocation, Component> message) {
+    public AStructureRestriction breakMessage(Function<ResourceKey<Structure>, Component> message) {
         return set(Attributes.Structure.BREAKING_MESSAGE, message);
     }
 
@@ -307,31 +310,31 @@ public class AStructureRestriction extends ARestriction<AStructureRestriction, R
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setAttackMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.ATTACK_MESSAGE, message);
+        // set(Attributes.Structure.ATTACK_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setInteractMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.INTERACT_MESSAGE, message);
+        // set(Attributes.Structure.INTERACT_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setEnterMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.ENTER_MESSAGE, message);
+        // set(Attributes.Structure.ENTER_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setPlaceMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.PLACE_MESSAGE, message);
+        // set(Attributes.Structure.PLACE_MESSAGE, message);
         return this;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")
     public AStructureRestriction setBreakMessage(Function<ResourceLocation, Component> message) {
-        set(Attributes.Structure.BREAKING_MESSAGE, message);
+        // set(Attributes.Structure.BREAKING_MESSAGE, message);
         return this;
     }
 }

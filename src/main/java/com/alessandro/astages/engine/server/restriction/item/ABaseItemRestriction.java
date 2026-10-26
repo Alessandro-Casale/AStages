@@ -3,8 +3,12 @@ package com.alessandro.astages.engine.server.restriction.item;
 import com.alessandro.astages.api.feature.AChangeable;
 import com.alessandro.astages.api.feature.AMarkable;
 import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.APriority;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -18,10 +22,10 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
-@SuppressWarnings("UnusedReturnValue")
+@NotNullParamsAndMethodsReturn
 public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> extends ARestriction<R, U, ItemStack> implements AChangeable, AMarkable {
-    public ABaseItemRestriction(String id, String stage) {
-        super(id, stage);
+    public ABaseItemRestriction(String id, String stage, APriority defaultPriority) {
+        super(id, stage, defaultPriority);
     }
 
     @Override
@@ -66,13 +70,13 @@ public class ABaseItemRestriction<R extends ARestriction<R, U, ItemStack>, U> ex
     }
 
     @Override
-    public R restrict(U object) {
+    public @Nullable R restrict(U object) {
         return null;
     }
 
     @Override
-    public boolean isRestricted(ItemStack object) {
-        return false;
+    public ARestrictionResult isRestricted(ItemStack stack) {
+        return ARestrictionResult.IGNORED;
     }
 
     @Override

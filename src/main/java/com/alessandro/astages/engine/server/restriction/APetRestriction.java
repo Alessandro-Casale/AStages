@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.server.restriction;
 
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.store.Attributes;
@@ -51,8 +52,8 @@ public class APetRestriction extends ARestriction<APetRestriction, EntityType<?>
     }
 
     @Override
-    public boolean isRestricted(EntityType<?> pet) {
-        return pets.contains(pet);
+    public ARestrictionResult isRestricted(EntityType<?> pet) {
+        return pets.contains(pet) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public APetRestriction allowTaming() {

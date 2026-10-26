@@ -1,6 +1,8 @@
 package com.alessandro.astages.engine.server.restriction.item;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AModelManager;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -12,12 +14,14 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Predicate;
 
+
+@SuppressWarnings("unchecked")
 @NotNullParamsAndMethodsReturn
 public class AItemPredicateRestriction extends ABaseItemRestriction<AItemPredicateRestriction, ResourceLocation> {
     private ResourceLocation modelId;
 
     public AItemPredicateRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.HIGH);
     }
 
     @Override
@@ -34,12 +38,10 @@ public class AItemPredicateRestriction extends ABaseItemRestriction<AItemPredica
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
-
-        return ((AModel<Predicate<ItemStack>>) AModelManager.MODELS.getModel(modelId)).modelObject().test(stack);
+    public ARestrictionResult isRestricted(ItemStack stack) {
+        return ((AModel<Predicate<ItemStack>>) AModelManager.MODELS.getModel(modelId)).modelObject().test(stack) ?
+            ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public ResourceLocation getModelId() {

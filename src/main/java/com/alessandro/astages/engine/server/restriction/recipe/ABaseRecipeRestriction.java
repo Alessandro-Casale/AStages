@@ -1,21 +1,25 @@
 package com.alessandro.astages.engine.server.restriction.recipe;
 
 import com.alessandro.astages.api.feature.AMarkable;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.APriority;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestReloadS2C;
-import org.jetbrains.annotations.NotNull;
 
+@NotNullParamsAndMethodsReturn
 public class ABaseRecipeRestriction<R extends ARestriction<R, U, V>, U, V> extends ARestriction<R, U, V> implements AMarkable {
-    public ABaseRecipeRestriction(String id, String stage) {
-        super(id, stage);
+    public ABaseRecipeRestriction(String id, String stage, APriority defaultPriority) {
+        super(id, stage, defaultPriority);
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
             .withPlugin(ARestrictionManager.ATTACHED_ATTRIBUTES, ABaseRecipeRestriction.class)
@@ -23,13 +27,13 @@ public class ABaseRecipeRestriction<R extends ARestriction<R, U, V>, U, V> exten
     }
 
     @Override
-    public R restrict(U object) {
+    public @Nullable R restrict(U object) {
         return null;
     }
 
     @Override
-    public boolean isRestricted(V object) {
-        return false;
+    public ARestrictionResult isRestricted(V object) {
+        return ARestrictionResult.IGNORED;
     }
 
     @Override

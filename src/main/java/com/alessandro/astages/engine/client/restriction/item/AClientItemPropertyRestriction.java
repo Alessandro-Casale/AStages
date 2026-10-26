@@ -1,6 +1,7 @@
 package com.alessandro.astages.engine.client.restriction.item;
 
 import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.container.AttributeStore;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
+@NotNullParamsAndMethodsReturn
 public class AClientItemPropertyRestriction implements AStore<AClientItemPropertyRestriction> {
     private final String id;
     private final String stage;

@@ -1,6 +1,8 @@
 package com.alessandro.astages.engine.server.restriction.recipe;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.wrapper.RecipeModWrapper;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
@@ -18,7 +20,7 @@ public class ARecipeModRestriction extends ABaseRecipeRestriction<ARecipeModRest
     private final List<ResourceLocation> ignoredRecipeIds = new ArrayList<>();
 
     public ARecipeModRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.LOW);
     }
 
     @Override
@@ -36,11 +38,12 @@ public class ARecipeModRestriction extends ABaseRecipeRestriction<ARecipeModRest
     }
 
     @Override
-    public boolean isRestricted(RecipeWrapper wrapper) {
-        return modId.equals(wrapper.recipe().getNamespace()) && !ignoredRecipeIds.contains(wrapper.recipe());
+    public ARestrictionResult isRestricted(RecipeWrapper wrapper) {
+        if (ignoredRecipeIds.contains(wrapper.recipe())) { return ARestrictionResult.IGNORED; }
+
+        return modId.equals(wrapper.recipe().getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
-    @SuppressWarnings("unused")
     public ARecipeModRestriction ignoreItems(String... itemIds) {
         for (var id : itemIds) {
             ignoredRecipeIds.add(ResourceLocation.parse(id));

@@ -1,19 +1,21 @@
 package com.alessandro.astages.engine.client.evaluator;
 
-import com.alessandro.astages.api.hash.CustomItemStackKey;
 import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.develop.UnderDevelopment;
+import com.alessandro.astages.api.hash.CustomItemStackKey;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.store.ARestrictionResult;
+import com.alessandro.astages.api.util.AClientEvaluatorUtils;
 import com.alessandro.astages.api.util.AStagesClientUtils;
 import com.alessandro.astages.engine.client.registry.AClientItemRegistry;
 import com.alessandro.astages.engine.client.restriction.item.AClientBaseItemRestriction;
 import com.alessandro.astages.engine.client.restriction.item.AClientItemPropertyRestriction;
+import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.item.RequestItemPropertyC2S;
-import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,23 +25,25 @@ import java.util.Set;
 @NotNullParams
 public record AClientItemEvaluator(AClientItemRegistry registry) {
     public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AClientHolder holder, ItemStack stack) {
-        if (holder.isServerActive()) {
-            var serverRestriction = registry.stream().filter(r ->
-                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
+        return AClientEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AClientEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
 
-            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-        }
-
-        if (holder.isPlayerActive()) {
-            return registry.stream().filter(r ->
-                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
-        }
-
-        return null;
+//        if (holder.isServerActive()) {
+//            var serverRestriction = registry.stream().filter(r ->
+//                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+//                    r.isRestricted(stack)
+//            ).findFirst().orElse(null);
+//
+//            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+//        }
+//
+//        if (holder.isPlayerActive()) {
+//            return registry.stream().filter(r ->
+//                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+//                    r.isRestricted(stack)
+//            ).findFirst().orElse(null);
+//        }
+//
+//        return null;
     }
 
     @UnderDevelopment
@@ -70,30 +74,32 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
     }
 
     public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AClientHolder holder, ResourceLocation resourceLocation) {
-        if (holder.isServerActive()) {
-            var serverRestriction = registry.getModRestrictions().stream().filter(r ->
-                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-                    r.getModIds().contains(resourceLocation.getNamespace())
-            ).findFirst().orElse(null);
+        return AClientEvaluatorUtils.evaluateRestrictionUsing(registry.getModRestrictions(), AClientEvaluatorUtils.calculateEvaluationMode(registry), holder, r -> r.getModIds().contains(resourceLocation.getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED);
 
-            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-        }
-
-        if (holder.isPlayerActive()) {
-            return registry.getModRestrictions().stream().filter(r ->
-                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-                    r.getModIds().contains(resourceLocation.getNamespace())
-            ).findFirst().orElse(null);
-        }
-
-        return null;
+//        if (holder.isServerActive()) {
+//            var serverRestriction = registry.getModRestrictions().stream().filter(r ->
+//                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
+//                    r.getModIds().contains(resourceLocation.getNamespace())
+//            ).findFirst().orElse(null);
+//
+//            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
+//        }
+//
+//        if (holder.isPlayerActive()) {
+//            return registry.getModRestrictions().stream().filter(r ->
+//                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
+//                    r.getModIds().contains(resourceLocation.getNamespace())
+//            ).findFirst().orElse(null);
+//        }
+//
+//        return null;
     }
 
     private @Nullable String evaluateId(ItemStack stack) {
         if (stack.isEmpty()) { return null; }
 
         for (var restriction : registry) {
-            if (restriction.isRestricted(stack)) {
+            if (restriction.isRestricted(stack) == ARestrictionResult.RESTRICTED) {
                 return restriction.getId();
             }
         }
@@ -105,7 +111,7 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         Set<String> toReturn = new HashSet<>();
 
         registry.forEach(restriction -> {
-            if (restriction.isRestricted(stack) && restriction.isEnabled(Attributes.HIDING_RECIPE_VIEWER)) { toReturn.add(restriction.getStage()); }
+            if (restriction.isRestricted(stack) == ARestrictionResult.RESTRICTED && restriction.isEnabled(Attributes.HIDING_RECIPE_VIEWER)) { toReturn.add(restriction.getStage()); }
         });
 
         return toReturn;

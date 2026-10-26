@@ -2,6 +2,7 @@ package com.alessandro.astages.infrastructure.config;
 
 import com.alessandro.astages.api.config.DisplayType;
 import com.alessandro.astages.api.config.SimpleLocation;
+import com.alessandro.astages.api.constant.AEvaluationMode;
 import com.alessandro.astages.engine.store.StageAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -54,6 +55,7 @@ public class AStagesCommon {
     // --- DEVELOPER ---
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_TEST_MODE;
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_DEV_LOGS;
+    public static final ModConfigSpec.EnumValue<AEvaluationMode> EVALUATION_MODE;
     public static final ModConfigSpec.ConfigValue<Boolean> SHOW_SPAWN_TYPES;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELIST_SPAWN_TYPES;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELIST_ENTITY_TYPES;
@@ -194,6 +196,10 @@ public class AStagesCommon {
         ENABLE_DEV_LOGS = BUILDER
             .comment("Show detailed backend logs related to development and parsing.")
             .define("Enable Dev Logs", false);
+
+        EVALUATION_MODE = BUILDER
+            .comment("Choose how the restrictions will be evaluated.")
+            .defineEnum("Evaluation Mode", AEvaluationMode.LEGACY);
 
         SHOW_SPAWN_TYPES = BUILDER
             .comment("Log the spawn types for every entity generated via FinalizeSpawnEvent.")

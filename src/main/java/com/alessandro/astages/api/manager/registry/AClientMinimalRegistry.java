@@ -1,5 +1,6 @@
 package com.alessandro.astages.api.manager.registry;
 
+import com.alessandro.astages.api.constant.AEvaluationMode;
 import com.alessandro.astages.api.nullability.NotNullMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.AClientRestriction;
@@ -19,6 +20,9 @@ public interface AClientMinimalRegistry<R extends AClientRestriction<?, ?, ?>> e
 
     Set<String> getIds();
     Set<String> getStages();
+
+    void withForcedEvaluationMode(AEvaluationMode mode);
+    AEvaluationMode getForcedEvaluationMode();
 
     @Override
     default Iterator<R> iterator() {

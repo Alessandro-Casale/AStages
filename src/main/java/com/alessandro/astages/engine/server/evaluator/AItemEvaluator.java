@@ -1,10 +1,10 @@
 package com.alessandro.astages.engine.server.evaluator;
 
-import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.api.store.ARestrictionResult;
+import com.alessandro.astages.api.util.AEvaluatorUtils;
 import com.alessandro.astages.engine.server.registry.AItemRegistry;
 import com.alessandro.astages.engine.server.restriction.item.ABaseItemRestriction;
 import net.minecraft.world.inventory.Slot;
@@ -15,82 +15,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@NotNullParams
+@NotNullParamsAndMethodsReturn
 public record AItemEvaluator(AItemRegistry registry) {
     public @Nullable ABaseItemRestriction<?, ?> evaluate(AHolder holder, ItemStack stack) {
-        if (holder.isServerActive()) {
-            var serverRestriction = registry.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
-
-            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-        }
-
-        if (holder.isPlayerActive()) {
-            return registry.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
-        }
-
-        return null;
+        if (stack.isEmpty()) { return null; }
+        return AEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
     }
 
     public @Nullable ABaseItemRestriction<?, ?> evaluateCache(Set<ABaseItemRestriction<?, ?>> cache, AHolder holder, ItemStack stack) {
-        if (holder.isServerActive()) {
-            var serverRestriction = cache.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
-
-            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-        }
-
-        if (holder.isPlayerActive()) {
-            return cache.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-                    r.isRestricted(stack)
-            ).findFirst().orElse(null);
-        }
-
-        return null;
+        if (stack.isEmpty()) { return null; }
+        return AEvaluatorUtils.evaluateRestriction(cache, AEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
     }
 
     public @Nullable ABaseItemRestriction<?, ?> evaluateContainer(Map<Class<?>, List<Integer>> containersWhitelist, Set<ABaseItemRestriction<?, ?>> cache,
                                                                   AHolder holder, ItemStack stack, Slot slot) {
-        if (holder.isServerActive()) {
-            var serverRestriction = evaluateContainer(containersWhitelist, cache, holder, AStageType.SERVER, stack, slot);
+        if (stack.isEmpty()) { return null; }
 
-            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-        }
+        return AEvaluatorUtils.evaluateRestrictionUsing(cache, AEvaluatorUtils.calculateEvaluationMode(registry), holder, restriction -> {
+            var container = slot.container;
 
-        if (holder.isPlayerActive()) {
-            return evaluateContainer(containersWhitelist, cache, holder, AStageType.PLAYER, stack, slot);
-        }
+            if (containersWhitelist.containsKey(container.getClass())) {
+                var whitelistedIndexes = containersWhitelist.get(container.getClass());
 
-        return null;
-    }
-
-    private @Nullable ABaseItemRestriction<?, ?> evaluateContainer(Map<Class<?>, List<Integer>> containersWhitelist, Set<ABaseItemRestriction<?, ?>> cache,
-                                                                   AHolder holder, AStageType type, ItemStack stack, Slot slot) {
-        var container = slot.container;
-        var index = slot.index;
-
-        var isPresent = containersWhitelist.containsKey(container.getClass());
-        if (isPresent) {
-            var whitelistedIndexes = containersWhitelist.get(container.getClass());
-            if (whitelistedIndexes == null) {
-                return cache.stream().filter(r -> r.isRestricted(stack) && !AStagesUtils.hasStage(holder, type, r.getStage())).findFirst().orElse(null);
-            } else if (whitelistedIndexes.contains(index)) {
-                return cache.stream().filter(r -> r.isRestricted(stack) && !AStagesUtils.hasStage(holder, type, r.getStage())).findFirst().orElse(null);
+                if (whitelistedIndexes == null || whitelistedIndexes.contains(slot.index)) {
+                    return restriction.isRestricted(stack);
+                }
             }
-        }
 
-        return null;
+            return ARestrictionResult.NOT_RESTRICTED;
+        });
     }
 
-    public @Nullable @Unmodifiable List<ABaseItemRestriction<?, ?>> evaluateAll(ItemStack stack) {
-        return registry.stream().filter(r -> r.isRestricted(stack)).toList();
+    public @Nullable @Unmodifiable Set<ABaseItemRestriction<?, ?>> evaluateAll(ItemStack stack) {
+        if (stack.isEmpty()) { return null; }
+        return AEvaluatorUtils.evaluateRestrictions(registry.getRestrictions(), stack);
     }
 }

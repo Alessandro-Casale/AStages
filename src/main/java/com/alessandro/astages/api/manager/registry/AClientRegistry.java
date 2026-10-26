@@ -1,5 +1,6 @@
 package com.alessandro.astages.api.manager.registry;
 
+import com.alessandro.astages.api.constant.AEvaluationMode;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.AClientRestriction;
@@ -11,6 +12,8 @@ import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class AClientRegistry<R extends AClientRestriction<?, ?, ?>> implements AClientMinimalRegistry<R> {
+    private @Nullable AEvaluationMode forcedEvaluationMode = null;
+
     private final Set<R> restrictions = new HashSet<>();
     private final Map<String, R> restrictionsById = new HashMap<>();
     private final Map<String, Set<R>> restrictionsByStage = new HashMap<>();
@@ -69,5 +72,15 @@ public class AClientRegistry<R extends AClientRestriction<?, ?, ?>> implements A
     @Override
     public Set<String> getStages() {
         return restrictionsByStage.keySet();
+    }
+
+    @Override
+    public void withForcedEvaluationMode(AEvaluationMode mode) {
+        forcedEvaluationMode = mode;
+    }
+
+    @Override
+    public @Nullable AEvaluationMode getForcedEvaluationMode() {
+        return forcedEvaluationMode;
     }
 }

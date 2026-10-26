@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @NotNullParams
 public class ADimensionManager extends AManager<ADimensionRestriction, ResourceLocation, ResourceLocation> {
-    public final ResourceLocationCache<ADimensionRestriction> dimensionCache = new ResourceLocationCache<>() {
+    private final ResourceLocationCache<ADimensionRestriction> dimensionCache = new ResourceLocationCache<>(this) {
         @Override
         public void index(ADimensionRestriction restriction) {
             for (var dimension : restriction.getDimensions()) {

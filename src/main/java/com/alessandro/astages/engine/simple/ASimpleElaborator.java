@@ -36,6 +36,7 @@ import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -98,7 +99,7 @@ public class ASimpleElaborator {
     }
 
     public static void elaborateStructure(ASimpleRestriction simple, boolean ignoredMarkAsDirty) {
-        ARestrictionManager.STRUCTURE_INSTANCE.addRestriction(new AStructureRestriction(simple.id, simple.stage).restrict(AResourceLocation.parse(simple.object)));
+        ARestrictionManager.STRUCTURE_INSTANCE.addRestriction(new AStructureRestriction(simple.id, simple.stage).restrict(ResourceKey.create(Registries.STRUCTURE, AResourceLocation.parse(simple.object))));
 
         commonOperations(simple);
     }

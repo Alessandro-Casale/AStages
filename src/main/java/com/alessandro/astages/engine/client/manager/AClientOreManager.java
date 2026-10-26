@@ -20,14 +20,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParams
 public class AClientOreManager extends AClientManager<AClientOreRestriction, OreWrapper, BlockState> {
-    private final BlockStateClientCache<AClientOreRestriction> blockStateCache = new BlockStateClientCache<>() {
+    private final BlockStateClientCache<AClientOreRestriction> blockStateCache = new BlockStateClientCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             add(restriction.getOriginal(), restriction);
         }
     };
 
-    private final BlockClientCache<AClientOreRestriction> blockCache = new BlockClientCache<>() {
+    private final BlockClientCache<AClientOreRestriction> blockCache = new BlockClientCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
@@ -37,7 +37,7 @@ public class AClientOreManager extends AClientManager<AClientOreRestriction, Ore
     };
 
     @NotYetImplemented
-    private final StringClientCache<AClientOreRestriction> restrictionsByStageCache = new StringClientCache<>() {
+    private final StringClientCache<AClientOreRestriction> restrictionsByStageCache = new StringClientCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             add(restriction.getStage(), restriction);

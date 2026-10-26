@@ -3,6 +3,7 @@ package com.alessandro.astages.api.store.container;
 import com.alessandro.astages.api.exception.SetAttributeNotSupported;
 import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.network.data.RestrictionData;
 
 public interface AStore<V> {
     <T> T get(Attribute<T> attribute);
@@ -26,5 +27,9 @@ public interface AStore<V> {
         if (!allowedAttributes().containsKey(attribute)) {
             throw new SetAttributeNotSupported(attribute);
         }
+    }
+
+    default <T> V setFromData(@NotNull RestrictionData data, Attribute<T> attribute) {
+        return set(attribute, data.attributes().getAttribute(attribute));
     }
 }

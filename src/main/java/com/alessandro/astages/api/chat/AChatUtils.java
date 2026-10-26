@@ -8,7 +8,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -67,7 +67,7 @@ public class AChatUtils {
         return Component.empty();
     }
 
-    public static <T> void sendRestrictionsInfo(Player player, String title, String hover, Supplier<List<T>> supplier, Function<T, ?> function) {
+    public static <T> void sendRestrictionsInfo(Player player, String title, String hover, Supplier<Collection<T>> supplier, Function<T, ?> function) {
         var restrictions = supplier.get();
 
         AChatUtils.resetListNumber();

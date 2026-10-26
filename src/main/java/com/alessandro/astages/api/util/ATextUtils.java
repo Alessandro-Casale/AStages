@@ -1,7 +1,9 @@
 package com.alessandro.astages.api.util;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 @NotNullParamsAndMethodsReturn
 public class ATextUtils {
@@ -9,8 +11,8 @@ public class ATextUtils {
         return capitalizeWords(input.replace('_', ' '));
     }
 
-    public static String structureToDescription(ResourceLocation input) {
-        return capitalizeWords(input.getPath().replace('_', ' '));
+    public static String structureToDescription(ResourceKey<Structure> input) {
+        return capitalizeWords(input.location().getPath().replace('_', ' '));
     }
 
     public static String dimensionToDescription(ResourceLocation input) {

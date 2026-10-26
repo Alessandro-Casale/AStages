@@ -34,6 +34,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.List;
 import java.util.Set;
@@ -297,7 +298,8 @@ public class KubeJSServerUtils {
     }
 
     // STRUCTURE Restrictions
-    public static AStructureRestriction addRestrictionForStructure(String id, String stage, ResourceLocation... structures) {
+    @SafeVarargs
+    public static AStructureRestriction addRestrictionForStructure(String id, String stage, ResourceKey<Structure>... structures) {
         return ARestrictionUtils.addRestrictionForStructure(id, stage, List.of(structures));
     }
 

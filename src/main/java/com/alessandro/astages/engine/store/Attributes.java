@@ -8,6 +8,7 @@ import com.alessandro.astages.api.util.ATextUtils;
 import com.alessandro.astages.infrastructure.registry.AStagesRegistries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -100,11 +101,11 @@ public class Attributes {
 
     public static class Structure {
         public static final DeferredRegister<Attribute<?>> ATTRIBUTES = Attribute.setCurrentDeferredRegister(DeferredRegister.create(AStagesRegistries.Keys.ATTRIBUTES, AStages.MODID));
-        public static final Attribute<Function<ResourceLocation, Component>> ATTACK_MESSAGE = Attribute.create("structure_attack_message", AttributeTypes.RESOURCE_LOCATION_TO_COMPONENT, resourceLocation -> Component.translatable("message.astages.structure.attack", ATextUtils.structureToDescription(resourceLocation)).withStyle(ChatFormatting.RED));
-        public static final Attribute<Function<ResourceLocation, Component>> INTERACT_MESSAGE = Attribute.create("structure_interact_message", AttributeTypes.RESOURCE_LOCATION_TO_COMPONENT, resourceLocation -> Component.translatable("message.astages.structure.interact", ATextUtils.structureToDescription(resourceLocation)).withStyle(ChatFormatting.RED));
-        public static final Attribute<Function<ResourceLocation, Component>> ENTER_MESSAGE = Attribute.create("structure_enter_message", AttributeTypes.RESOURCE_LOCATION_TO_COMPONENT, resourceLocation -> Component.translatable("message.astages.structure.enter", ATextUtils.structureToDescription(resourceLocation)).withStyle(ChatFormatting.RED));
-        public static final Attribute<Function<ResourceLocation, Component>> PLACE_MESSAGE = Attribute.create("structure_place_message", AttributeTypes.RESOURCE_LOCATION_TO_COMPONENT, resourceLocation -> Component.translatable("message.astages.structure.place", ATextUtils.structureToDescription(resourceLocation)).withStyle(ChatFormatting.RED));
-        public static final Attribute<Function<ResourceLocation, Component>> BREAKING_MESSAGE = Attribute.create("structure_breaking_message", AttributeTypes.RESOURCE_LOCATION_TO_COMPONENT, resourceLocation -> Component.translatable("message.astages.structure.break", ATextUtils.structureToDescription(resourceLocation)).withStyle(ChatFormatting.RED));
+        public static final Attribute<Function<ResourceKey<net.minecraft.world.level.levelgen.structure.Structure>, Component>> ATTACK_MESSAGE = Attribute.create("structure_attack_message", AttributeTypes.STRUCTURE_RESOURCE_KEY_TO_COMPONENT, resourceKey -> Component.translatable("message.astages.structure.attack", ATextUtils.structureToDescription(resourceKey)).withStyle(ChatFormatting.RED));
+        public static final Attribute<Function<ResourceKey<net.minecraft.world.level.levelgen.structure.Structure>, Component>> INTERACT_MESSAGE = Attribute.create("structure_interact_message", AttributeTypes.STRUCTURE_RESOURCE_KEY_TO_COMPONENT, resourceKey -> Component.translatable("message.astages.structure.interact", ATextUtils.structureToDescription(resourceKey)).withStyle(ChatFormatting.RED));
+        public static final Attribute<Function<ResourceKey<net.minecraft.world.level.levelgen.structure.Structure>, Component>> ENTER_MESSAGE = Attribute.create("structure_enter_message", AttributeTypes.STRUCTURE_RESOURCE_KEY_TO_COMPONENT, resourceKey -> Component.translatable("message.astages.structure.enter", ATextUtils.structureToDescription(resourceKey)).withStyle(ChatFormatting.RED));
+        public static final Attribute<Function<ResourceKey<net.minecraft.world.level.levelgen.structure.Structure>, Component>> PLACE_MESSAGE = Attribute.create("structure_place_message", AttributeTypes.STRUCTURE_RESOURCE_KEY_TO_COMPONENT, resourceKey -> Component.translatable("message.astages.structure.place", ATextUtils.structureToDescription(resourceKey)).withStyle(ChatFormatting.RED));
+        public static final Attribute<Function<ResourceKey<net.minecraft.world.level.levelgen.structure.Structure>, Component>> BREAKING_MESSAGE = Attribute.create("structure_breaking_message", AttributeTypes.STRUCTURE_RESOURCE_KEY_TO_COMPONENT, resourceKey -> Component.translatable("message.astages.structure.break", ATextUtils.structureToDescription(resourceKey)).withStyle(ChatFormatting.RED));
     }
 
     public static class Screen {

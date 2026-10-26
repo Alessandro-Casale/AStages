@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
 
 @NotNullParams
 public class APetManager extends AManager<APetRestriction, EntityType<?>, EntityType<?>> {
-    public final EntityTypeCache<APetRestriction> petCache = new EntityTypeCache<>() {
+    private final EntityTypeCache<APetRestriction> petCache = new EntityTypeCache<>(this) {
         @Override
         public void index(APetRestriction restriction) {
             for (var pet : restriction.getPets()) {

@@ -1,23 +1,24 @@
 package com.alessandro.astages.engine.server.manager;
 
+import com.alessandro.astages.api.cache.server.ResourceLocationCache;
+import com.alessandro.astages.api.cache.server.StringCache;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.manager.AMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.api.cache.server.ResourceLocationCache;
+import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.server.evaluator.ARecipeEvaluator;
 import com.alessandro.astages.engine.server.registry.ARecipeRegistry;
 import com.alessandro.astages.engine.server.restriction.recipe.ABaseRecipeRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
+import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.recipe.SyncRecipeModS2C;
 import com.alessandro.astages.infrastructure.networking.packet.recipe.SyncRecipeS2C;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRestrictionDeleteS2C;
-import com.alessandro.astages.api.store.ARestrictionType;
-import com.alessandro.astages.engine.store.ARestrictionTypes;
-import com.alessandro.astages.api.manager.AMinimalManager;
 import net.minecraft.server.level.ServerPlayer;
 
 @NotNullParams
@@ -25,12 +26,19 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
     private final ARecipeRegistry registry = new ARecipeRegistry();
     private final ARecipeEvaluator evaluator = new ARecipeEvaluator(registry);
 
-    private final ResourceLocationCache<ARecipeRestriction> recipeCache = new ResourceLocationCache<>() {
+    private final ResourceLocationCache<ARecipeRestriction> recipeCache = new ResourceLocationCache<>(this) {
         @Override
         public void index(ARecipeRestriction restriction) {
             for (var recipe : restriction.getRecipes()) {
                 add(recipe, restriction);
             }
+        }
+    };
+
+    private final StringCache<ARecipeModRestriction> recipeModCache = new StringCache<>(this) {
+        @Override
+        public void index(ARecipeModRestriction restriction) {
+            add(restriction.getModId(), restriction);
         }
     };
 
@@ -41,7 +49,7 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
 
     @Override
     public ABaseRecipeRestriction<?, ?, ?> getRestriction(AHolder holder, RecipeWrapper wrapper) {
-        return evaluator.evaluateCache(recipeCache, holder, wrapper);
+        return evaluator.evaluateCaches(recipeCache, recipeModCache, holder, wrapper);
     }
 
     public void addRestriction(ARecipeRestriction restriction) {
@@ -51,7 +59,9 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
     }
 
     public void addRestriction(ARecipeModRestriction restriction) {
-        registry.register(restriction);
+        if (registry.register(restriction)) {
+            recipeModCache.index(restriction);
+        }
     }
 
     @Override
@@ -60,6 +70,7 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
 
         if (restriction != null) {
             if (restriction instanceof ARecipeRestriction r) { recipeCache.remove(r); }
+            if (restriction instanceof ARecipeModRestriction r) { recipeModCache.remove(r); }
         }
 
         Networking.sendTo(null, new RequestRestrictionDeleteS2C(id, associatedType()));
@@ -69,6 +80,7 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
     public void onReloadStarted() {
         registry.clear();
         recipeCache.clear();
+        recipeModCache.clear();
     }
 
     @Override

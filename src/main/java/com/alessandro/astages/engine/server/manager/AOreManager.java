@@ -8,8 +8,8 @@ import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.store.ARestrictionType;
+import com.alessandro.astages.api.util.AEvaluatorUtils;
 import com.alessandro.astages.api.wrapper.OreWrapper;
-import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.engine.server.restriction.AOreRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
@@ -22,14 +22,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParams
 public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockState> implements ClientSynchronizable {
-    private final BlockStateCache<AOreRestriction> blockStateCache = new BlockStateCache<>() {
+    private final BlockStateCache<AOreRestriction> blockStateCache = new BlockStateCache<>(this) {
         @Override
         public void index(AOreRestriction restriction) {
             add(restriction.getOriginal(), restriction);
         }
     };
 
-    private final BlockCache<AOreRestriction> blockCache = new BlockCache<>() {
+    private final BlockCache<AOreRestriction> blockCache = new BlockCache<>(this) {
         @Override
         public void index(AOreRestriction restriction) {
             if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
@@ -38,7 +38,7 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
         }
     };
 
-    private final BlockStateCache<AOreRestriction> affectsPlayerCache = new BlockStateCache<>() {
+    private final BlockStateCache<AOreRestriction> affectsPlayerCache = new BlockStateCache<>(this) {
         @Override
         public void index(AOreRestriction restriction) { }
     };
@@ -48,21 +48,28 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
     }
 
     @Override
-    public void addRestriction(AOreRestriction restriction) {
-        super.addRestriction(restriction);
-        MiscStorage.ORE_STAGES.add(restriction.getStage());
+    public boolean addRestriction(AOreRestriction restriction) {
+        var correctlyRegistered = super.addRestriction(restriction);
+
+        if (correctlyRegistered) {
+            MiscStorage.ORE_STAGES.add(restriction.getStage());
+        }
+
+        return correctlyRegistered;
     }
 
     @Override
     public AOreRestriction getRestriction(AHolder holder, BlockState state) {
-        var cacheRestriction = blockStateCache.find(holder, state);
-        if (cacheRestriction != null) { return cacheRestriction; }
-
-        return blockCache.find(holder, state.getBlock());
+        return AEvaluatorUtils.evaluateRestrictionFromMultipleSources(
+            AEvaluatorUtils.calculateEvaluationMode(getRegistry()), holder,
+            r -> r.isRestricted(state),
+            () -> blockStateCache.get(state),
+            () -> blockCache.get(state.getBlock())
+        );
     }
 
     public BlockState getReplacement(AHolder holder, BlockState original) {
-        var restriction = ARestrictionManager.ORE_INSTANCE.getRestriction(holder, original);
+        var restriction = getRestriction(holder, original);
         return restriction != null ? restriction.getReplacement() : original;
     }
 

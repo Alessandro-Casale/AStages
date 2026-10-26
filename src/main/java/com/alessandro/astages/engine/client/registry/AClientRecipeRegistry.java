@@ -18,6 +18,7 @@ public class AClientRecipeRegistry extends AClientRegistry<AClientBaseRecipeRest
     public Set<AClientRecipeRestriction> getRecipeRestrictions() {
         return recipes;
     }
+
     public Set<AClientRecipeModRestriction> getModRestrictions() {
         return mods;
     }

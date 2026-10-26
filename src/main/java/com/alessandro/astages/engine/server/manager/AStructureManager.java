@@ -1,6 +1,6 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.ResourceLocationCache;
+import com.alessandro.astages.api.cache.server.ResourceKeyCache;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.AHolder;
@@ -13,12 +13,13 @@ import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRestrictionDeleteS2C;
 import com.alessandro.astages.infrastructure.networking.packet.structure.SyncStructureS2C;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 @NotNullParams
-public class AStructureManager extends AManager<AStructureRestriction, ResourceLocation, ResourceLocation> implements ClientSynchronizable {
-    public final ResourceLocationCache<AStructureRestriction> structureCache = new ResourceLocationCache<>() {
+public class AStructureManager extends AManager<AStructureRestriction, ResourceKey<Structure>, ResourceKey<Structure>> implements ClientSynchronizable {
+    private final ResourceKeyCache<AStructureRestriction, Structure> structureCache = new ResourceKeyCache<>(this) {
         @Override
         public void index(AStructureRestriction restriction) {
             for (var structure : restriction.getStructures()) {
@@ -38,13 +39,13 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceL
     }
 
     @UnderDevelopment("Check correct priority!")
-    public AStructureRestriction getRestriction(ResourceLocation structure) {
+    public AStructureRestriction getRestriction(ResourceKey<Structure> structure) {
         var cache = structureCache.get(structure);
         return cache.isEmpty() ? null : cache.first();
     }
 
     @Override
-    public AStructureRestriction getRestriction(AHolder holder, ResourceLocation structure) {
+    public AStructureRestriction getRestriction(AHolder holder, ResourceKey<Structure> structure) {
         return structureCache.find(holder, structure);
     }
 

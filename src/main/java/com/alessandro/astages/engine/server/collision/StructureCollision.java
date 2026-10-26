@@ -134,10 +134,10 @@ public class StructureCollision {
         structureManager.startsForStructure(chunkPos, structure -> true)
             .forEach(start -> {
                 if (start.isValid()) {
-                    var structureId = registryAccess.getKeyOrNull(start.getStructure());
-                    if (structureId == null) { return; }
+                    var structureId = registryAccess.getResourceKey(start.getStructure());
+                    if (structureId.isEmpty()) { return; }
 
-                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structureId);
+                    var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(structureId.get());
 
                     if (restriction != null) {
                         var bb = start.getBoundingBox();

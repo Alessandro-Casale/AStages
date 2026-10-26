@@ -1,27 +1,32 @@
 package com.alessandro.astages.engine.store;
 
 import com.alessandro.astages.api.constant.ACompareCondition;
+import com.alessandro.astages.api.network.ACodecs;
 import com.alessandro.astages.api.store.AttributeType;
 import com.google.common.reflect.TypeToken;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AttributeTypes {
-    public static final AttributeType<Boolean> BOOLEAN = AttributeType.create(Boolean.class);
-    public static final AttributeType<Integer> INTEGER = AttributeType.create(Integer.class);
-    public static final AttributeType<ResourceLocation> RESOURCE_LOCATION = AttributeType.create(ResourceLocation.class);
-    public static final AttributeType<ACompareCondition> COMPARE_CONDITION = AttributeType.create(ACompareCondition.class);
-    public static final AttributeType<ChatFormatting> CHAT_FORMATTING = AttributeType.create(ChatFormatting.class);
-    public static final AttributeType<Component> COMPONENT = AttributeType.create(Component.class);
-    public static final AttributeType<ItemStack> ITEM_STACK = AttributeType.create(ItemStack.class);
+    public static final AttributeType<Boolean> BOOLEAN = AttributeType.create(Boolean.class, ByteBufCodecs.BOOL);
+    public static final AttributeType<Integer> INTEGER = AttributeType.create(Integer.class, ByteBufCodecs.VAR_INT);
+    public static final AttributeType<ResourceLocation> RESOURCE_LOCATION = AttributeType.create(ResourceLocation.class, ResourceLocation.STREAM_CODEC);
+    public static final AttributeType<ACompareCondition> COMPARE_CONDITION = AttributeType.create(ACompareCondition.class, ACodecs.enumByName(ACompareCondition.class));
+    public static final AttributeType<ChatFormatting> CHAT_FORMATTING = AttributeType.create(ChatFormatting.class, ACodecs.enumByName(ChatFormatting.class));
+    public static final AttributeType<Component> COMPONENT = AttributeType.create(Component.class, ComponentSerialization.STREAM_CODEC);
+    public static final AttributeType<ItemStack> ITEM_STACK = AttributeType.create(ItemStack.class, ItemStack.OPTIONAL_STREAM_CODEC);
 
     public static final AttributeType<EntityType<?>> ENTITY = AttributeType.create(new TypeToken<>() { });
 
@@ -31,4 +36,6 @@ public class AttributeTypes {
     public static final AttributeType<Supplier<Component>> VOID_TO_COMPONENT = AttributeType.create(new TypeToken<>() { });
     public static final AttributeType<Function<ResourceLocation, Component>> RESOURCE_LOCATION_TO_COMPONENT = AttributeType.create(new TypeToken<>() { });
     public static final AttributeType<Function<MenuType<?>, Component>> MENU_TO_COMPONENT = AttributeType.create(new TypeToken<>() { });
+
+    public static final AttributeType<Function<ResourceKey<Structure>, Component>> STRUCTURE_RESOURCE_KEY_TO_COMPONENT = AttributeType.create(new TypeToken<>() { });
 }

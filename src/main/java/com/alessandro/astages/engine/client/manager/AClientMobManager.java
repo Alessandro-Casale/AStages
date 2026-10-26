@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
 
 @NotNullParams
 public class AClientMobManager extends AClientManager<AClientMobRestriction, EntityType<?>, EntityType<?>> {
-    private final EntityTypeClientCache<AClientMobRestriction> mobCache = new EntityTypeClientCache<>() {
+    private final EntityTypeClientCache<AClientMobRestriction> mobCache = new EntityTypeClientCache<>(this) {
         @Override
         public void index(AClientMobRestriction restriction) {
             for (var mob : restriction.getMobs()) {

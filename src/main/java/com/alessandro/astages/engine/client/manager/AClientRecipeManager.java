@@ -1,6 +1,7 @@
 package com.alessandro.astages.engine.client.manager;
 
 import com.alessandro.astages.api.cache.client.RecipeTypeClientCache;
+import com.alessandro.astages.api.cache.client.ResourceLocationClientCache;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
@@ -25,10 +26,19 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
     private final AClientRecipeEvaluator evaluator = new AClientRecipeEvaluator(registry);
 
     @Info("Different from server!")
-    private final RecipeTypeClientCache<AClientRecipeRestriction> recipeTypeCache = new RecipeTypeClientCache<>() {
+    private final RecipeTypeClientCache<AClientRecipeRestriction> recipeTypeCache = new RecipeTypeClientCache<>(this) {
         @Override
         public void index(AClientRecipeRestriction restriction) {
             add(restriction.getType(), restriction);
+        }
+    };
+
+    private final ResourceLocationClientCache<AClientRecipeRestriction> recipeCache = new ResourceLocationClientCache<>(this) {
+        @Override
+        public void index(AClientRecipeRestriction restriction) {
+            for (var recipe : restriction.getRecipes()) {
+                add(recipe, restriction);
+            }
         }
     };
 
@@ -39,7 +49,7 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
 
     @Override
     public AClientBaseRecipeRestriction<?, ?, ?> getRestriction(AClientHolder holder, RecipeWrapper wrapper) {
-        return evaluator.evaluateCache(recipeTypeCache, holder, wrapper);
+        return evaluator.evaluateCache(recipeCache, holder, wrapper);
     }
 
     public Map<String, Set<ResourceLocation>> getAllRecipesForType(RecipeType<?> type) {
@@ -52,6 +62,7 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
 
     public void addRestriction(AClientRecipeRestriction restriction) {
         registry.register(restriction);
+        recipeCache.index(restriction);
         recipeTypeCache.index(restriction);
     }
 
@@ -64,13 +75,17 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
         var restriction = registry.remove(id);
 
         if (restriction != null) {
-            if (restriction instanceof AClientRecipeRestriction r) { recipeTypeCache.remove(r); }
+            if (restriction instanceof AClientRecipeRestriction r) {
+                recipeCache.remove(r);
+                recipeTypeCache.remove(r);
+            }
         }
     }
 
     @Override
     public void onReloadStarted() {
         registry.clear();
+        recipeCache.clear();
         recipeTypeCache.clear();
     }
 

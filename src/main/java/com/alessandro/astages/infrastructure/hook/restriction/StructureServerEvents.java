@@ -45,10 +45,10 @@ public class StructureServerEvents {
         var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
 
         for (var structure : structures) {
-            var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
-            if (structureId == null) { continue; }
+            var structureId = REGISTRY_ACCESS.getResourceKey(structure.getStructure());
+            if (structureId.isEmpty()) { continue; }
 
-            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId);
+            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
 
             var blockPlacedByPlayer = PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).isBlockPlacedByPlayer(event.getPos());
             if (blockPlacedByPlayer) {
@@ -59,7 +59,7 @@ public class StructureServerEvents {
             if (restriction != null && restriction.isDisabled(Attributes.BLOCK_BREAKING)) {
                 if (!restriction.isBlockBreakable(event.getState())) {
                     event.setCanceled(true);
-                    restriction.displayMessage(Attributes.Structure.BREAKING_MESSAGE, structureId, player);
+                    restriction.displayMessage(Attributes.Structure.BREAKING_MESSAGE, structureId.get(), player);
                     break;
                 }
             }
@@ -77,16 +77,16 @@ public class StructureServerEvents {
 
         var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
         for (var structure : structures) {
-            var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
-            if (structureId == null) { continue; }
+            var structureId = REGISTRY_ACCESS.getResourceKey(structure.getStructure());
+            if (structureId.isEmpty()) { continue; }
 
-            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId);
+            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
             if (restriction != null && restriction.isDisabled(Attributes.GENERIC_INTERACTIONS)) {
                 var clickedBlock = event.getLevel().getBlockState(event.getPos());
 
                 if (!restriction.isBlockInteractable(clickedBlock)) {
                     event.setCanceled(true);
-                    restriction.displayMessage(Attributes.Structure.INTERACT_MESSAGE, structureId, player);
+                    restriction.displayMessage(Attributes.Structure.INTERACT_MESSAGE, structureId.get(), player);
                     AInventoryUtils.updateSelectedSlot(player);
                     break;
                 }
@@ -106,17 +106,15 @@ public class StructureServerEvents {
 
         var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
         for (var structure : structures) {
-            var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
-            if (structureId == null) {
-                continue;
-            }
+            var structureId = REGISTRY_ACCESS.getResourceKey(structure.getStructure());
+            if (structureId.isEmpty()) { continue; }
 
-            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId);
+            var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
 
             if (restriction != null && restriction.isDisabled(Attributes.ATTACKING)) {
                 if (!restriction.isEntityTargetable(target.getType())) {
                     event.setCanceled(true);
-                    restriction.displayMessage(Attributes.Structure.ATTACK_MESSAGE, structureId, player);
+                    restriction.displayMessage(Attributes.Structure.ATTACK_MESSAGE, structureId.get(), player);
                     break;
                 }
             }
@@ -135,16 +133,16 @@ public class StructureServerEvents {
 
             var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
             for (var structure : structures) {
-                var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
-                if (structureId == null) { continue; }
+                var structureId = REGISTRY_ACCESS.getResourceKey(structure.getStructure());
+                if (structureId.isEmpty()) { continue; }
 
-                var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId);
+                var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
                 PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).add(event.getPos());
 
                 if (restriction != null && restriction.isDisabled(Attributes.BLOCK_PLACING)) {
                     if (!restriction.isBlockPlaceable(event.getPlacedBlock())) {
                         event.setCanceled(true);
-                        restriction.displayMessage(Attributes.Structure.PLACE_MESSAGE, structureId, player);
+                        restriction.displayMessage(Attributes.Structure.PLACE_MESSAGE, structureId.get(), player);
                         AInventoryUtils.updateSelectedSlot(player);
                         break;
                     }
@@ -167,12 +165,10 @@ public class StructureServerEvents {
             var structures = AStructureCollisionManager.INSTANCE.getStructuresForBlockPos(dimension, pos);
 
             for (var structure : structures) {
-                var structureId = REGISTRY_ACCESS.getKey(structure.getStructure());
-                if (structureId == null) {
-                    continue;
-                }
+                var structureId = REGISTRY_ACCESS.getResourceKey(structure.getStructure());
+                if (structureId.isEmpty()) { continue; }
 
-                var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId);
+                var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
                 if (restriction != null) {
                     if (restriction.isDisabled(Attributes.EXPLOSIONS_AFFECT_BLOCKS)) { event.getAffectedBlocks().clear(); }
                     if (restriction.isDisabled(Attributes.EXPLOSIONS_AFFECT_ENTITIES)) { event.getAffectedEntities().clear(); }

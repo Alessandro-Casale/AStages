@@ -17,7 +17,7 @@ import net.minecraft.world.entity.EntityType;
 
 @NotNullParams
 public class AMobManager extends AManager<AMobRestriction, EntityType<?>, EntityType<?>> implements ClientSynchronizable {
-    private final EntityTypeCache<AMobRestriction> mobCache = new EntityTypeCache<>() {
+    private final EntityTypeCache<AMobRestriction> mobCache = new EntityTypeCache<>(this) {
         @Override
         public void index(AMobRestriction restriction) {
             for (var mob : restriction.getMobs()) {

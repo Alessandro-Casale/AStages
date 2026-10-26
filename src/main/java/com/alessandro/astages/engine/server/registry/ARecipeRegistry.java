@@ -31,10 +31,13 @@ public class ARecipeRegistry extends ARegistry<ABaseRecipeRestriction<?, ?, ?>> 
         return false;
     }
 
-    public void register(ARecipeModRestriction restriction) {
+    public boolean register(ARecipeModRestriction restriction) {
         if (commonRegister(restriction)) {
             mods.add(restriction);
+            return true;
         }
+
+        return false;
     }
 
     public boolean commonRegister(ABaseRecipeRestriction<?, ?, ?> restriction) {

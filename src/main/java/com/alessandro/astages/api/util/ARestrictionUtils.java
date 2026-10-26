@@ -1,17 +1,13 @@
 package com.alessandro.astages.api.util;
 
-import com.alessandro.astages.api.base.IndexedOrderedMultiMap;
-import com.alessandro.astages.api.base.OrderedMultiMap;
 import com.alessandro.astages.api.constant.ACompareCondition;
-import com.alessandro.astages.api.constant.AStageType;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.wrapper.OreWrapper;
 import com.alessandro.astages.api.wrapper.RecipeModWrapper;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.ARestrictionManager;
+import com.alessandro.astages.engine.server.manager.AItemManager;
 import com.alessandro.astages.engine.server.restriction.*;
 import com.alessandro.astages.engine.server.restriction.item.AItemModRestriction;
 import com.alessandro.astages.engine.server.restriction.item.AItemPredicateRestriction;
@@ -21,6 +17,7 @@ import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestric
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
 import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -31,73 +28,95 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.List;
 
 @NotNullParamsAndMethodsReturn
 public class ARestrictionUtils {
-//    public static <R extends ARestriction<R, ?, V>, V> @Nullable ARestriction<R, ?, V> getRestriction(AHolder holder, AStageType type, List<R> restrictions, V object) {
-//        return restrictions.stream().filter(r ->
-//            AStagesUtils.hasStage(holder, type, r.getStage()) &&
-//            r.isRestricted(object)
-//        ).findFirst().orElse(null);
-//    }
-
-    public static AItemRestriction addRestrictionForItem(String id, String stage, Item item) {
+    public static AItemRestriction addRestrictionForItem(AItemManager manager, String id, String stage, Item item) {
         var restriction = new AItemRestriction(id, stage);
         restriction.restrict(item);
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        manager.addRestriction(restriction);
+
+        return restriction;
+    }
+
+    public static AItemRestriction addRestrictionForItem(String id, String stage, Item item) {
+        return addRestrictionForItem(ARestrictionManager.ITEM_INSTANCE, id, stage, item);
+    }
+
+    public static AItemRestriction addRestrictionForItem(AItemManager manager, String id, String stage, List<Item> items) {
+        var restriction = new AItemRestriction(id, stage);
+        for (var item : items) { restriction.restrict(item); }
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemRestriction addRestrictionForItem(String id, String stage, List<Item> items) {
-        var restriction = new AItemRestriction(id, stage);
-        for (var item : items) { restriction.restrict(item); }
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        return addRestrictionForItem(ARestrictionManager.ITEM_INSTANCE, id, stage, items);
+    }
+
+    public static AItemPredicateRestriction addRestrictionForPredicate(AItemManager manager, String id, String stage, ResourceLocation modelId) {
+        var restriction = new AItemPredicateRestriction(id, stage);
+        restriction.restrict(modelId);
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemPredicateRestriction addRestrictionForPredicate(String id, String stage, ResourceLocation modelId) {
-        var restriction = new AItemPredicateRestriction(id, stage);
-        restriction.restrict(modelId);
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        return addRestrictionForPredicate(ARestrictionManager.ITEM_INSTANCE, id, stage, modelId);
+    }
+
+    public static AItemModRestriction addRestrictionForMod(AItemManager manager, String id, String stage, String modId) {
+        var restriction = new AItemModRestriction(id, stage);
+        restriction.restrict(modId);
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemModRestriction addRestrictionForMod(String id, String stage, String modId) {
+        return addRestrictionForMod(ARestrictionManager.ITEM_INSTANCE, id, stage, modId);
+    }
+
+    public static AItemModRestriction addRestrictionForMod(AItemManager manager, String id, String stage, List<String> modIds) {
         var restriction = new AItemModRestriction(id, stage);
-        restriction.restrict(modId);
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        for (var modId : modIds) { restriction.restrict(modId); }
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemModRestriction addRestrictionForMod(String id, String stage, List<String> modIds) {
-        var restriction = new AItemModRestriction(id, stage);
-        for (var modId : modIds) { restriction.restrict(modId); }
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        return addRestrictionForMod(ARestrictionManager.ITEM_INSTANCE, id, stage, modIds);
+    }
+
+    public static AItemTagRestriction addRestrictionForTag(AItemManager manager, String id, String stage, TagKey<Item> tag) {
+        var restriction = new AItemTagRestriction(id, stage);
+        restriction.restrict(tag);
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemTagRestriction addRestrictionForTag(String id, String stage, TagKey<Item> tag) {
-        var restriction = new AItemTagRestriction(id, stage);
-        restriction.restrict(tag);
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
+        return addRestrictionForTag(ARestrictionManager.ITEM_INSTANCE, id, stage, tag);
+    }
+
+    public static AItemRestriction addRestrictionForArmor(AItemManager manager, String id, String stage, List<Item> armors) {
+        var restriction = new AItemRestriction(id, stage);
+        for (var armor : armors) { restriction.restrict(armor); }
+        restriction.setArmorAttributes();
+        manager.addRestriction(restriction);
 
         return restriction;
     }
 
     public static AItemRestriction addRestrictionForArmor(String id, String stage, List<Item> armors) {
-        var restriction = new AItemRestriction(id, stage);
-        for (var armor : armors) { restriction.restrict(armor); }
-        restriction.setArmorAttributes();
-        ARestrictionManager.ITEM_INSTANCE.addRestriction(restriction);
-
-        return restriction;
+        return addRestrictionForArmor(ARestrictionManager.ITEM_INSTANCE, id, stage, armors);
     }
 
     public static void whiteListContainer(Class<?> containerClass, @Nullable List<Integer> slots) {
@@ -160,7 +179,7 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static AStructureRestriction addRestrictionForStructure(String id, String stage, List<ResourceLocation> structures) {
+    public static AStructureRestriction addRestrictionForStructure(String id, String stage, List<ResourceKey<Structure>> structures) {
         var restriction = new AStructureRestriction(id, stage);
         for (var structure : structures) { restriction.restrict(structure); }
         ARestrictionManager.STRUCTURE_INSTANCE.addRestriction(restriction);
@@ -252,58 +271,58 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, OrderedMultiMap<W, R> cache, W value) {
-        if (holder.isServerActive()) {
-            var serverRestriction = getRestrictionFromCache(holder, AStageType.SERVER, cache, value);
-            if (serverRestriction == null) { return null; }
-        }
-
-        if (holder.isPlayerActive()) {
-            return getRestrictionFromCache(holder, AStageType.PLAYER, cache, value);
-        }
-
-        return null;
-    }
-
-    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, AStageType type, OrderedMultiMap<W, R> cache, W value) {
-        var restrictions = cache.get(value);
-
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!AStagesUtils.hasStage(holder, type, restriction.getStage())) {
-                    return restriction;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, IndexedOrderedMultiMap<W, R> cache, W value) {
-        if (holder.isServerActive()) {
-            var serverRestriction = getRestrictionFromCache(holder, AStageType.SERVER, cache, value);
-            if (holder.holdOnlyOneType()) { return serverRestriction; }
-            if (serverRestriction == null) { return null; }
-        }
-
-        if (holder.isPlayerActive()) {
-            return getRestrictionFromCache(holder, AStageType.PLAYER, cache, value);
-        }
-
-        return null;
-    }
-
-    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, AStageType type, IndexedOrderedMultiMap<W, R> cache, W value) {
-        var restrictions = cache.get(value);
-
-        if (!restrictions.isEmpty()) {
-            for (var restriction : restrictions) {
-                if (!AStagesUtils.hasStage(holder, type, restriction.getStage())) {
-                    return restriction;
-                }
-            }
-        }
-
-        return null;
-    }
+//    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, OrderedMultiMap<W, R> cache, W value) {
+//        if (holder.isServerActive()) {
+//            var serverRestriction = getRestrictionFromCache(holder, AStageType.SERVER, cache, value);
+//            if (serverRestriction == null) { return null; }
+//        }
+//
+//        if (holder.isPlayerActive()) {
+//            return getRestrictionFromCache(holder, AStageType.PLAYER, cache, value);
+//        }
+//
+//        return null;
+//    }
+//
+//    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, AStageType type, OrderedMultiMap<W, R> cache, W value) {
+//        var restrictions = cache.get(value);
+//
+//        if (!restrictions.isEmpty()) {
+//            for (var restriction : restrictions) {
+//                if (!AStagesUtils.hasStage(holder, type, restriction.getStage())) {
+//                    return restriction;
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
+//
+//    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, IndexedOrderedMultiMap<W, R> cache, W value) {
+//        if (holder.isServerActive()) {
+//            var serverRestriction = getRestrictionFromCache(holder, AStageType.SERVER, cache, value);
+//            if (holder.holdOnlyOneType()) { return serverRestriction; }
+//            if (serverRestriction == null) { return null; }
+//        }
+//
+//        if (holder.isPlayerActive()) {
+//            return getRestrictionFromCache(holder, AStageType.PLAYER, cache, value);
+//        }
+//
+//        return null;
+//    }
+//
+//    public static  <W, R extends ARestriction<R, ?, ?>> @Nullable R getRestrictionFromCache(AHolder holder, AStageType type, IndexedOrderedMultiMap<W, R> cache, W value) {
+//        var restrictions = cache.get(value);
+//
+//        if (!restrictions.isEmpty()) {
+//            for (var restriction : restrictions) {
+//                if (!AStagesUtils.hasStage(holder, type, restriction.getStage())) {
+//                    return restriction;
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
 }

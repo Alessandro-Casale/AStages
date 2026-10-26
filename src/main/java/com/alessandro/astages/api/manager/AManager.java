@@ -6,7 +6,6 @@ import com.alessandro.astages.api.manager.evaluator.AEvaluator;
 import com.alessandro.astages.api.manager.registry.ARegistry;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.restriction.ARestriction;
-import com.alessandro.astages.api.store.ARestrictionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,12 +35,16 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
         return evaluator.evaluate(holder, object);
     }
 
-    public void addRestriction(R restriction) {
-        registry.register(restriction, considerGlobalStages());
+    public boolean addRestriction(R restriction) {
+        var correctlyRegistered = registry.register(restriction, considerGlobalStages());
 
-        for (var cache : caches) {
-            cache.index(restriction);
+        if (correctlyRegistered) {
+            for (var cache : caches) {
+                cache.index(restriction);
+            }
         }
+
+        return correctlyRegistered;
     }
 
     @Override
@@ -77,10 +80,5 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
 
     public boolean considerGlobalStages() {
         return true;
-    }
-
-    @Override
-    public ARestrictionType associatedType() {
-        return null;
     }
 }

@@ -91,7 +91,7 @@ public class EnchantServerEvents {
                 var enchantments = data.entrySet();
 
                 for (var holder : enchantments) {
-                    var enchantment = holder.getKey().value();
+                    var enchantment = holder.getKey();
                     var level = holder.getIntValue();
 
                     var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(enchantment, level));
@@ -110,7 +110,7 @@ public class EnchantServerEvents {
                 var enchantments = data.entrySet();
 
                 for (var holder : enchantments) {
-                    var enchantment = holder.getKey().value();
+                    var enchantment = holder.getKey();
                     var level = holder.getIntValue();
 
                     var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(enchantment, level));
@@ -134,7 +134,7 @@ public class EnchantServerEvents {
 
         var atLeastOneRemoved = new AtomicBoolean(false);
         enchantments.removeIf(holder -> {
-            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
+            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder, enchantments.getLevel(holder)));
 
             if (restriction != null && restriction.isDisabled(Attributes.STORING_IN_INVENTORY)) {
                 atLeastOneRemoved.set(true);
@@ -160,7 +160,7 @@ public class EnchantServerEvents {
 
         var atLeastOneRemoved = new AtomicBoolean(false);
         enchantments.removeIf(holder -> {
-            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder.value(), enchantments.getLevel(holder)));
+            var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(holder, enchantments.getLevel(holder)));
 
             if (restriction != null && restriction.isDisabled(Attributes.STORING_IN_INVENTORY)) {
                 atLeastOneRemoved.set(true);

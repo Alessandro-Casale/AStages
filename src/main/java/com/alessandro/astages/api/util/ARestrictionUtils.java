@@ -168,7 +168,7 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, Enchantment enchantment) {
+    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, ResourceKey<Enchantment> enchantment) {
         var restriction = new AEnchantRestriction(id, stage);
         restriction.restrict(enchantment);
         ARestrictionManager.ENCHANT_INSTANCE.addRestriction(restriction);
@@ -176,7 +176,7 @@ public class ARestrictionUtils {
         return restriction;
     }
 
-    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, Enchantment enchantment, ACompareCondition compareCondition, int level) {
+    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, ResourceKey<Enchantment> enchantment, ACompareCondition compareCondition, int level) {
         var restriction = new AEnchantRestriction(id, stage);
         restriction.restrict(enchantment)
             .set(Attributes.COMPARE_CONDITION, compareCondition)

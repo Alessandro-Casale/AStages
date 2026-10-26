@@ -52,7 +52,7 @@ public class StructureServerEvents {
 
             var blockPlacedByPlayer = PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).isBlockPlacedByPlayer(event.getPos());
             if (blockPlacedByPlayer) {
-                PlacedBlocksInStructureData.getData(player.getServer(), structure.toString()).remove(event.getPos());
+                PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).remove(event.getPos());
                 continue;
             }
 

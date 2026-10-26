@@ -3,21 +3,21 @@ package com.alessandro.astages.engine.server.manager;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.holder.ARestrictionHolder;
+import com.alessandro.astages.api.manager.AMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.server.evaluator.AItemEvaluator;
 import com.alessandro.astages.engine.server.registry.AItemRegistry;
 import com.alessandro.astages.engine.server.restriction.item.*;
+import com.alessandro.astages.engine.store.ARestrictionTypes;
+import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.infrastructure.networking.Networking;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemModS2C;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemPredicateS2C;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemS2C;
 import com.alessandro.astages.infrastructure.networking.packet.item.SyncItemTagS2C;
 import com.alessandro.astages.infrastructure.networking.packet.reload.RequestRestrictionDeleteS2C;
-import com.alessandro.astages.api.store.ARestrictionType;
-import com.alessandro.astages.engine.store.ARestrictionTypes;
-import com.alessandro.astages.engine.store.Attributes;
-import com.alessandro.astages.api.manager.AMinimalManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +69,7 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
         return ARestrictionHolder.hold(getContainerRestriction(holder, stack, slot));
     }
 
-    public List<ABaseItemRestriction<?,?>> getAllRestrictions(ItemStack stack) {
+    public Set<ABaseItemRestriction<?,?>> getAllRestrictions(ItemStack stack) {
         return evaluator.evaluateAll(stack);
     }
 

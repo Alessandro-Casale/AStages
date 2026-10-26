@@ -26,10 +26,17 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
 
     private final AttributeStore attributes;
 
-    public ARestriction(@NotNull String id, @NotNull String stage) {
+    public ARestriction(String id, String stage) {
         this.id = id;
         this.stage = stage;
         this.attributes = allowedAttributes();
+    }
+
+    public ARestriction(String id, String stage, APriority defaultPriority) {
+        this.id = id;
+        this.stage = stage;
+        this.attributes = allowedAttributes();
+        this.priority = defaultPriority.getPriority();
     }
 
     @Override

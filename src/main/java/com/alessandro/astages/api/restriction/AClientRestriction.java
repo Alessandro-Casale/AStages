@@ -17,9 +17,10 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
 
     private final AttributeStore attributes;
 
-    protected AClientRestriction(String id, String stage) {
+    public AClientRestriction(String id, String stage, int priority) {
         this.id = id;
         this.stage = stage;
+        this.priority = priority;
         this.attributes = allowedAttributes();
     }
 

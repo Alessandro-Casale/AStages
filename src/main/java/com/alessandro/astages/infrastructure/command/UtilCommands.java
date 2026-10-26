@@ -1,6 +1,6 @@
 package com.alessandro.astages.infrastructure.command;
 
-import com.alessandro.astages.Flags;
+import com.alessandro.astages.internal.experimental.Flags;
 import com.alessandro.astages.api.chat.AChatBundle;
 import com.alessandro.astages.api.chat.AChatUtils;
 import com.alessandro.astages.api.holder.AHolder;

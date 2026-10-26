@@ -19,6 +19,6 @@ public class CommandEvents {
         SimpleCommands.register(dispatcher, context);
         ServerCommands.register(dispatcher);
         TimerCommands.register(dispatcher);
-        InfoCommands.register(dispatcher);
+        UtilCommands.register(dispatcher);
     }
 }

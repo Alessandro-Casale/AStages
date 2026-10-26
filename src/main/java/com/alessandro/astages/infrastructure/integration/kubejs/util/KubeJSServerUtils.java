@@ -21,6 +21,7 @@ import com.alessandro.astages.engine.server.restriction.item.AItemTagRestriction
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
@@ -301,11 +302,11 @@ public class KubeJSServerUtils {
     }
 
     // ENCHANT Restrictions
-    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, Enchantment enchantment) {
+    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, ResourceKey<Enchantment> enchantment) {
         return ARestrictionUtils.addRestrictionForEnchant(id, stage, enchantment);
     }
 
-    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, Enchantment enchantment, ACompareCondition compareCondition, int level) {
+    public static AEnchantRestriction addRestrictionForEnchant(String id, String stage, ResourceKey<Enchantment> enchantment, ACompareCondition compareCondition, int level) {
         return ARestrictionUtils.addRestrictionForEnchant(id, stage, enchantment, compareCondition, level);
     }
 

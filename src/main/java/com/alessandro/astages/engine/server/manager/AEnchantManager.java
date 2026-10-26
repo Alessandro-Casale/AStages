@@ -5,9 +5,10 @@ import com.alessandro.astages.api.wrapper.EnchantWrapper;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
 import com.alessandro.astages.api.manager.AManager;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-public class AEnchantManager extends AManager<AEnchantRestriction, Enchantment, EnchantWrapper> {
+public class AEnchantManager extends AManager<AEnchantRestriction, ResourceKey<Enchantment>, EnchantWrapper> {
     @Override
     public ARestrictionType associatedType() {
         return ARestrictionTypes.ENCHANT;

@@ -47,7 +47,7 @@ public abstract class AEnchantmentMenu {
             List<Integer> toRemove = new ArrayList<>();
 
             for (int i = 0; i < value.size(); i++) {
-                var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(value.get(i).enchantment.value(), value.get(i).level));
+                var restriction = ARestrictionManager.ENCHANT_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), new EnchantWrapper(value.get(i).enchantment, value.get(i).level));
 
                 if (restriction != null && restriction.isDisabled(Attributes.ENCHANTING_TABLE)) {
                     toRemove.add(i);

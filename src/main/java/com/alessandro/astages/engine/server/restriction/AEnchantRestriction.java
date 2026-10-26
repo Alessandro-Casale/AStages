@@ -1,16 +1,18 @@
 package com.alessandro.astages.engine.server.restriction;
 
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.wrapper.EnchantWrapper;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.store.Attributes;
 import com.alessandro.astages.api.restriction.ARestriction;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 @NotNullParamsAndMethodsReturn
-public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Enchantment, EnchantWrapper> {
-    private Enchantment enchantment;
+public class AEnchantRestriction extends ARestriction<AEnchantRestriction, ResourceKey<Enchantment>, EnchantWrapper> {
+    private ResourceKey<Enchantment> enchantment;
 
     public AEnchantRestriction(String id, String stage) {
         super(id, stage);
@@ -34,23 +36,23 @@ public class AEnchantRestriction extends ARestriction<AEnchantRestriction, Encha
     }
 
     @Override
-    public AEnchantRestriction restrict(Enchantment enchantment) {
+    public AEnchantRestriction restrict(ResourceKey<Enchantment> enchantment) {
         this.enchantment = enchantment;
 
         return this;
     }
 
     @Override
-    public boolean isRestricted(EnchantWrapper wrapper) {
+    public ARestrictionResult isRestricted(EnchantWrapper wrapper) {
         if (!isValueNull(Attributes.COMPARE_CONDITION) && !isValueNull(Attributes.LEVEL)) {
-            return wrapper.enchantment().equals(enchantment) && elaborateRestriction(wrapper.level());
+            return wrapper.enchantment().is(enchantment) && elaborateRestriction(wrapper.level()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         } else {
-            return wrapper.enchantment().equals(enchantment);
+            return wrapper.enchantment().is(enchantment) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
     }
 
     private boolean elaborateRestriction(int level) {
-        var thisLevel = get(Attributes.LEVEL);
+        int thisLevel = get(Attributes.LEVEL);
 
         return switch (get(Attributes.COMPARE_CONDITION)) {
             case EQUAL -> thisLevel == level;

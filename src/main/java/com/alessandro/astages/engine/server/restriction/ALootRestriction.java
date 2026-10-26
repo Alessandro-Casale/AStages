@@ -5,6 +5,7 @@ import com.alessandro.astages.api.exception.UnsupportedMethodException;
 import com.alessandro.astages.api.loot.ALootPayload;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
@@ -132,42 +133,40 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
     }
 
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
+    public ARestrictionResult isRestricted(ItemStack stack) {
+        if (stack.isEmpty()) { return ARestrictionResult.NOT_RESTRICTED; }
 
         if (!ignoredItems.isEmpty() &&
             ignoredItems.stream().anyMatch(stack::is)) {
-            return false;
+            return ARestrictionResult.NOT_RESTRICTED;
         }
 
         if (!ignoredTags.isEmpty() &&
             ignoredTags.stream().anyMatch(stack::is)) {
-            return false;
+            return ARestrictionResult.NOT_RESTRICTED;
         }
 
         // Prefer mod check first!
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (registry != null) {
-            if (!restrictedMods.isEmpty() &&
-                restrictedMods.stream().anyMatch(modId -> modId.equals(registry.getNamespace()))) {
-                return true;
-            }
+        if (!restrictedMods.isEmpty() &&
+            restrictedMods.stream().anyMatch(modId -> modId.equals(registry.getNamespace()))) {
+            return ARestrictionResult.RESTRICTED;
         }
 
         if (!restrictedTags.isEmpty() &&
             restrictedTags.stream().anyMatch(stack::is)) {
-            return true;
+            return ARestrictionResult.RESTRICTED;
         }
 
         if  (!restrictedItems.isEmpty() &&
             restrictedItems.stream().anyMatch(stack::is)) {
-            return true;
+            return ARestrictionResult.RESTRICTED;
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
-    public boolean isRestricted(ItemStack stack, ALootPayload payload) {
+    public ARestrictionResult isRestricted(ItemStack stack, ALootPayload payload) {
         if (get(Attributes.APPLY_EVERYWHERE)) {
             return isRestricted(stack);
         }
@@ -191,7 +190,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
 
         return activeChecks.stream().anyMatch(
             check -> check.test(stack, payload)
-        );
+        ) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public Function<ItemStack, ItemStack> getReplacer() {
@@ -235,7 +234,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         if (entityType == null) { return false; }
 
         if (entityFilter == AFilter.ALL) { return entities.contains(entityType); }
-        return entities.contains(entityType) && isRestricted(stack);
+        return entities.contains(entityType) && isRestricted(stack) == ARestrictionResult.RESTRICTED;
 
     }
 
@@ -244,7 +243,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         if (damageType == null) { return false; }
 
         if (damageTypeFilter == AFilter.ALL) { return damageTypes.contains(damageType); }
-        return damageTypes.contains(damageType) && isRestricted(stack);
+        return damageTypes.contains(damageType) && isRestricted(stack) == ARestrictionResult.RESTRICTED;
     }
 
     private boolean checkLootTable(ItemStack stack, ALootPayload payload) {
@@ -252,7 +251,7 @@ public class ALootRestriction extends ARestriction<ALootRestriction, Void, ItemS
         if (lootTable == null) { return false; }
 
         if (lootTableFilter == AFilter.ALL) { return lootTables.contains(lootTable); }
-        return lootTables.contains(lootTable) && isRestricted(stack);
+        return lootTables.contains(lootTable) && isRestricted(stack) == ARestrictionResult.RESTRICTED;
     }
 
     @Deprecated(forRemoval = true, since = "3.0.0")

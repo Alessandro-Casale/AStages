@@ -3,6 +3,7 @@ package com.alessandro.astages.engine.server.restriction;
 import com.alessandro.astages.api.exception.UnsupportedMethodException;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
@@ -63,22 +64,22 @@ public class ARegionRestriction extends ARestriction<ARegionRestriction, Void, B
     }
 
     @Override
-    public boolean isRestricted(BlockPos blockPos) {
+    public ARestrictionResult isRestricted(BlockPos blockPos) {
         if (type == Type.CUBE) {
             int dX = Math.abs(blockPos.getX() - center.getX());
             int dY = Math.abs(blockPos.getY() - center.getY());
             int dZ = Math.abs(blockPos.getZ() - center.getZ());
-            return dX <= deltaX && dY <= deltaY && dZ <= deltaZ;
+            return dX <= deltaX && dY <= deltaY && dZ <= deltaZ ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
 
         if (type == Type.SPHERE) {
             int dX = Math.abs(blockPos.getX() - center.getX());
             int dY = Math.abs(blockPos.getY() - center.getY());
             int dZ = Math.abs(blockPos.getZ() - center.getZ());
-            return (dX * dX) / (deltaX * deltaX) + (dY * dY) / (deltaY * deltaY) + (dZ * dZ) / (deltaZ * deltaZ) <= 1;
+            return (dX * dX) / (deltaX * deltaX) + (dY * dY) / (deltaY * deltaY) + (dZ * dZ) / (deltaZ * deltaZ) <= 1 ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
     @SuppressWarnings("UnusedReturnValue")

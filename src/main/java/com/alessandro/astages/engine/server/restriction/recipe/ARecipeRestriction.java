@@ -1,6 +1,8 @@
 package com.alessandro.astages.engine.server.restriction.recipe;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -20,7 +22,7 @@ public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestrictio
     private final RuntimeException TYPE_EXCEPTION = new RuntimeException("Trying to add recipes of different type for restriction with id: " + getId() + "!");
 
     public ARecipeRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.DEFAULT);
     }
 
     @Override
@@ -45,8 +47,8 @@ public class ARecipeRestriction extends ABaseRecipeRestriction<ARecipeRestrictio
     }
 
     @Override
-    public boolean isRestricted(RecipeWrapper wrapper) {
-        return type == wrapper.type() && recipes.contains(wrapper.recipe());
+    public ARestrictionResult isRestricted(RecipeWrapper wrapper) {
+        return type == wrapper.type() && recipes.contains(wrapper.recipe()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public RecipeType<?> getType() {

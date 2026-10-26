@@ -3,6 +3,7 @@ package com.alessandro.astages.engine.server.restriction;
 import com.alessandro.astages.api.constant.AFilter;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.wrapper.EquipmentWrapper;
 import com.alessandro.astages.engine.ARestrictionManager;
@@ -63,8 +64,8 @@ public class AMobRestriction extends ARestriction<AMobRestriction, EntityType<?>
     }
 
     @Override
-    public boolean isRestricted(EntityType<?> mob) {
-        return mobs.contains(mob);
+    public ARestrictionResult isRestricted(EntityType<?> mob) {
+        return mobs.contains(mob) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public Set<EntityType<?>> getMobs() {

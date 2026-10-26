@@ -1,13 +1,17 @@
 package com.alessandro.astages.engine.client.restriction.recipe;
 
 import com.alessandro.astages.api.nullability.NotNull;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.AClientRestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 
+@NotNullParamsAndMethodsReturn
 public class AClientBaseRecipeRestriction<R extends AClientRestriction<R, U, V>, U, V> extends AClientRestriction<R, U, V> {
-    public AClientBaseRecipeRestriction(String id, String stage) {
-        super(id, stage);
+    public AClientBaseRecipeRestriction(String id, String stage, int priority) {
+        super(id, stage, priority);
     }
 
     @Override
@@ -19,12 +23,12 @@ public class AClientBaseRecipeRestriction<R extends AClientRestriction<R, U, V>,
     }
 
     @Override
-    public R restrict(U object) {
+    public @Nullable R restrict(U object) {
         return null;
     }
 
     @Override
-    public boolean isRestricted(V object) {
-        return false;
+    public ARestrictionResult isRestricted(V object) {
+        return ARestrictionResult.IGNORED;
     }
 }

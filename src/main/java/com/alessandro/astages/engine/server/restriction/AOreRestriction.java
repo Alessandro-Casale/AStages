@@ -5,6 +5,7 @@ import com.alessandro.astages.api.feature.AMarkable;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.reload.ClientReloadPhase;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.wrapper.OreWrapper;
@@ -46,12 +47,12 @@ public class AOreRestriction extends ARestriction<AOreRestriction, OreWrapper, B
     }
 
     @Override
-    public boolean isRestricted(BlockState original) {
+    public ARestrictionResult isRestricted(BlockState original) {
         if (isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
-            return this.original.is(original.getBlock());
+            return this.original.is(original.getBlock()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
 
-        return this.original.equals(original);
+        return this.original.equals(original) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public BlockState getOriginal() {

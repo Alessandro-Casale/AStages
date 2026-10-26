@@ -1,27 +1,27 @@
 package com.alessandro.astages.engine.client.restriction.recipe;
 
-import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.nullability.NotNullParams;
-import com.alessandro.astages.engine.AClientRestrictionManager;
-import com.alessandro.astages.api.wrapper.RecipeWrapper;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
+import com.alessandro.astages.api.wrapper.RecipeWrapper;
+import com.alessandro.astages.engine.AClientRestrictionManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NotNullParams
+@NotNullParamsAndMethodsReturn
 public class AClientRecipeRestriction extends AClientBaseRecipeRestriction<AClientRecipeRestriction, RecipeWrapper, RecipeWrapper> {
     private RecipeType<?> type = null;
     private final List<ResourceLocation> recipes = new ArrayList<>();
 
-    public AClientRecipeRestriction(String id, String stage) {
-        super(id, stage);
+    public AClientRecipeRestriction(String id, String stage, int priority) {
+        super(id, stage, priority);
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
             .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientRecipeRestriction.class)
@@ -36,8 +36,8 @@ public class AClientRecipeRestriction extends AClientBaseRecipeRestriction<AClie
     }
 
     @Override
-    public boolean isRestricted(RecipeWrapper wrapper) {
-        return type == wrapper.type() && recipes.contains(wrapper.recipe());
+    public ARestrictionResult isRestricted(RecipeWrapper wrapper) {
+        return type == wrapper.type() && recipes.contains(wrapper.recipe()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public RecipeType<?> getType() {

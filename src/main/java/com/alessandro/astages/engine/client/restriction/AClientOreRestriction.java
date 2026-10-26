@@ -2,6 +2,7 @@ package com.alessandro.astages.engine.client.restriction;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.restriction.AClientRestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.wrapper.OreWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
@@ -13,8 +14,8 @@ public class AClientOreRestriction extends AClientRestriction<AClientOreRestrict
     private BlockState original;
     private BlockState replacement;
 
-    public AClientOreRestriction(String id, String stage) {
-        super(id, stage);
+    public AClientOreRestriction(String id, String stage, int priority) {
+        super(id, stage, priority);
     }
 
     @Override
@@ -38,12 +39,12 @@ public class AClientOreRestriction extends AClientRestriction<AClientOreRestrict
     }
 
     @Override
-    public boolean isRestricted(BlockState original) {
+    public ARestrictionResult isRestricted(BlockState original) {
         if (isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
-            return this.original.is(original.getBlock());
+            return this.original.is(original.getBlock()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
         }
 
-        return this.original.equals(original);
+        return this.original.equals(original) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public BlockState getOriginal() {

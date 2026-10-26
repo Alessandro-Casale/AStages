@@ -1,8 +1,10 @@
 package com.alessandro.astages.api.restriction;
 
-import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.store.container.AStore;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import net.minecraft.network.chat.Component;
@@ -10,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import java.util.Objects;
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
+@NotNullParamsAndMethodsReturn
 public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements AStore<R>, Comparable<R> {
     private final String id;
     private final String stage;
@@ -36,7 +40,6 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         return message.apply(value);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> R set(Attribute<T> attribute, T value) {
         checkAttribute(attribute);
@@ -46,15 +49,15 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         return AttributeStore.compose()
             .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientRestriction.class)
             .build();
     }
 
-    public abstract R restrict(U object);
+    public abstract @Nullable R restrict(U object);
 
-    public abstract boolean isRestricted(V object);
+    public abstract ARestrictionResult isRestricted(V object);
 
     @Override
     public boolean equals(Object obj) {
@@ -65,7 +68,7 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
     }
 
     @Override
-    public int compareTo(@NotNull R that) {
+    public int compareTo(R that) {
         if (this.priority == that.getPriority()) {
             return this.id.compareTo(that.getId());
         }
@@ -85,7 +88,6 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         return priority;
     }
 
-    @SuppressWarnings({ "unchecked", "unused" })
     public R setPriority(int priority) {
         this.priority = priority;
 

@@ -1,7 +1,7 @@
 package com.alessandro.astages.engine.client.restriction.item;
 
-import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,18 +12,18 @@ import net.minecraft.world.item.ItemStack;
 import java.util.HashSet;
 import java.util.Set;
 
-@NotNullParams
+@NotNullParamsAndMethodsReturn
 public class AClientItemModRestriction extends AClientBaseItemRestriction<AClientItemModRestriction, String> {
     private final Set<String> modIds = new HashSet<>();
     private final Set<Item> ignoredItems = new HashSet<>();
     private final Set<TagKey<Item>> ignoredTags = new HashSet<>();
 
-    public AClientItemModRestriction(String id, String stage) {
-        super(id, stage);
+    public AClientItemModRestriction(String id, String stage, int priority) {
+        super(id, stage, priority);
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         return AttributeStore.compose()
             .withSuper(super.allowedAttributes())
             .withPlugin(AClientRestrictionManager.ATTACHED_ATTRIBUTES, AClientItemModRestriction.class)
@@ -37,14 +37,13 @@ public class AClientItemModRestriction extends AClientBaseItemRestriction<AClien
     }
 
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
-
+    public ARestrictionResult isRestricted(ItemStack stack) {
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
-        return !ignoredItems.contains(stack.getItem()) &&
-            ignoredTags.stream().noneMatch(stack::is) &&
-            modIds.contains(registry.getNamespace());
+        if (ignoredItems.contains(stack.getItem())) { return ARestrictionResult.IGNORED; }
+        if (ignoredTags.stream().anyMatch(stack::is)) { return ARestrictionResult.IGNORED; }
+
+        return modIds.contains(registry.getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public AClientItemModRestriction ignoreItems(Set<Item> items) {

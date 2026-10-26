@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.server.restriction;
 
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.api.restriction.ARestriction;
@@ -33,7 +34,7 @@ public class AEffectRestriction extends ARestriction<AEffectRestriction, MobEffe
     }
 
     @Override
-    public boolean isRestricted(MobEffect effect) {
-        return effects.contains(effect);
+    public ARestrictionResult isRestricted(MobEffect effect) {
+        return effects.contains(effect) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 }

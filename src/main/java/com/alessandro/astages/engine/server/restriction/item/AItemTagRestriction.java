@@ -1,6 +1,8 @@
 package com.alessandro.astages.engine.server.restriction.item;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.ALootRestriction;
@@ -11,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
@@ -20,7 +21,7 @@ public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestrictio
     private final Set<Item> ignoredItems = new HashSet<>();
 
     public AItemTagRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.LOW);
     }
 
     @Override
@@ -38,14 +39,14 @@ public class AItemTagRestriction extends ABaseItemRestriction<AItemTagRestrictio
     }
 
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
+    public ARestrictionResult isRestricted(ItemStack stack) {
+        if (ignoredItems.contains(stack.getItem())) { return ARestrictionResult.IGNORED; }
 
-        return !ignoredItems.contains(stack.getItem()) && stack.is(tag);
+        return stack.is(tag) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public AItemTagRestriction ignoreItems(Item... items) {
-        ignoredItems.addAll(List.of(items));
+        ignoredItems.addAll(Set.of(items));
         return this;
     }
 

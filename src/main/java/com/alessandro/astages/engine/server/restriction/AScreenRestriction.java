@@ -3,6 +3,7 @@ package com.alessandro.astages.engine.server.restriction;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.store.Attributes;
@@ -48,29 +49,29 @@ public class AScreenRestriction extends ARestriction<AScreenRestriction, MenuTyp
     }
 
     @Override
-    public boolean isRestricted(AbstractContainerMenu menu) {
+    public ARestrictionResult isRestricted(AbstractContainerMenu menu) {
         var type = menu.getType();
 
         for (MenuType<?> men : menus) {
             if (men.equals(type)) {
-                return true;
+                return ARestrictionResult.RESTRICTED;
             }
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
-    public boolean isRestricted(AbstractContainerMenu menu, @Nullable BlockState state, @Nullable BlockEntity entity) {
+    public ARestrictionResult isRestricted(AbstractContainerMenu menu, @Nullable BlockState state, @Nullable BlockEntity entity) {
         if (isDisabled(Attributes.HAS_CHECKER)) { return isRestricted(menu); }
 
         var type = menu.getType();
         for (MenuType<?> men : menus) {
             if (men.equals(type) && checker.test(state, entity, menu)) {
-                return true;
+                return ARestrictionResult.RESTRICTED;
             }
         }
 
-        return false;
+        return ARestrictionResult.NOT_RESTRICTED;
     }
 
     public List<MenuType<?>> getMenus() {

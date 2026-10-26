@@ -1,6 +1,8 @@
 package com.alessandro.astages.engine.server.restriction.item;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.store.APriorities;
+import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.ARestrictionManager;
 import com.alessandro.astages.engine.server.restriction.ALootRestriction;
@@ -22,7 +24,7 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
     private final Set<TagKey<Item>> ignoredTags = new HashSet<>();
 
     public AItemModRestriction(String id, String stage) {
-        super(id, stage);
+        super(id, stage, APriorities.LOWEST);
     }
 
     @Override
@@ -40,14 +42,13 @@ public class AItemModRestriction extends ABaseItemRestriction<AItemModRestrictio
     }
 
     @Override
-    public boolean isRestricted(ItemStack stack) {
-        if (stack.isEmpty()) { return false; }
-
+    public ARestrictionResult isRestricted(ItemStack stack) {
         var registry = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
-        return !ignoredItems.contains(stack.getItem()) &&
-            ignoredTags.stream().noneMatch(stack::is) &&
-            modIds.contains(registry.getNamespace());
+        if (ignoredItems.contains(stack.getItem())) { return ARestrictionResult.IGNORED; }
+        if (ignoredTags.stream().anyMatch(stack::is)) { return ARestrictionResult.IGNORED; }
+
+        return modIds.contains(registry.getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
     public AItemModRestriction ignoreItems(Item... items) {

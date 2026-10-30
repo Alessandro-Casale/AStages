@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 @NotNullParamsAndMethodsReturn
-public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements AStore<R>, Comparable<R> {
+public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements ACommonRestriction<V>, AStore<R>, Comparable<R> {
     private final String id;
     private final String stage;
     private int priority = 0;
@@ -58,6 +58,7 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
 
     public abstract @Nullable R restrict(U object);
 
+    @Override
     public abstract ARestrictionResult isRestricted(V object);
 
     @Override
@@ -77,14 +78,17 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
         return -Integer.compare(this.priority, that.getPriority()); // Ascending order!
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getStage() {
         return stage;
     }
 
+    @Override
     public int getPriority() {
         return priority;
     }

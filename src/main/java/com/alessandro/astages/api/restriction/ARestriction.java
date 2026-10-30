@@ -24,7 +24,7 @@ import java.util.function.Function;
  */
 @SuppressWarnings("unchecked")
 @NotNullParamsAndMethodsReturn
-public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements AStore<R>, AConfigurablePreset<R>, Comparable<R> {
+public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implements ACommonRestriction<V>, AStore<R>, AConfigurablePreset<R>, Comparable<R> {
     private final String id;
     private final String stage;
     private int priority = 0;
@@ -78,6 +78,11 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
             .build();
     }
 
+    public abstract @Nullable R restrict(U object);
+
+    @Override
+    public abstract ARestrictionResult isRestricted(V object);
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ARestriction<?, ?, ?>)) { return false; }
@@ -96,18 +101,17 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
         return -Integer.compare(this.priority, that.getPriority()); // Ascending order!
     }
 
-    public abstract @Nullable R restrict(U object);
-
-    public abstract ARestrictionResult isRestricted(V object);
-
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getStage() {
         return stage;
     }
 
+    @Override
     public int getPriority() {
         return priority;
     }

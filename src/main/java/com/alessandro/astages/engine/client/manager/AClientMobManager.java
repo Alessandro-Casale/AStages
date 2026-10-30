@@ -1,9 +1,9 @@
 package com.alessandro.astages.engine.client.manager;
 
-import com.alessandro.astages.api.cache.client.EntityTypeClientCache;
-import com.alessandro.astages.api.holder.AClientHolder;
+import com.alessandro.astages.api.cache.EntityTypeCache;
 import com.alessandro.astages.api.manager.AClientManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.client.restriction.AClientMobRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
 
 @NotNullParams
 public class AClientMobManager extends AClientManager<AClientMobRestriction, EntityType<?>, EntityType<?>> {
-    private final EntityTypeClientCache<AClientMobRestriction> mobCache = new EntityTypeClientCache<>(this) {
+    private final EntityTypeCache<AClientMobRestriction> mobCache = new EntityTypeCache<>(this) {
         @Override
         public void index(AClientMobRestriction restriction) {
             for (var mob : restriction.getMobs()) {
@@ -25,8 +25,8 @@ public class AClientMobManager extends AClientManager<AClientMobRestriction, Ent
     }
 
     @Override
-    public AClientMobRestriction getRestriction(AClientHolder holder, EntityType<?> type) {
-        return mobCache.find(holder, type);
+    public AClientMobRestriction getRestriction(AStageContext context, EntityType<?> type) {
+        return mobCache.find(context, type);
     }
 
     @Override

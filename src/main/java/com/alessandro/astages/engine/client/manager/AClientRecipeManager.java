@@ -1,11 +1,12 @@
 package com.alessandro.astages.engine.client.manager;
 
-import com.alessandro.astages.api.cache.client.RecipeTypeClientCache;
-import com.alessandro.astages.api.cache.client.ResourceLocationClientCache;
+import com.alessandro.astages.api.cache.RecipeTypeCache;
+import com.alessandro.astages.api.cache.ResourceLocationCache;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.client.evaluator.AClientRecipeEvaluator;
@@ -26,14 +27,14 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
     private final AClientRecipeEvaluator evaluator = new AClientRecipeEvaluator(registry);
 
     @Info("Different from server!")
-    private final RecipeTypeClientCache<AClientRecipeRestriction> recipeTypeCache = new RecipeTypeClientCache<>(this) {
+    private final RecipeTypeCache<AClientRecipeRestriction> recipeTypeCache = new RecipeTypeCache<>(this) {
         @Override
         public void index(AClientRecipeRestriction restriction) {
             add(restriction.getType(), restriction);
         }
     };
 
-    private final ResourceLocationClientCache<AClientRecipeRestriction> recipeCache = new ResourceLocationClientCache<>(this) {
+    private final ResourceLocationCache<AClientRecipeRestriction> recipeCache = new ResourceLocationCache<>(this) {
         @Override
         public void index(AClientRecipeRestriction restriction) {
             for (var recipe : restriction.getRecipes()) {
@@ -48,8 +49,8 @@ public class AClientRecipeManager implements AClientMinimalManager<AClientBaseRe
     }
 
     @Override
-    public AClientBaseRecipeRestriction<?, ?, ?> getRestriction(AClientHolder holder, RecipeWrapper wrapper) {
-        return evaluator.evaluateCache(recipeCache, holder, wrapper);
+    public AClientBaseRecipeRestriction<?, ?, ?> getRestriction(AStageContext context, RecipeWrapper wrapper) {
+        return evaluator.evaluateCache(recipeCache, context, wrapper);
     }
 
     public Map<String, Set<ResourceLocation>> getAllRecipesForType(RecipeType<?> type) {

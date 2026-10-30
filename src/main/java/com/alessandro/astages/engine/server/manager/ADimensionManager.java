@@ -1,9 +1,9 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.ResourceLocationCache;
-import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.cache.ResourceLocationCache;
 import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.server.restriction.ADimensionRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
@@ -25,8 +25,8 @@ public class ADimensionManager extends AManager<ADimensionRestriction, ResourceL
     }
 
     @Override
-    public ADimensionRestriction getRestriction(AHolder holder, ResourceLocation dimension) {
-        return dimensionCache.find(holder, dimension);
+    public ADimensionRestriction getRestriction(AStageContext context, ResourceLocation dimension) {
+        return dimensionCache.find(context, dimension);
     }
 
     @Override

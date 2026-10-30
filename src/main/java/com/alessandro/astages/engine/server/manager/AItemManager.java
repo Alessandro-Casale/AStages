@@ -1,11 +1,11 @@
 package com.alessandro.astages.engine.server.manager;
 
 import com.alessandro.astages.api.feature.ClientSynchronizable;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.holder.ARestrictionHolder;
 import com.alessandro.astages.api.manager.AMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.server.evaluator.AItemEvaluator;
 import com.alessandro.astages.engine.server.registry.AItemRegistry;
@@ -41,32 +41,32 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
     }
 
     @Override
-    public ABaseItemRestriction<?, ?> getRestriction(AHolder holder, ItemStack stack) {
-        return evaluator.evaluate(holder, stack);
+    public ABaseItemRestriction<?, ?> getRestriction(AStageContext context, ItemStack stack) {
+        return evaluator.evaluate(context, stack);
     }
 
-    public ABaseItemRestriction<?, ?> getInventoryRestriction(AHolder holder, ItemStack stack) {
-        return evaluator.evaluateCache(inventoryCache, holder, stack);
+    public ABaseItemRestriction<?, ?> getInventoryRestriction(AStageContext context, ItemStack stack) {
+        return evaluator.evaluateCache(inventoryCache, context, stack);
     }
 
-    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getInventoryHolder(AHolder holder, ItemStack stack) {
-        return ARestrictionHolder.hold(getInventoryRestriction(holder, stack));
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getInventoryHolder(AStageContext context, ItemStack stack) {
+        return ARestrictionHolder.hold(getInventoryRestriction(context, stack));
     }
 
-    public ABaseItemRestriction<?, ?> getEquipmentRestriction(AHolder holder, ItemStack stack) {
-        return evaluator.evaluateCache(equipmentCache, holder, stack);
+    public ABaseItemRestriction<?, ?> getEquipmentRestriction(AStageContext context, ItemStack stack) {
+        return evaluator.evaluateCache(equipmentCache, context, stack);
     }
 
-    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getEquipmentHolder(AHolder holder, ItemStack stack) {
-        return ARestrictionHolder.hold(getEquipmentRestriction(holder, stack));
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getEquipmentHolder(AStageContext context, ItemStack stack) {
+        return ARestrictionHolder.hold(getEquipmentRestriction(context, stack));
     }
 
-    public ABaseItemRestriction<?, ?> getContainerRestriction(AHolder holder, ItemStack stack, Slot slot) {
-        return evaluator.evaluateContainer(containersWhitelist, containersCache, holder, stack, slot);
+    public ABaseItemRestriction<?, ?> getContainerRestriction(AStageContext context, ItemStack stack, Slot slot) {
+        return evaluator.evaluateContainer(containersWhitelist, containersCache, context, stack, slot);
     }
 
-    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getContainersHolder(AHolder holder, ItemStack stack, Slot slot) {
-        return ARestrictionHolder.hold(getContainerRestriction(holder, stack, slot));
+    public ARestrictionHolder<ABaseItemRestriction<?, ?>> getContainersHolder(AStageContext context, ItemStack stack, Slot slot) {
+        return ARestrictionHolder.hold(getContainerRestriction(context, stack, slot));
     }
 
     public Set<ABaseItemRestriction<?,?>> getAllRestrictions(ItemStack stack) {

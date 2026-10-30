@@ -1,11 +1,11 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.EntityTypeCache;
+import com.alessandro.astages.api.cache.EntityTypeCache;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.server.restriction.AMobRestriction;
 import com.alessandro.astages.engine.store.ARestrictionTypes;
@@ -31,8 +31,8 @@ public class AMobManager extends AManager<AMobRestriction, EntityType<?>, Entity
     }
 
     @Override
-    public AMobRestriction getRestriction(AHolder holder, EntityType<?> type) {
-        return mobCache.find(holder, type);
+    public AMobRestriction getRestriction(AStageContext context, EntityType<?> type) {
+        return mobCache.find(context, type);
     }
 
     @Override

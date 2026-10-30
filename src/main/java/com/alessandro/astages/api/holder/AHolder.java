@@ -5,6 +5,7 @@ import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.infrastructure.capability.OfflinePlayerStage;
 import com.alessandro.astages.infrastructure.capability.ServerStage;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
@@ -18,12 +19,13 @@ import java.util.function.Consumer;
 
 @UnderDevelopment("Use getFirst()!")
 @NotNullParamsAndMethodsReturn
-public class AHolder {
+public class AHolder implements AStageContext {
     private final boolean isServer;
     private final boolean isPlayer;
     private final boolean isMultiple;
 
     private final List<UUID> uuids = new ArrayList<>();
+    private @Nullable List<AStageContext> types;
 
     private AHolder(boolean isServer, boolean isPlayer, boolean isMultiple) {
         this.isServer = isServer;
@@ -81,6 +83,46 @@ public class AHolder {
         return isPlayer;
     }
 
+    @Override
+    public List<AStageContext> types() {
+        if (types == null) {
+            var types = new ArrayList<AStageContext>();
+            if (isServer) { types.add(AStageContext.of(ServerStage.getServerStages())); }
+            if (isPlayer) { types.add(AStageContext.of(playerStages())); }
+
+            this.types = List.copyOf(types);
+        }
+
+        return types;
+    }
+
+    @Override
+    public boolean isUnlocked(String stage) {
+        for (var part : types()) {
+            if (part.isUnlocked(stage)) { return true; }
+        }
+
+        return false;
+    }
+
+    public Set<String> getUnlockedStages() {
+        var stages = new HashSet<String>();
+
+        if (isServer) { stages.addAll(ServerStage.getServerStages()); }
+        if (isPlayer) { stages.addAll(playerStages()); }
+
+        return stages;
+    }
+
+    private Set<String> playerStages() {
+        if (!isMultiple) { return OfflinePlayerStage.getPlayerStagesFromCache(uuids.getFirst()); }
+
+        var union = new HashSet<String>();
+        for (var uuid : uuids) { union.addAll(OfflinePlayerStage.getPlayerStagesFromCache(uuid)); }
+        return union;
+    }
+
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public AStageHolder getStages() {
         var holder = AStageHolder.init();
 
@@ -122,11 +164,14 @@ public class AHolder {
     }
 
     public boolean holdOnlyOneType() {
-        return getStages().holdOnlyOneType();
+        return isServer != isPlayer;
     }
 
     public @Nullable AStageType getHeldType() {
-        return getStages().getHeldType();
+        if (isServer && !isPlayer) { return AStageType.SERVER; }
+        if (isPlayer && !isServer) { return AStageType.PLAYER; }
+
+        return null;
     }
 
     public UUID getPlayer() {

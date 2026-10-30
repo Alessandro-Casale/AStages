@@ -1,12 +1,12 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.BlockCache;
-import com.alessandro.astages.api.cache.server.BlockStateCache;
+import com.alessandro.astages.api.cache.BlockCache;
+import com.alessandro.astages.api.cache.BlockStateCache;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.util.AEvaluatorUtils;
 import com.alessandro.astages.api.wrapper.OreWrapper;
@@ -59,22 +59,22 @@ public class AOreManager extends AManager<AOreRestriction, OreWrapper, BlockStat
     }
 
     @Override
-    public AOreRestriction getRestriction(AHolder holder, BlockState state) {
+    public AOreRestriction getRestriction(AStageContext context, BlockState state) {
         return AEvaluatorUtils.evaluateRestrictionFromMultipleSources(
-            AEvaluatorUtils.calculateEvaluationMode(getRegistry()), holder,
+            AEvaluatorUtils.calculateEvaluationMode(getRegistry()), context,
             r -> r.isRestricted(state),
             () -> blockStateCache.get(state),
             () -> blockCache.get(state.getBlock())
         );
     }
 
-    public BlockState getReplacement(AHolder holder, BlockState original) {
-        var restriction = getRestriction(holder, original);
+    public BlockState getReplacement(AStageContext context, BlockState original) {
+        var restriction = getRestriction(context, original);
         return restriction != null ? restriction.getReplacement() : original;
     }
 
-    public BlockState getReplacementForPlayerActions(AHolder holder, BlockState original) {
-        var restriction = affectsPlayerCache.find(holder, original);
+    public BlockState getReplacementForPlayerActions(AStageContext context, BlockState original) {
+        var restriction = affectsPlayerCache.find(context, original);
         return restriction != null ? restriction.getReplacement() : original;
     }
 

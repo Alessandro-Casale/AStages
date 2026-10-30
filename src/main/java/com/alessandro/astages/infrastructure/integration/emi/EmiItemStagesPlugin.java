@@ -2,9 +2,9 @@ package com.alessandro.astages.infrastructure.integration.emi;
 
 
 import com.alessandro.astages.api.constant.AOperation;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
 import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
@@ -46,8 +46,8 @@ public class EmiItemStagesPlugin implements EmiPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, EmiStack entry) {
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(holder, entry.getItemStack());
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, EmiStack entry) {
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(context, entry.getItemStack());
         }
 
         @Override
@@ -82,9 +82,9 @@ public class EmiItemStagesPlugin implements EmiPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, FluidEmiStack entry) {
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, FluidEmiStack entry) {
             var rs = BuiltInRegistries.FLUID.getKey((Fluid) entry.getKey());
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(holder, rs);
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(context, rs);
         }
 
         @Override

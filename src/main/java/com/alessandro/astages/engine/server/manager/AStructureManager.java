@@ -1,11 +1,11 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.ResourceKeyCache;
+import com.alessandro.astages.api.cache.ResourceKeyCache;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.AStructureCollisionManager;
 import com.alessandro.astages.engine.server.restriction.AStructureRestriction;
@@ -45,8 +45,8 @@ public class AStructureManager extends AManager<AStructureRestriction, ResourceK
     }
 
     @Override
-    public AStructureRestriction getRestriction(AHolder holder, ResourceKey<Structure> structure) {
-        return structureCache.find(holder, structure);
+    public AStructureRestriction getRestriction(AStageContext context, ResourceKey<Structure> structure) {
+        return structureCache.find(context, structure);
     }
 
     @Override

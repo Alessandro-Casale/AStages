@@ -1,12 +1,12 @@
 package com.alessandro.astages.engine.client.manager;
 
-import com.alessandro.astages.api.cache.client.BlockClientCache;
-import com.alessandro.astages.api.cache.client.BlockStateClientCache;
-import com.alessandro.astages.api.cache.client.StringClientCache;
+import com.alessandro.astages.api.cache.BlockCache;
+import com.alessandro.astages.api.cache.BlockStateCache;
+import com.alessandro.astages.api.cache.StringCache;
 import com.alessandro.astages.api.develop.NotYetImplemented;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.wrapper.OreWrapper;
 import com.alessandro.astages.engine.client.ClientMiscStorage;
@@ -20,14 +20,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @NotNullParams
 public class AClientOreManager extends AClientManager<AClientOreRestriction, OreWrapper, BlockState> {
-    private final BlockStateClientCache<AClientOreRestriction> blockStateCache = new BlockStateClientCache<>(this) {
+    private final BlockStateCache<AClientOreRestriction> blockStateCache = new BlockStateCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             add(restriction.getOriginal(), restriction);
         }
     };
 
-    private final BlockClientCache<AClientOreRestriction> blockCache = new BlockClientCache<>(this) {
+    private final BlockCache<AClientOreRestriction> blockCache = new BlockCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             if (restriction.isEnabled(Attributes.MATCH_ALL_BLOCK_STATES)) {
@@ -37,7 +37,7 @@ public class AClientOreManager extends AClientManager<AClientOreRestriction, Ore
     };
 
     @NotYetImplemented
-    private final StringClientCache<AClientOreRestriction> restrictionsByStageCache = new StringClientCache<>(this) {
+    private final StringCache<AClientOreRestriction> restrictionsByStageCache = new StringCache<>(this) {
         @Override
         public void index(AClientOreRestriction restriction) {
             add(restriction.getStage(), restriction);
@@ -55,34 +55,34 @@ public class AClientOreManager extends AClientManager<AClientOreRestriction, Ore
     }
 
     @Override
-    public AClientOreRestriction getRestriction(AClientHolder holder, BlockState state) {
-        var cacheRestriction = blockStateCache.find(holder, state);
+    public AClientOreRestriction getRestriction(AStageContext context, BlockState state) {
+        var cacheRestriction = blockStateCache.find(context, state);
         if (cacheRestriction != null) { return cacheRestriction; }
 
-        return blockCache.find(holder, state.getBlock());
+        return blockCache.find(context, state.getBlock());
     }
 
-    public AClientOreRestriction getRestriction(AClientHolder holder, BlockItem item) {
-        var cacheRestriction = blockStateCache.find(holder, item.getBlock().defaultBlockState());
+    public AClientOreRestriction getRestriction(AStageContext context, BlockItem item) {
+        var cacheRestriction = blockStateCache.find(context, item.getBlock().defaultBlockState());
         if (cacheRestriction != null) { return cacheRestriction; }
 
-        return blockCache.find(holder, item.getBlock());
+        return blockCache.find(context, item.getBlock());
     }
 
-    public BlockState getReplacement(AClientHolder holder, BlockState original) {
-        var restriction = getRestriction(holder, original);
+    public BlockState getReplacement(AStageContext context, BlockState original) {
+        var restriction = getRestriction(context, original);
 
         return restriction != null ? restriction.getReplacement() : original;
     }
 
-    public Item getReplacement(AClientHolder holder, BlockItem item) {
-        var restriction = getRestriction(holder, item);
+    public Item getReplacement(AStageContext context, BlockItem item) {
+        var restriction = getRestriction(context, item);
 
         return restriction != null ? restriction.getReplacement().getBlock().asItem() : item;
     }
 
-    public ItemStack getReplacement(AClientHolder holder, ItemStack original, BlockItem check) {
-        var restriction = getRestriction(holder, check.getBlock().defaultBlockState());
+    public ItemStack getReplacement(AStageContext context, ItemStack original, BlockItem check) {
+        var restriction = getRestriction(context, check.getBlock().defaultBlockState());
 
         return restriction != null ? restriction.getReplacement().getBlock().asItem().getDefaultInstance() : original;
     }

@@ -1,15 +1,13 @@
 package com.alessandro.astages.engine.client.evaluator;
 
-import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.develop.Info;
 import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.hash.CustomItemStackKey;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionResult;
-import com.alessandro.astages.api.util.AClientEvaluatorUtils;
-import com.alessandro.astages.api.util.AStagesClientUtils;
+import com.alessandro.astages.api.util.AEvaluatorUtils;
 import com.alessandro.astages.engine.client.registry.AClientItemRegistry;
 import com.alessandro.astages.engine.client.restriction.item.AClientBaseItemRestriction;
 import com.alessandro.astages.engine.client.restriction.item.AClientItemPropertyRestriction;
@@ -24,39 +22,20 @@ import java.util.Set;
 
 @NotNullParams
 public record AClientItemEvaluator(AClientItemRegistry registry) {
-    public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AClientHolder holder, ItemStack stack) {
-        return AClientEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AClientEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
-
-//        if (holder.isServerActive()) {
-//            var serverRestriction = registry.stream().filter(r ->
-//                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-//                    r.isRestricted(stack)
-//            ).findFirst().orElse(null);
-//
-//            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-//        }
-//
-//        if (holder.isPlayerActive()) {
-//            return registry.stream().filter(r ->
-//                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-//                    r.isRestricted(stack)
-//            ).findFirst().orElse(null);
-//        }
-//
-//        return null;
+    public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AStageContext context, ItemStack stack) {
+        return AEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AEvaluatorUtils.calculateEvaluationMode(registry), context, stack);
     }
 
     @UnderDevelopment
     @Info("Create strong association between requested restriction and properties")
-    public @Nullable AClientItemPropertyRestriction evaluateProperties(AClientHolder holder, ItemStack stack) {
+    public @Nullable AClientItemPropertyRestriction evaluateProperties(AStageContext context, ItemStack stack) {
         if (stack.isEmpty()) { return null; }
 
         var key = CustomItemStackKey.build(stack);
         if (registry.isPropertyPresent(key)) {
             var restriction = registry.getProperty(key);
             if (restriction != null) {
-                return AStagesClientUtils.hasStage(holder, AStageType.SERVER, restriction.getStage()) ||
-                    AStagesClientUtils.hasStage(holder, AStageType.PLAYER, restriction.getStage()) ? null : restriction;
+                return context.isUnlocked(restriction.getStage()) ? null : restriction;
             } else {
                 return null;
             }
@@ -73,26 +52,8 @@ public record AClientItemEvaluator(AClientItemRegistry registry) {
         return null;
     }
 
-    public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AClientHolder holder, ResourceLocation resourceLocation) {
-        return AClientEvaluatorUtils.evaluateRestrictionUsing(registry.getModRestrictions(), AClientEvaluatorUtils.calculateEvaluationMode(registry), holder, r -> r.getModIds().contains(resourceLocation.getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED);
-
-//        if (holder.isServerActive()) {
-//            var serverRestriction = registry.getModRestrictions().stream().filter(r ->
-//                !AStagesClientUtils.hasStage(holder, AStageType.SERVER, r.getStage()) &&
-//                    r.getModIds().contains(resourceLocation.getNamespace())
-//            ).findFirst().orElse(null);
-//
-//            if (serverRestriction == null) { return null; } // If the stage is unlocked in the server, pass!
-//        }
-//
-//        if (holder.isPlayerActive()) {
-//            return registry.getModRestrictions().stream().filter(r ->
-//                !AStagesClientUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) &&
-//                    r.getModIds().contains(resourceLocation.getNamespace())
-//            ).findFirst().orElse(null);
-//        }
-//
-//        return null;
+    public @Nullable AClientBaseItemRestriction<?, ?> evaluate(AStageContext context, ResourceLocation resourceLocation) {
+        return AEvaluatorUtils.evaluateRestrictionUsing(registry.getModRestrictions(), AEvaluatorUtils.calculateEvaluationMode(registry), context, r -> r.getModIds().contains(resourceLocation.getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED);
     }
 
     private @Nullable String evaluateId(ItemStack stack) {

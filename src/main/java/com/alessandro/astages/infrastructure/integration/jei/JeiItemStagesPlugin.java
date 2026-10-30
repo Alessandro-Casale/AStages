@@ -1,12 +1,12 @@
 package com.alessandro.astages.infrastructure.integration.jei;
 
-import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
-import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.api.AResourceLocation;
 import com.alessandro.astages.api.constant.AOperation;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
+import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
+import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.item.AClientBaseItemRestriction;
 import mezz.jei.api.IModPlugin;
@@ -48,8 +48,8 @@ public class JeiItemStagesPlugin implements IModPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, ItemStack entry) {
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(holder, entry);
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, ItemStack entry) {
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(context, entry);
         }
 
         @Override
@@ -82,10 +82,10 @@ public class JeiItemStagesPlugin implements IModPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, FluidStack entry) {
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, FluidStack entry) {
             var rs = BuiltInRegistries.FLUID.getKey(entry.getFluid());
 
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(holder, rs);
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(context, rs);
         }
 
         @Override

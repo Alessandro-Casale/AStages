@@ -5,9 +5,9 @@ import com.alessandro.astages.api.develop.UnderDevelopment;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeServerStagesEvent;
 import com.alessandro.astages.api.event.sync.ClientSynchronizeStagesEvent;
 import com.alessandro.astages.api.hash.CustomItemStackKey;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.manager.AClientMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.evaluator.AClientItemEvaluator;
@@ -41,17 +41,17 @@ public class AClientItemManager implements AClientMinimalManager<AClientBaseItem
     }
 
     @Override
-    public AClientBaseItemRestriction<?, ?> getRestriction(AClientHolder holder, ItemStack stack) {
-        return evaluator.evaluate(holder, stack);
+    public AClientBaseItemRestriction<?, ?> getRestriction(AStageContext context, ItemStack stack) {
+        return evaluator.evaluate(context, stack);
     }
 
     @UnderDevelopment
-    public AClientItemPropertyRestriction getProperties(AClientHolder holder, ItemStack stack) {
-        return evaluator.evaluateProperties(holder, stack);
+    public AClientItemPropertyRestriction getProperties(AStageContext context, ItemStack stack) {
+        return evaluator.evaluateProperties(context, stack);
     }
 
-    public AClientBaseItemRestriction<?, ?> getRestrictionForResourceLocation(AClientHolder holder, ResourceLocation resourceLocation) {
-        return evaluator.evaluate(holder, resourceLocation);
+    public AClientBaseItemRestriction<?, ?> getRestrictionForResourceLocation(AStageContext context, ResourceLocation resourceLocation) {
+        return evaluator.evaluate(context, resourceLocation);
     }
 
     public Set<String> getStagesForStack(ItemStack stack) {

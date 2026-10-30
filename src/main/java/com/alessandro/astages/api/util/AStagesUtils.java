@@ -7,6 +7,7 @@ import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.holder.AStageHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.stage.Stage;
 import com.alessandro.astages.api.stage.TemporaryStage;
 import com.alessandro.astages.api.time.ATime;
@@ -53,27 +54,38 @@ public class AStagesUtils {
     }
 
     public static Set<String> getStages(AHolder holder) {
-        return holder.getStages().getAllStages();
+        return holder.getUnlockedStages();
     }
 
-    public static boolean hasStage(AHolder holder, String stage) {
-        return getStages(holder).contains(stage);
+    public static boolean hasStage(AStageContext context, String stage) {
+        return context.isUnlocked(stage);
     }
 
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static boolean hasStage(AHolder holder, AStageType type, String stage) {
         return holder.getStages().getForType(type).contains(stage);
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static boolean hasStage(AStageHolder holder, AStageType type, String stage) {
         return holder.getForType(type).contains(stage);
     }
 
-    public static boolean hasAtLeastOneStage(AHolder holder, Set<String> stages) {
-        return getStages(holder).stream().anyMatch(stages::contains);
+    public static boolean hasAtLeastOneStage(AStageContext context, Set<String> stages) {
+        for (var stage : stages) {
+            if (context.isUnlocked(stage)) { return true; }
+        }
+
+        return false;
     }
 
-    public static boolean hasAllStages(AHolder holder, Set<String> stages) {
-        return getStages(holder).containsAll(stages);
+    public static boolean hasAllStages(AStageContext context, Set<String> stages) {
+        for (var stage : stages) {
+            if (!context.isUnlocked(stage)) { return false; }
+        }
+
+        return true;
     }
 
     public static void addStage(AHolder holder, String stage, boolean showTitle, boolean displayChatMessage, boolean displayActionBarMessage) {

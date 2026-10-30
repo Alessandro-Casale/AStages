@@ -6,6 +6,7 @@ import com.alessandro.astages.api.manager.evaluator.AEvaluator;
 import com.alessandro.astages.api.manager.registry.ARegistry;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.stage.AStageContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +32,8 @@ public abstract class AManager<R extends ARestriction<R, U, V>, U, V> implements
     }
 
     @Override
-    public R getRestriction(AHolder holder, V object) {
-        return evaluator.evaluate(holder, object);
+    public R getRestriction(AStageContext context, V object) {
+        return evaluator.evaluate(context, object);
     }
 
     public boolean addRestriction(R restriction) {

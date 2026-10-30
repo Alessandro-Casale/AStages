@@ -2,12 +2,11 @@ package com.alessandro.astages.api.util;
 
 import com.alessandro.astages.api.base.IndexedOrderedMultiMap;
 import com.alessandro.astages.api.constant.AEvaluationMode;
-import com.alessandro.astages.api.constant.AStageType;
-import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.api.manager.registry.AMinimalRegistry;
+import com.alessandro.astages.api.manager.registry.ACommonRegistry;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
-import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.restriction.ACommonRestriction;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -22,32 +21,32 @@ import java.util.function.Supplier;
 
 @NotNullParamsAndMethodsReturn
 public class AEvaluatorUtils {
-    public static <R extends ARestriction<?, ?, V>, V> @Nullable R evaluateRestriction(Collection<R> restrictions, AEvaluationMode mode, AHolder holder, V object) {
-        return evaluateRestrictionUsing(restrictions, mode, holder, r -> r.isRestricted(object));
+    public static <R extends ACommonRestriction<V>, V> @Nullable R evaluateRestriction(Collection<R> restrictions, AEvaluationMode mode, AStageContext context, V object) {
+        return evaluateRestrictionUsing(restrictions, mode, context, r -> r.isRestricted(object));
     }
 
-    public static <R extends ARestriction<?, ?, V>, V> @Nullable R evaluateRestrictionUsing(Collection<R> restrictions, AEvaluationMode mode, AHolder holder, Function<R, ARestrictionResult> isRestrictedMethod) {
+    public static <R extends ACommonRestriction<?>> @Nullable R evaluateRestrictionUsing(Collection<R> restrictions, AEvaluationMode mode, AStageContext context, Function<R, ARestrictionResult> isRestrictedMethod) {
         return switch (mode) {
-            case LEGACY -> getLegacyRestrictionWithCondition(restrictions, holder, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
-            case PRIORITIZED -> getPrioritizedRestrictionWithCondition(restrictions, holder, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
+            case LEGACY -> getLegacyRestrictionWithCondition(restrictions, context, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
+            case PRIORITIZED -> getPrioritizedRestrictionWithCondition(restrictions, context, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
         };
     }
 
-    public static  <R extends ARestriction<R, ?, ?>, W> @Nullable R evaluateRestrictionFromCache(IndexedOrderedMultiMap<W, R> cache, AEvaluationMode mode, AHolder holder, W value) {
+    public static  <R extends ACommonRestriction<?> & Comparable<R>, W> @Nullable R evaluateRestrictionFromCache(IndexedOrderedMultiMap<W, R> cache, AEvaluationMode mode, AStageContext context, W value) {
         var restrictions = cache.get(value);
 
         return switch (mode) {
-            case LEGACY -> getLegacyRestrictionWithCondition(restrictions, holder, r -> true);
-            case PRIORITIZED -> getPrioritizedRestrictionWithCondition(restrictions, holder, r -> true);
+            case LEGACY -> getLegacyRestrictionWithCondition(restrictions, context, r -> true);
+            case PRIORITIZED -> getPrioritizedRestrictionWithCondition(restrictions, context, r -> true);
         };
     }
 
     @SafeVarargs
-    public static <R extends ARestriction<?, ?, V>, V> @Nullable R evaluateRestrictionFromMultipleSources(AEvaluationMode mode, AHolder holder, Function<R, ARestrictionResult> isRestrictedMethod, Supplier<? extends Collection<? extends R>>... sources) {
+    public static <R extends ACommonRestriction<?>> @Nullable R evaluateRestrictionFromMultipleSources(AEvaluationMode mode, AStageContext context, Function<R, ARestrictionResult> isRestrictedMethod, Supplier<? extends Collection<? extends R>>... sources) {
         return switch (mode) {
             case LEGACY -> {
                 for (var source : sources) {
-                    var result = getLegacyRestrictionWithCondition(source.get(), holder, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
+                    var result = getLegacyRestrictionWithCondition(source.get(), context, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
 
                     if (result != null) { yield result; }
                 }
@@ -58,16 +57,16 @@ public class AEvaluatorUtils {
                 var merged = new HashSet<R>();
                 for (var source : sources) { merged.addAll(source.get()); }
 
-                yield getPrioritizedRestrictionWithCondition(merged, holder, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
+                yield getPrioritizedRestrictionWithCondition(merged, context, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
             }
         };
     }
 
-    public static <R extends ARestriction<?, ?, ?>> @Nullable R getPrioritizedRestrictionWithCondition(Collection<R> restrictions, AHolder holder, Predicate<R> condition) {
+    public static <R extends ACommonRestriction<?>> @Nullable R getPrioritizedRestrictionWithCondition(Collection<R> restrictions, AStageContext context, Predicate<R> condition) {
         R latestResult = null;
 
         for (var restriction : restrictions) {
-            if (AStagesUtils.hasStage(holder, restriction.getStage())) {
+            if (context.isUnlocked(restriction.getStage())) {
                 continue;
             }
 
@@ -85,35 +84,30 @@ public class AEvaluatorUtils {
         return latestResult;
     }
 
-    public static <R extends ARestriction<?, ?, ?>> @Nullable R getLegacyRestrictionWithCondition(Collection<R> restrictions, AHolder holder, Predicate<R> condition) {
-        if (holder.isServerActive()) {
-            var serverRestriction = restrictions.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.SERVER, r.getStage()) && condition.test(r)
-            ).findFirst().orElse(null);
+    public static <R extends ACommonRestriction<?>> @Nullable R getLegacyRestrictionWithCondition(Collection<R> restrictions, AStageContext context, Predicate<R> condition) {
+        R latestResult = null;
 
-            if (holder.holdOnlyOneType()) {
-                return serverRestriction;
+        for (var type : context.types()) {
+            latestResult = null;
+
+            for (var restriction : restrictions) {
+                if (!type.isUnlocked(restriction.getStage()) && condition.test(restriction)) {
+                    latestResult = restriction;
+                    break;
+                }
             }
 
-            if (serverRestriction == null) {
-                return null;
-            } // If the stage is unlocked in the server, pass!
+            if (latestResult == null) { return null; }
         }
 
-        if (holder.isPlayerActive()) {
-            return restrictions.stream().filter(r ->
-                !AStagesUtils.hasStage(holder, AStageType.PLAYER, r.getStage()) && condition.test(r)
-            ).findFirst().orElse(null);
-        }
-
-        return null;
+        return latestResult;
     }
 
-    public static <R extends ARestriction<?, ?, V>, V> @UnmodifiableView @Nullable Set<R> evaluateRestrictions(Collection<R> restrictions, V object) {
+    public static <R extends ACommonRestriction<V>, V> @UnmodifiableView Set<R> evaluateRestrictions(Collection<R> restrictions, V object) {
         return evaluateRestrictionsUsing(restrictions, r -> r.isRestricted(object));
     }
 
-    public static <R extends ARestriction<?, ?, V>, V> @UnmodifiableView @Nullable Set<R> evaluateRestrictionsUsing(Collection<R> restrictions, Function<R, ARestrictionResult> isRestrictedMethod) {
+    public static <R extends ACommonRestriction<?>> @UnmodifiableView Set<R> evaluateRestrictionsUsing(Collection<R> restrictions, Function<R, ARestrictionResult> isRestrictedMethod) {
         var toReturn = new HashSet<R>();
 
         for (var restriction : restrictions) {
@@ -125,7 +119,7 @@ public class AEvaluatorUtils {
         return Collections.unmodifiableSet(toReturn);
     }
 
-    public static <R extends ARestriction<?, ?, ?>> @UnmodifiableView Set<R> getRestrictionsForStages(Collection<R> restrictions, Set<String> stages) {
+    public static <R extends ACommonRestriction<?>> @UnmodifiableView Set<R> getRestrictionsForStages(Collection<R> restrictions, Set<String> stages) {
         var result = new HashSet<R>();
 
         for (var restriction : restrictions) {
@@ -137,7 +131,7 @@ public class AEvaluatorUtils {
         return Collections.unmodifiableSet(result);
     }
 
-    public static <R extends ARestriction<?, ?, ?>> @UnmodifiableView boolean hasAtLeastOneRestrictionForStages(Collection<R> restrictions, Set<String> stages) {
+    public static <R extends ACommonRestriction<?>> boolean hasAtLeastOneRestrictionForStages(Collection<R> restrictions, Set<String> stages) {
         for (var restriction : restrictions) {
             if (stages.contains(restriction.getStage())) {
                 return true;
@@ -160,7 +154,7 @@ public class AEvaluatorUtils {
         return null;
     }
 
-    public static AEvaluationMode calculateEvaluationMode(AMinimalRegistry<?> registry) {
+    public static AEvaluationMode calculateEvaluationMode(ACommonRegistry<?> registry) {
         return calculateEvaluationMode(registry.getForcedEvaluationMode());
     }
 

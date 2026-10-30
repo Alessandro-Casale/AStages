@@ -4,6 +4,7 @@ import com.alessandro.astages.api.constant.AStageType;
 import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.holder.AStageHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.engine.client.ClientMiscStorage;
 import com.alessandro.astages.infrastructure.capability.ClientPlayerStage;
 import com.alessandro.astages.infrastructure.capability.ClientServerStage;
@@ -13,7 +14,7 @@ import java.util.Set;
 @NotNullParamsAndMethodsReturn
 public class AStagesClientUtils {
     public static Set<String> getStages(AClientHolder holder) {
-        return holder.getStages().getAllStages();
+        return holder.getUnlockedStages();
     }
 
     public static void setStages(AClientHolder holder, Set<String> stages) {
@@ -23,24 +24,35 @@ public class AStagesClientUtils {
         );
     }
 
-    public static boolean hasStage(AClientHolder holder, String stage) {
-        return getStages(holder).contains(stage);
+    public static boolean hasStage(AStageContext context, String stage) {
+        return context.isUnlocked(stage);
     }
 
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static boolean hasStage(AClientHolder holder, AStageType type, String stage) {
         return holder.getStages().getForType(type).contains(stage);
     }
 
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public static boolean hasStage(AStageHolder holder, AStageType type, String stage) {
         return holder.getForType(type).contains(stage);
     }
 
-    public static boolean hasAtLeastOneStage(AClientHolder holder, Set<String> stages) {
-        return getStages(holder).stream().anyMatch(stages::contains);
+    public static boolean hasAtLeastOneStage(AStageContext context, Set<String> stages) {
+        for (var stage : stages) {
+            if (context.isUnlocked(stage)) { return true; }
+        }
+
+        return false;
     }
 
-    public static boolean hasAllStages(AClientHolder holder, Set<String> stages) {
-        return getStages(holder).containsAll(stages);
+    public static boolean hasAllStages(AStageContext context, Set<String> stages) {
+        for (var stage : stages) {
+            if (!context.isUnlocked(stage)) { return false; }
+        }
+
+        return true;
     }
 
     public static void addStage(AClientHolder holder, String stage) {

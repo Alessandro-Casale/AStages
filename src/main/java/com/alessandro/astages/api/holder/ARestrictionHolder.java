@@ -2,15 +2,16 @@ package com.alessandro.astages.api.holder;
 
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.restriction.ACommonRestriction;
 import com.alessandro.astages.api.store.Attribute;
-import com.alessandro.astages.api.restriction.ARestriction;
+import com.alessandro.astages.api.store.container.AStore;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @NotNullParamsAndMethodsReturn
-public class ARestrictionHolder<T extends ARestriction<?, ?, ?>> {
+public class ARestrictionHolder<T extends ACommonRestriction<?> & AStore<?>> {
     private final T restriction;
     private boolean lastCondition;
 
@@ -20,7 +21,7 @@ public class ARestrictionHolder<T extends ARestriction<?, ?, ?>> {
     }
 
     @Contract(value = "_ -> new", pure = true)
-    public static <T extends ARestriction<?, ?, ?>> ARestrictionHolder<T> hold(T restriction) {
+    public static <T extends ACommonRestriction<?> & AStore<?>> ARestrictionHolder<T> hold(T restriction) {
         return new ARestrictionHolder<>(restriction);
     }
 

@@ -1,11 +1,11 @@
 package com.alessandro.astages.infrastructure.integration.rei;
 
-import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
-import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.api.constant.AOperation;
-import com.alessandro.astages.api.holder.AClientHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
+import com.alessandro.astages.api.viewer.EntryViewerMultipleManager;
+import com.alessandro.astages.api.viewer.EntryViewerWrapper;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 import com.alessandro.astages.engine.client.restriction.item.AClientBaseItemRestriction;
 import dev.architectury.fluid.FluidStack;
@@ -51,8 +51,8 @@ public class ReiItemStagesPlugin implements REIClientPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, EntryStack<?> entry) {
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(holder, entry.castValue());
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, EntryStack<?> entry) {
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestriction(context, entry.castValue());
         }
 
         @Override
@@ -88,11 +88,11 @@ public class ReiItemStagesPlugin implements REIClientPlugin {
         }
 
         @Override
-        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AClientHolder holder, EntryStack<?> entry) {
+        public @Nullable AClientBaseItemRestriction<?, ?> evaluateRestriction(AStageContext context, EntryStack<?> entry) {
             FluidStack stack = entry.castValue();
             var rs = BuiltInRegistries.FLUID.getKey(stack.getFluid());
 
-            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(holder, rs);
+            return AClientRestrictionManager.ITEM_INSTANCE.getRestrictionForResourceLocation(context, rs);
         }
 
         @Override

@@ -1,12 +1,13 @@
 package com.alessandro.astages.engine.server.manager;
 
-import com.alessandro.astages.api.cache.server.ResourceLocationCache;
-import com.alessandro.astages.api.cache.server.StringCache;
+import com.alessandro.astages.api.cache.ResourceLocationCache;
+import com.alessandro.astages.api.cache.StringCache;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionType;
 import com.alessandro.astages.api.wrapper.RecipeWrapper;
 import com.alessandro.astages.engine.server.evaluator.ARecipeEvaluator;
@@ -48,8 +49,8 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
     }
 
     @Override
-    public ABaseRecipeRestriction<?, ?, ?> getRestriction(AHolder holder, RecipeWrapper wrapper) {
-        return evaluator.evaluateCaches(recipeCache, recipeModCache, holder, wrapper);
+    public ABaseRecipeRestriction<?, ?, ?> getRestriction(AStageContext context, RecipeWrapper wrapper) {
+        return evaluator.evaluateCaches(recipeCache, recipeModCache, context, wrapper);
     }
 
     public void addRestriction(ARecipeRestriction restriction) {

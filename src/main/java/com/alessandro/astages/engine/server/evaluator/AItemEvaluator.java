@@ -1,8 +1,8 @@
 package com.alessandro.astages.engine.server.evaluator;
 
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
+import com.alessandro.astages.api.stage.AStageContext;
 import com.alessandro.astages.api.store.ARestrictionResult;
 import com.alessandro.astages.api.util.AEvaluatorUtils;
 import com.alessandro.astages.engine.server.registry.AItemRegistry;
@@ -17,21 +17,21 @@ import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public record AItemEvaluator(AItemRegistry registry) {
-    public @Nullable ABaseItemRestriction<?, ?> evaluate(AHolder holder, ItemStack stack) {
+    public @Nullable ABaseItemRestriction<?, ?> evaluate(AStageContext context, ItemStack stack) {
         if (stack.isEmpty()) { return null; }
-        return AEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
+        return AEvaluatorUtils.evaluateRestriction(registry.getRestrictions(), AEvaluatorUtils.calculateEvaluationMode(registry), context, stack);
     }
 
-    public @Nullable ABaseItemRestriction<?, ?> evaluateCache(Set<ABaseItemRestriction<?, ?>> cache, AHolder holder, ItemStack stack) {
+    public @Nullable ABaseItemRestriction<?, ?> evaluateCache(Set<ABaseItemRestriction<?, ?>> cache, AStageContext context, ItemStack stack) {
         if (stack.isEmpty()) { return null; }
-        return AEvaluatorUtils.evaluateRestriction(cache, AEvaluatorUtils.calculateEvaluationMode(registry), holder, stack);
+        return AEvaluatorUtils.evaluateRestriction(cache, AEvaluatorUtils.calculateEvaluationMode(registry), context, stack);
     }
 
     public @Nullable ABaseItemRestriction<?, ?> evaluateContainer(Map<Class<?>, List<Integer>> containersWhitelist, Set<ABaseItemRestriction<?, ?>> cache,
-                                                                  AHolder holder, ItemStack stack, Slot slot) {
+                                                                  AStageContext context, ItemStack stack, Slot slot) {
         if (stack.isEmpty()) { return null; }
 
-        return AEvaluatorUtils.evaluateRestrictionUsing(cache, AEvaluatorUtils.calculateEvaluationMode(registry), holder, restriction -> {
+        return AEvaluatorUtils.evaluateRestrictionUsing(cache, AEvaluatorUtils.calculateEvaluationMode(registry), context, restriction -> {
             var container = slot.container;
 
             if (containersWhitelist.containsKey(container.getClass())) {

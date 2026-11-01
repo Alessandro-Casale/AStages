@@ -93,6 +93,11 @@ public abstract class ARestriction<R extends ARestriction<R, U, V>, U, V> implem
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, stage);
+    }
+
+    @Override
     public int compareTo(R that) {
         if (this.priority == that.getPriority()) {
             return this.id.compareTo(that.getId());

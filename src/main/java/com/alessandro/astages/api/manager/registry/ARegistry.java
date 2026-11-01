@@ -9,7 +9,7 @@ import com.alessandro.astages.engine.server.MiscStorage;
 import com.alessandro.astages.infrastructure.config.AStagesCommon;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ import java.util.Set;
 public class ARegistry<R extends ARestriction<?, ?, ?>> implements AMinimalRegistry<R> {
     private @Nullable AEvaluationMode forcedEvaluationMode = null;
 
-    private final Set<R> restrictions = new HashSet<>();
+    private final Set<R> restrictions = new LinkedHashSet<>();
     private final Map<String, R> restrictionsById = new HashMap<>();
     private final Map<String, Set<R>> restrictionsByStage = new HashMap<>();
 
@@ -44,7 +44,7 @@ public class ARegistry<R extends ARestriction<?, ?, ?>> implements AMinimalRegis
         restrictionsById.put(restriction.getId(), restriction);
 
         restrictionsByStage
-            .computeIfAbsent(restriction.getStage(), k -> new HashSet<>())
+            .computeIfAbsent(restriction.getStage(), k -> new LinkedHashSet<>())
             .add(restriction);
 
         MiscStorage.ALL_IDS.add(restriction.getId());

@@ -70,6 +70,11 @@ public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, 
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, stage);
+    }
+
+    @Override
     public int compareTo(R that) {
         if (this.priority == that.getPriority()) {
             return this.id.compareTo(that.getId());

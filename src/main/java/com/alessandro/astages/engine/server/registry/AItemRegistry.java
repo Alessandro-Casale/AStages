@@ -1,19 +1,19 @@
 package com.alessandro.astages.engine.server.registry;
 
+import com.alessandro.astages.api.manager.registry.ARegistry;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.engine.server.restriction.item.*;
-import com.alessandro.astages.api.manager.registry.ARegistry;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class AItemRegistry extends ARegistry<ABaseItemRestriction<?, ?>> {
-    private final Set<AItemRestriction> items = new HashSet<>();
-    private final Set<AItemModRestriction> mods = new HashSet<>();
-    private final Set<AItemTagRestriction> tags = new HashSet<>();
-    private final Set<AItemPredicateRestriction> predicates = new HashSet<>();
+    private final Set<AItemRestriction> items = new LinkedHashSet<>();
+    private final Set<AItemModRestriction> mods = new LinkedHashSet<>();
+    private final Set<AItemTagRestriction> tags = new LinkedHashSet<>();
+    private final Set<AItemPredicateRestriction> predicates = new LinkedHashSet<>();
 
     public Set<AItemRestriction> getItemRestrictions() {
         return items;

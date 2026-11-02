@@ -13,7 +13,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,7 +54,7 @@ public class AEvaluatorUtils {
                 yield null;
             }
             case PRIORITIZED -> {
-                var merged = new HashSet<R>();
+                var merged = new LinkedHashSet<R>();
                 for (var source : sources) { merged.addAll(source.get()); }
 
                 yield getPrioritizedRestrictionWithCondition(merged, context, r -> isRestrictedMethod.apply(r) == ARestrictionResult.RESTRICTED);
@@ -108,7 +108,7 @@ public class AEvaluatorUtils {
     }
 
     public static <R extends ACommonRestriction<?>> @UnmodifiableView Set<R> evaluateRestrictionsUsing(Collection<R> restrictions, Function<R, ARestrictionResult> isRestrictedMethod) {
-        var toReturn = new HashSet<R>();
+        var toReturn = new LinkedHashSet<R>();
 
         for (var restriction : restrictions) {
             if (isRestrictedMethod.apply(restriction) == ARestrictionResult.RESTRICTED) {
@@ -120,7 +120,7 @@ public class AEvaluatorUtils {
     }
 
     public static <R extends ACommonRestriction<?>> @UnmodifiableView Set<R> getRestrictionsForStages(Collection<R> restrictions, Set<String> stages) {
-        var result = new HashSet<R>();
+        var result = new LinkedHashSet<R>();
 
         for (var restriction : restrictions) {
             if (stages.contains(restriction.getStage())) {

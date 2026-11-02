@@ -7,15 +7,15 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.engine.client.restriction.item.*;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class AClientItemRegistry extends AClientRegistry<AClientBaseItemRestriction<?, ?>> {
-    private final Set<AClientItemRestriction> items = new HashSet<>();
-    private final Set<AClientItemModRestriction> mods = new HashSet<>();
-    private final Set<AClientItemTagRestriction> tags = new HashSet<>();
-    private final Set<AClientItemPredicateRestriction> predicates = new HashSet<>();
+    private final Set<AClientItemRestriction> items = new LinkedHashSet<>();
+    private final Set<AClientItemModRestriction> mods = new LinkedHashSet<>();
+    private final Set<AClientItemTagRestriction> tags = new LinkedHashSet<>();
+    private final Set<AClientItemPredicateRestriction> predicates = new LinkedHashSet<>();
 
     private final HashMap<CustomItemStackKey, AClientItemPropertyRestriction> properties = new HashMap<>();
 

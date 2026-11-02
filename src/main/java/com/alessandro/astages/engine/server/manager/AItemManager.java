@@ -29,9 +29,9 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
     private final AItemRegistry registry = new AItemRegistry();
     private final AItemEvaluator evaluator = new AItemEvaluator(registry);
 
-    private final Set<ABaseItemRestriction<?, ?>> inventoryCache = new HashSet<>();
-    private final Set<ABaseItemRestriction<?, ?>> equipmentCache = new HashSet<>();
-    private final Set<ABaseItemRestriction<?, ?>> containersCache = new HashSet<>();
+    private final Set<ABaseItemRestriction<?, ?>> inventoryCache = new LinkedHashSet<>();
+    private final Set<ABaseItemRestriction<?, ?>> equipmentCache = new LinkedHashSet<>();
+    private final Set<ABaseItemRestriction<?, ?>> containersCache = new LinkedHashSet<>();
 
     private final Map<Class<?>, List<Integer>> containersWhitelist = new HashMap<>();
 

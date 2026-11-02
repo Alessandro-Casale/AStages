@@ -6,7 +6,7 @@ import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.AClientRestriction;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +14,7 @@ import java.util.Set;
 public class AClientRegistry<R extends AClientRestriction<?, ?, ?>> implements AClientMinimalRegistry<R> {
     private @Nullable AEvaluationMode forcedEvaluationMode = null;
 
-    private final Set<R> restrictions = new HashSet<>();
+    private final Set<R> restrictions = new LinkedHashSet<>();
     private final Map<String, R> restrictionsById = new HashMap<>();
     private final Map<String, Set<R>> restrictionsByStage = new HashMap<>();
 
@@ -33,7 +33,7 @@ public class AClientRegistry<R extends AClientRestriction<?, ?, ?>> implements A
         restrictionsById.put(restriction.getId(), restriction);
 
         restrictionsByStage
-            .computeIfAbsent(restriction.getStage(), k -> new HashSet<>())
+            .computeIfAbsent(restriction.getStage(), k -> new LinkedHashSet<>())
             .add(restriction);
     }
 

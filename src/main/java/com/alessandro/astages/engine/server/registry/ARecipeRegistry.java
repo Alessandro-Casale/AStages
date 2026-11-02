@@ -1,19 +1,19 @@
 package com.alessandro.astages.engine.server.registry;
 
+import com.alessandro.astages.api.manager.registry.ARegistry;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.engine.server.restriction.recipe.ABaseRecipeRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeModRestriction;
 import com.alessandro.astages.engine.server.restriction.recipe.ARecipeRestriction;
-import com.alessandro.astages.api.manager.registry.ARegistry;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class ARecipeRegistry extends ARegistry<ABaseRecipeRestriction<?, ?, ?>> {
-    private final Set<ARecipeRestriction> recipes = new HashSet<>();
-    private final Set<ARecipeModRestriction> mods = new HashSet<>();
+    private final Set<ARecipeRestriction> recipes = new LinkedHashSet<>();
+    private final Set<ARecipeModRestriction> mods = new LinkedHashSet<>();
 
     public Set<ARecipeRestriction> getRecipeRestrictions() {
         return recipes;

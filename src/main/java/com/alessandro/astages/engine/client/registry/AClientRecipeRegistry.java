@@ -7,13 +7,13 @@ import com.alessandro.astages.engine.client.restriction.recipe.AClientBaseRecipe
 import com.alessandro.astages.engine.client.restriction.recipe.AClientRecipeModRestriction;
 import com.alessandro.astages.engine.client.restriction.recipe.AClientRecipeRestriction;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @NotNullParamsAndMethodsReturn
 public class AClientRecipeRegistry extends AClientRegistry<AClientBaseRecipeRestriction<?, ?, ?>> {
-    private final Set<AClientRecipeRestriction> recipes = new HashSet<>();
-    private final Set<AClientRecipeModRestriction> mods = new HashSet<>();
+    private final Set<AClientRecipeRestriction> recipes = new LinkedHashSet<>();
+    private final Set<AClientRecipeModRestriction> mods = new LinkedHashSet<>();
 
     public Set<AClientRecipeRestriction> getRecipeRestrictions() {
         return recipes;

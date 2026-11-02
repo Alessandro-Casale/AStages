@@ -1,9 +1,9 @@
 package com.alessandro.astages.engine.server.manager;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.cache.ResourceLocationCache;
 import com.alessandro.astages.api.cache.StringCache;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
-import com.alessandro.astages.api.holder.AHolder;
 import com.alessandro.astages.api.manager.AMinimalManager;
 import com.alessandro.astages.api.nullability.NotNullParams;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -94,11 +94,13 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        getRegistry().getRecipeRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncRecipeS2C(restriction)));
-
-        getRegistry().getModRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncRecipeModS2C(restriction)));
+        for (var restriction : registry.getRestrictions()) {
+            switch (restriction) {
+                case ARecipeRestriction r -> Networking.sendTo(player, new SyncRecipeS2C(r));
+                case ARecipeModRestriction r -> Networking.sendTo(player, new SyncRecipeModS2C(r));
+                default -> AStages.LOGGER.warn("Restriction {} of type {} can't be synced to the client", restriction.getId(), restriction.getClass().getSimpleName());
+            }
+        }
     }
 
     @Override

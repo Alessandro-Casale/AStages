@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.server.manager;
 
+import com.alessandro.astages.AStages;
 import com.alessandro.astages.api.feature.ClientSynchronizable;
 import com.alessandro.astages.api.holder.ARestrictionHolder;
 import com.alessandro.astages.api.manager.AMinimalManager;
@@ -132,17 +133,15 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
 
     @Override
     public void synchronizeWithClient(@Nullable ServerPlayer player) {
-        registry.getItemRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncItemS2C(restriction)));
-
-        registry.getTagRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncItemTagS2C(restriction)));
-
-        registry.getModRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncItemModS2C(restriction)));
-
-        registry.getPredicateRestrictions()
-            .forEach(restriction -> Networking.sendTo(player, new SyncItemPredicateS2C(restriction)));
+        for (var restriction : registry.getRestrictions()) {
+            switch (restriction) {
+                case AItemRestriction r -> Networking.sendTo(player, new SyncItemS2C(r));
+                case AItemTagRestriction r -> Networking.sendTo(player, new SyncItemTagS2C(r));
+                case AItemModRestriction r -> Networking.sendTo(player, new SyncItemModS2C(r));
+                case AItemPredicateRestriction r -> Networking.sendTo(player, new SyncItemPredicateS2C(r));
+                default -> AStages.LOGGER.warn("Restriction {} of type {} can't be synced to the client", restriction.getId(), restriction.getClass().getSimpleName());
+            }
+        }
     }
 
     public void recalculateCaches(ABaseItemRestriction<?, ?> restriction) {

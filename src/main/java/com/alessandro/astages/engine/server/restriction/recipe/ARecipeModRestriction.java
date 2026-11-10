@@ -44,10 +44,11 @@ public class ARecipeModRestriction extends ABaseRecipeRestriction<ARecipeModRest
         return modId.equals(wrapper.recipe().getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
-    public ARecipeModRestriction ignoreItems(String... itemIds) {
+    public ARecipeModRestriction ignoreRecipes(String... itemIds) {
         for (var id : itemIds) {
             ignoredRecipeIds.add(ResourceLocation.parse(id));
         }
+
         return this;
     }
 

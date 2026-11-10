@@ -229,7 +229,7 @@ public class DebugEvents {
         //     restrictions below, and ignoring the recipes used by 5B/5C so
         //     this broad ban doesn't leak into those tests.
         ARestrictionUtils.addRestrictionForModRecipe("astages:recipemod/minecraft_cascade", "test_recipe_cascade_mod", "minecraft")
-            .ignoreItems("minecraft:diamond_sword", "minecraft:netherite_sword_smithing",
+            .ignoreRecipes("minecraft:diamond_sword", "minecraft:netherite_sword_smithing",
                 "minecraft:golden_apple", "minecraft:iron_pickaxe");
 
         // A restriction can only hold recipes of ONE RecipeType at a time
@@ -256,7 +256,7 @@ public class DebugEvents {
             .setPriority(APriorities.HIGHEST);
 
         ARestrictionUtils.addRestrictionForModRecipe("astages:recipemod/priority_wide", "test_recipe_priority_wide", "minecraft")
-            .ignoreItems("minecraft:diamond_sword", "minecraft:netherite_sword_smithing", "minecraft:iron_pickaxe");
+            .ignoreRecipes("minecraft:diamond_sword", "minecraft:netherite_sword_smithing", "minecraft:iron_pickaxe");
             // deliberately does NOT ignore "minecraft:golden_apple": that's the point of this test.
 
         // Expected (semantically): with HIGHEST priority, the specific restriction

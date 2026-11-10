@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.client.restriction.item;
 
+import com.alessandro.astages.api.feature.AResettable;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
 import com.alessandro.astages.api.restriction.AClientRestriction;
@@ -10,7 +11,7 @@ import com.alessandro.astages.engine.store.Attributes;
 import net.minecraft.world.item.ItemStack;
 
 @NotNullParamsAndMethodsReturn
-public class AClientBaseItemRestriction<R extends AClientRestriction<R, U, ItemStack>, U> extends AClientRestriction<R, U, ItemStack> {
+public abstract class AClientBaseItemRestriction<R extends AClientRestriction<R, U, ItemStack>, U> extends AClientRestriction<R, U, ItemStack> implements AResettable {
     public AClientBaseItemRestriction(String id, String stage, int priority) {
         super(id, stage, priority);
     }

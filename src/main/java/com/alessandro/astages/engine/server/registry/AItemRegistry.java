@@ -28,28 +28,40 @@ public class AItemRegistry extends ARegistry<ABaseItemRestriction<?, ?>> {
         return predicates;
     }
 
-    public void register(AItemRestriction restriction) {
+    public boolean register(AItemRestriction restriction) {
         if (commonRegister(restriction)) {
             items.add(restriction);
+            return true;
         }
+
+        return false;
     }
 
-    public void register(AItemModRestriction restriction) {
+    public boolean register(AItemModRestriction restriction) {
         if (commonRegister(restriction)) {
             mods.add(restriction);
+            return true;
         }
+
+        return false;
     }
 
-    public void register(AItemTagRestriction restriction) {
+    public boolean register(AItemTagRestriction restriction) {
         if (commonRegister(restriction)) {
             tags.add(restriction);
+            return true;
         }
+
+        return false;
     }
 
-    public void register(AItemPredicateRestriction restriction) {
+    public boolean register(AItemPredicateRestriction restriction) {
         if (commonRegister(restriction)) {
             predicates.add(restriction);
+            return true;
         }
+
+        return false;
     }
 
     public boolean commonRegister(ABaseItemRestriction<?, ?> restriction) {

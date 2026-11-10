@@ -53,4 +53,9 @@ public class AClientItemTagRestriction extends AClientBaseItemRestriction<AClien
     public Set<Item> getIgnoredItems() {
         return ignoredItems;
     }
+
+    @Override
+    public void clearContents() {
+        ignoredItems.clear();
+    }
 }

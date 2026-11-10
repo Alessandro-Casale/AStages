@@ -53,16 +53,22 @@ public class ARecipeManager implements AMinimalManager<ABaseRecipeRestriction<?,
         return evaluator.evaluateCaches(recipeCache, recipeModCache, context, wrapper);
     }
 
-    public void addRestriction(ARecipeRestriction restriction) {
+    public boolean addRestriction(ARecipeRestriction restriction) {
         if (registry.register(restriction)) {
             recipeCache.index(restriction);
+            return true;
         }
+
+        return false;
     }
 
-    public void addRestriction(ARecipeModRestriction restriction) {
+    public boolean addRestriction(ARecipeModRestriction restriction) {
         if (registry.register(restriction)) {
             recipeModCache.index(restriction);
+            return true;
         }
+
+        return false;
     }
 
     @Override

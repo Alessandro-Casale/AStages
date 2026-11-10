@@ -1,5 +1,6 @@
 package com.alessandro.astages.engine.client.restriction.recipe;
 
+import com.alessandro.astages.api.feature.AResettable;
 import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.nullability.Nullable;
@@ -9,7 +10,7 @@ import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientRestrictionManager;
 
 @NotNullParamsAndMethodsReturn
-public class AClientBaseRecipeRestriction<R extends AClientRestriction<R, U, V>, U, V> extends AClientRestriction<R, U, V> {
+public abstract class AClientBaseRecipeRestriction<R extends AClientRestriction<R, U, V>, U, V> extends AClientRestriction<R, U, V> implements AResettable {
     public AClientBaseRecipeRestriction(String id, String stage, int priority) {
         super(id, stage, priority);
     }

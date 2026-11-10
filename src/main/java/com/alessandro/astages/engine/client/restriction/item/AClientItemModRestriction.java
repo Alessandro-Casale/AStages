@@ -67,4 +67,11 @@ public class AClientItemModRestriction extends AClientBaseItemRestriction<AClien
     public Set<TagKey<Item>> getIgnoredTags() {
         return ignoredTags;
     }
+
+    @Override
+    public void clearContents() {
+        modIds.clear();
+        ignoredItems.clear();
+        ignoredTags.clear();
+    }
 }

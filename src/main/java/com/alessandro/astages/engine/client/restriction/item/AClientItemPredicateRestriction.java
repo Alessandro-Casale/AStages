@@ -44,4 +44,7 @@ public class AClientItemPredicateRestriction extends AClientBaseItemRestriction<
     public ResourceLocation getModelId() {
         return modelId;
     }
+
+    @Override
+    public void clearContents() { }
 }

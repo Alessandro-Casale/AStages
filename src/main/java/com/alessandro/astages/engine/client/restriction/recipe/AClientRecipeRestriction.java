@@ -47,4 +47,9 @@ public class AClientRecipeRestriction extends AClientBaseRecipeRestriction<AClie
     public List<ResourceLocation> getRecipes() {
         return recipes;
     }
+
+    @Override
+    public void clearContents() {
+        recipes.clear();
+    }
 }

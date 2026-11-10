@@ -41,7 +41,7 @@ public class AClientRecipeModRestriction extends AClientBaseRecipeRestriction<AC
         return modId.equals(wrapper.recipe().getNamespace()) ? ARestrictionResult.RESTRICTED : ARestrictionResult.NOT_RESTRICTED;
     }
 
-    public AClientRecipeModRestriction ignoreItems(List<ResourceLocation> recipeIds) {
+    public AClientRecipeModRestriction ignoreRecipes(List<ResourceLocation> recipeIds) {
         ignoredRecipeIds.addAll(recipeIds);
         return this;
     }
@@ -52,5 +52,10 @@ public class AClientRecipeModRestriction extends AClientBaseRecipeRestriction<AC
 
     public List<ResourceLocation> getIgnoredRecipeIds() {
         return ignoredRecipeIds;
+    }
+
+    @Override
+    public void clearContents() {
+        ignoredRecipeIds.clear();
     }
 }

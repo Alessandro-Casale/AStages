@@ -74,20 +74,20 @@ public class AItemManager implements AMinimalManager<ABaseItemRestriction<?, ?>,
         return evaluator.evaluateAll(stack);
     }
 
-    public void addRestriction(AItemRestriction restriction) {
-        registry.register(restriction);
+    public boolean addRestriction(AItemRestriction restriction) {
+        return registry.register(restriction);
     }
 
-    public void addRestriction(AItemTagRestriction restriction) {
-        registry.register(restriction);
+    public boolean addRestriction(AItemTagRestriction restriction) {
+        return registry.register(restriction);
     }
 
-    public void addRestriction(AItemModRestriction restriction) {
-        registry.register(restriction);
+    public boolean addRestriction(AItemModRestriction restriction) {
+        return registry.register(restriction);
     }
 
-    public void addRestriction(AItemPredicateRestriction restriction) {
-        registry.register(restriction);
+    public boolean addRestriction(AItemPredicateRestriction restriction) {
+        return registry.register(restriction);
     }
 
     @Override

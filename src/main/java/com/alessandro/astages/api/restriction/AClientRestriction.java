@@ -17,7 +17,7 @@ import java.util.function.Function;
 public abstract class AClientRestriction<R extends AClientRestriction<R, U, V>, U, V> implements ACommonRestriction<V>, AStore<R>, Comparable<R> {
     private final String id;
     private final String stage;
-    private int priority = 0;
+    private int priority;
 
     private final AttributeStore attributes;
 

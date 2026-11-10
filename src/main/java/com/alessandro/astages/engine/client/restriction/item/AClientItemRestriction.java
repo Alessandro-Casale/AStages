@@ -41,4 +41,9 @@ public class AClientItemRestriction extends AClientBaseItemRestriction<AClientIt
     public List<Item> getItems() {
         return items;
     }
+
+    @Override
+    public void clearContents() {
+        items.clear();
+    }
 }

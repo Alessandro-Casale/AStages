@@ -1,6 +1,5 @@
 package com.alessandro.astages.engine.client.restriction.item;
 
-import com.alessandro.astages.api.nullability.NotNull;
 import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.store.Attribute;
 import com.alessandro.astages.api.store.container.AStore;
@@ -29,7 +28,7 @@ public class AClientItemPropertyRestriction implements AStore<AClientItemPropert
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
             .addAttribute(Attributes.Item.ACTION_BAR_MESSAGE)
             .addAttribute(Attributes.Item.TOOLTIP_MESSAGE)

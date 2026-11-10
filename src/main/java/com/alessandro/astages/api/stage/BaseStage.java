@@ -1,7 +1,7 @@
 package com.alessandro.astages.api.stage;
 
 import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.nullability.NotNullParams;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.stage.event.GrantedEvent;
 import com.alessandro.astages.api.stage.implementation.AGrantable;
 import com.alessandro.astages.api.store.Attribute;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@NotNullParams
+@NotNullParamsAndMethodsReturn
 @SuppressWarnings("unchecked")
 public abstract class BaseStage<S extends BaseStage<S>> implements AStore<S>, AConfigurablePreset<S>, AGrantable {
     private final String stage;

@@ -1,12 +1,13 @@
 package com.alessandro.astages.api.stage;
 
-import com.alessandro.astages.api.nullability.NotNull;
-import com.alessandro.astages.api.store.container.AStore;
+import com.alessandro.astages.api.nullability.NotNullParamsAndMethodsReturn;
 import com.alessandro.astages.api.store.Attribute;
+import com.alessandro.astages.api.store.container.AStore;
 import com.alessandro.astages.api.store.container.AttributeStore;
 import com.alessandro.astages.engine.AClientStageManager;
 import com.alessandro.astages.engine.store.StageAttributes;
 
+@NotNullParamsAndMethodsReturn
 public abstract class ClientBaseStage<S extends ClientBaseStage<S>> implements AStore<S> {
     private final String stage;
 
@@ -34,7 +35,7 @@ public abstract class ClientBaseStage<S extends ClientBaseStage<S>> implements A
     }
 
     @Override
-    public @NotNull AttributeStore allowedAttributes() {
+    public AttributeStore allowedAttributes() {
         var defaultAttributes = AttributeStore.builder()
             .addAttribute(StageAttributes.ICON, true);
 

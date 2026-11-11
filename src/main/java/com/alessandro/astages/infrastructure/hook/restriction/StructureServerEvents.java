@@ -50,9 +50,9 @@ public class StructureServerEvents {
 
             var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
 
-            var blockPlacedByPlayer = PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).isBlockPlacedByPlayer(event.getPos());
-            if (blockPlacedByPlayer) {
-                PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).remove(event.getPos());
+            var placedBlocks = PlacedBlocksInStructureData.getData(player.getServer(), structureId.get());
+            if (placedBlocks.isBlockPlacedByPlayer(pos)) {
+                placedBlocks.remove(event.getPos());
                 continue;
             }
 
@@ -137,7 +137,7 @@ public class StructureServerEvents {
                 if (structureId.isEmpty()) { continue; }
 
                 var restriction = ARestrictionManager.STRUCTURE_INSTANCE.getRestriction(AHolder.serverAndPlayer(player), structureId.get());
-                PlacedBlocksInStructureData.getData(player.getServer(), structureId.toString()).add(event.getPos());
+                PlacedBlocksInStructureData.getData(player.getServer(), structureId.get()).add(pos);
 
                 if (restriction != null && restriction.isDisabled(Attributes.BLOCK_PLACING)) {
                     if (!restriction.isBlockPlaceable(event.getPlacedBlock())) {

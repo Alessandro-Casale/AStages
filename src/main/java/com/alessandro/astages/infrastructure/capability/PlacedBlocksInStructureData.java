@@ -6,8 +6,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.HashSet;
@@ -66,5 +68,9 @@ public class PlacedBlocksInStructureData extends SavedData {
 
     public static PlacedBlocksInStructureData getData(MinecraftServer server, String structureId) {
         return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(PlacedBlocksInStructureData::create, PlacedBlocksInStructureData::load), STRUCTURE_ID + structureId.replace(':', '_'));
+    }
+
+    public static PlacedBlocksInStructureData getData(MinecraftServer server, ResourceKey<Structure> structure) {
+        return getData(server, structure.location().toString());
     }
 }
